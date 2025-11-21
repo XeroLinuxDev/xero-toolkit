@@ -155,7 +155,7 @@ fn setup_grub_theme(page_builder: &Builder, terminal: &Terminal, terminal_title:
                 ),
                 terminal::TerminalCommand::new(
                     "sh",
-                    &["-c", &format!("cd {}/xero-grubs && sh install.sh", home)],
+                    &["-c", &format!("cd {}/xero-grubs && sudo ./install.sh", home)],
                 ),
                 terminal::TerminalCommand::new("rm", &["-rf", &format!("{}/xero-grubs", home)]),
             ];
