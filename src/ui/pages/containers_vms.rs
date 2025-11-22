@@ -8,60 +8,27 @@
 //! - KVM/QEMU virtualization setup
 
 use crate::core;
+use crate::ui::command_execution as progress_dialog;
 use crate::ui::selection_dialog;
-use crate::ui::terminal;
-use crate::utils;
 use gtk4::prelude::*;
-use gtk4::{ApplicationWindow, Builder, Label};
-use log::{info, warn};
-use vte4::prelude::*;
-use vte4::Terminal;
+use gtk4::{ApplicationWindow, Builder};
+use log::{info};
 
 /// Set up all button handlers for the containers/VMs page
-pub fn setup_handlers(page_builder: &Builder, main_builder: &Builder) {
-    let terminal_output: Terminal = main_builder
-        .object("global_terminal_output_view")
-        .expect("Failed to get terminal output view");
-    let terminal_title: Label = main_builder
-        .object("global_terminal_title")
-        .expect("Failed to get terminal title label");
-
-    setup_docker(&page_builder, &terminal_output, &terminal_title);
-    setup_podman(&page_builder, &terminal_output, &terminal_title);
-    setup_vbox(&page_builder, &terminal_output, &terminal_title);
-    setup_distrobox(&page_builder, &terminal_output, &terminal_title);
-    setup_kvm(&page_builder, &terminal_output, &terminal_title);
+pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder) {
+    setup_docker(page_builder);
+    setup_podman(page_builder);
+    setup_vbox(page_builder);
+    setup_distrobox(page_builder);
+    setup_kvm(page_builder);
 }
 
-fn setup_docker(page_builder: &Builder, terminal: &Terminal, terminal_title: &Label) {
+fn setup_docker(page_builder: &Builder) {
     if let Some(btn_docker) = page_builder.object::<gtk4::Button>("btn_docker") {
-        let terminal_clone = terminal.clone();
-        let title_clone = terminal_title.clone();
-
         btn_docker.connect_clicked(move |button| {
             info!("Containers/VMs: Docker button clicked");
-
-            if terminal::is_action_running() {
-                warn!("Action already running");
-                terminal_clone.feed(
-                    b"\r\nAnother action is already running. Please wait for it to complete.\r\n",
-                );
-                return;
-            }
-
-            let helper = match utils::detect_aur_helper() {
-                Some(h) => h,
-                None => {
-                    warn!("No AUR helper detected");
-                    terminal_clone
-                        .feed(b"\r\nERROR: No AUR helper detected (paru or yay required).\r\n");
-                    return;
-                }
-            };
-
             let commands = vec![
-                terminal::TerminalCommand::new(
-                    helper,
+                progress_dialog::CommandStep::aur(
                     &[
                         "-S",
                         "--noconfirm",
@@ -70,98 +37,88 @@ fn setup_docker(page_builder: &Builder, terminal: &Terminal, terminal_title: &La
                         "docker-compose",
                         "docker-buildx",
                     ],
+                    "Installing Docker engine and tools...",
                 ),
-                terminal::TerminalCommand::new(
-                    "sudo",
-                    &["systemctl", "enable", "--now", "docker.service"],
+                progress_dialog::CommandStep::privileged(
+                    "systemctl",
+                    &["enable", "--now", "docker.service"],
+                    "Enabling Docker service...",
                 ),
-                terminal::TerminalCommand::new("sudo", &["groupadd", "-f", "docker"]),
-                terminal::TerminalCommand::new(
-                    "sudo",
+                progress_dialog::CommandStep::privileged(
+                    "groupadd",
+                    &["-f", "docker"],
+                    "Ensuring docker group exists...",
+                ),
+                progress_dialog::CommandStep::privileged(
+                    "usermod",
                     &[
-                        "usermod",
                         "-aG",
                         "docker",
                         &std::env::var("USER").unwrap_or_else(|_| "user".to_string()),
                     ],
+                    "Adding your user to docker group...",
                 ),
             ];
 
-            terminal::run_terminal_commands(
-                button,
-                &terminal_clone,
-                &title_clone,
-                commands,
-                "Docker Installation & Setup",
-            );
+            // Friendly completion message via callback
+            let widget = button.clone().upcast::<gtk4::Widget>();
+            let window = widget
+                .root()
+                .and_then(|r| r.downcast::<ApplicationWindow>().ok());
+            if let Some(window) = window {
+                let window_ref = window.upcast_ref::<gtk4::Window>();
+                progress_dialog::run_commands_with_progress(
+                    window_ref,
+                    commands,
+                    "Docker Setup",
+                    Some(Box::new(|success| {
+                        if success {
+                            info!("Docker setup completed");
+                        }
+                    })),
+                );
+            }
         });
     }
 }
 
-fn setup_podman(page_builder: &Builder, terminal: &Terminal, terminal_title: &Label) {
+fn setup_podman(page_builder: &Builder) {
     if let Some(btn_podman) = page_builder.object::<gtk4::Button>("btn_podman") {
-        let terminal_clone = terminal.clone();
-        let title_clone = terminal_title.clone();
-
         btn_podman.connect_clicked(move |button| {
             info!("Containers/VMs: Podman button clicked");
-
-            if terminal::is_action_running() {
-                warn!("Action already running");
-                terminal_clone.feed(
-                    b"\r\nAnother action is already running. Please wait for it to complete.\r\n",
-                );
-                return;
-            }
-
             let widget = button.clone().upcast::<gtk4::Widget>();
             let window = widget
                 .root()
-                .and_then(|root| root.downcast::<ApplicationWindow>().ok());
-
+                .and_then(|r| r.downcast::<ApplicationWindow>().ok());
             if let Some(window) = window {
-                let terminal_for_dialog = terminal_clone.clone();
-                let title_for_dialog = title_clone.clone();
-                let button_for_dialog = button.clone();
+                let window_clone = window.clone();
                 let window_ref = window.upcast_ref::<gtk4::Window>();
-
                 let config = selection_dialog::SelectionDialogConfig::new(
                     "Podman Installation",
-                    "Podman will be installed. Would you also like to install Podman Desktop GUI?",
+                    "Podman will be installed. Optionally include the Podman Desktop GUI.",
                 )
                 .add_option(selection_dialog::SelectionOption::new(
                     "podman_desktop",
                     "Podman Desktop",
-                    "GUI for managing containers (optional)",
+                    "Graphical interface for managing containers",
                     core::is_flatpak_installed("io.podman_desktop.PodmanDesktop"),
                 ))
                 .confirm_label("Install");
 
                 selection_dialog::show_selection_dialog(window_ref, config, move |selected_ids| {
-                    let helper = match utils::detect_aur_helper() {
-                        Some(h) => h,
-                        None => {
-                            warn!("No AUR helper detected");
-                            terminal_for_dialog.feed(
-                                b"\r\nERROR: No AUR helper detected (paru or yay required).\r\n",
-                            );
-                            return;
-                        }
-                    };
-
                     let mut commands = vec![
-                        terminal::TerminalCommand::new(
-                            helper,
+                        progress_dialog::CommandStep::aur(
                             &["-S", "--noconfirm", "--needed", "podman", "podman-docker"],
+                            "Installing Podman container engine...",
                         ),
-                        terminal::TerminalCommand::new(
-                            "sudo",
-                            &["systemctl", "enable", "--now", "podman.socket"],
+                        progress_dialog::CommandStep::privileged(
+                            "systemctl",
+                            &["enable", "--now", "podman.socket"],
+                            "Enabling Podman socket...",
                         ),
                     ];
-
                     if selected_ids.contains(&"podman_desktop".to_string()) {
-                        commands.push(terminal::TerminalCommand::new(
+                        commands.push(progress_dialog::CommandStep::normal(
                             "flatpak",
                             &[
                                 "install",
@@ -169,155 +126,103 @@ fn setup_podman(page_builder: &Builder, terminal: &Terminal, terminal_title: &La
                                 "flathub",
                                 "io.podman_desktop.PodmanDesktop",
                             ],
+                            "Installing Podman Desktop GUI...",
                         ));
                     }
-
-                    terminal::run_terminal_commands(
-                        &button_for_dialog,
-                        &terminal_for_dialog,
-                        &title_for_dialog,
-                        commands,
-                        "Podman Installation & Setup",
-                    );
+                    if !commands.is_empty() {
+                        let window_ref2 = window_clone.upcast_ref::<gtk4::Window>();
+                        progress_dialog::run_commands_with_progress(
+                            window_ref2,
+                            commands,
+                            "Podman Setup",
+                            None,
+                        );
+                    }
                 });
             }
         });
     }
 }
 
-fn setup_vbox(page_builder: &Builder, terminal: &Terminal, terminal_title: &Label) {
+fn setup_vbox(page_builder: &Builder) {
     if let Some(btn_vbox) = page_builder.object::<gtk4::Button>("btn_vbox") {
-        let terminal_clone = terminal.clone();
-        let title_clone = terminal_title.clone();
-
         btn_vbox.connect_clicked(move |button| {
-            info!("Containers/VMs: vBox button clicked");
-
-            if terminal::is_action_running() {
-                warn!("Action already running");
-                terminal_clone.feed(
-                    b"\r\nAnother action is already running. Please wait for it to complete.\r\n",
-                );
-                return;
-            }
-
-            let helper = match utils::detect_aur_helper() {
-                Some(h) => h,
-                None => {
-                    warn!("No AUR helper detected");
-                    terminal_clone
-                        .feed(b"\r\nERROR: No AUR helper detected (paru or yay required).\r\n");
-                    return;
-                }
-            };
-
-            let commands = vec![terminal::TerminalCommand::new(
-                helper,
+            info!("Containers/VMs: VirtualBox button clicked");
+            let commands = vec![progress_dialog::CommandStep::aur(
                 &["-S", "--noconfirm", "--needed", "virtualbox-meta"],
+                "Installing VirtualBox...",
             )];
 
-            terminal::run_terminal_commands(
-                button,
-                &terminal_clone,
-                &title_clone,
-                commands,
-                "VirtualBox Installation",
-            );
+            let widget = button.clone().upcast::<gtk4::Widget>();
+            let window = widget
+                .root()
+                .and_then(|r| r.downcast::<ApplicationWindow>().ok());
+            if let Some(window) = window {
+                let window_ref = window.upcast_ref::<gtk4::Window>();
+                progress_dialog::run_commands_with_progress(
+                    window_ref,
+                    commands,
+                    "VirtualBox Setup",
+                    None,
+                );
+            }
         });
     }
 }
 
-fn setup_distrobox(page_builder: &Builder, terminal: &Terminal, terminal_title: &Label) {
+fn setup_distrobox(page_builder: &Builder) {
     if let Some(btn_distrobox) = page_builder.object::<gtk4::Button>("btn_distrobox") {
-        let terminal_clone = terminal.clone();
-        let title_clone = terminal_title.clone();
-
         btn_distrobox.connect_clicked(move |button| {
             info!("Containers/VMs: DistroBox button clicked");
-
-            if terminal::is_action_running() {
-                warn!("Action already running");
-                terminal_clone.feed(
-                    b"\r\nAnother action is already running. Please wait for it to complete.\r\n",
-                );
-                return;
-            }
-
-            let helper = match utils::detect_aur_helper() {
-                Some(h) => h,
-                None => {
-                    warn!("No AUR helper detected");
-                    terminal_clone
-                        .feed(b"\r\nERROR: No AUR helper detected (paru or yay required).\r\n");
-                    return;
-                }
-            };
-
             let commands = vec![
-                terminal::TerminalCommand::new(
-                    helper,
+                progress_dialog::CommandStep::aur(
                     &["-S", "--noconfirm", "--needed", "distrobox"],
+                    "Installing DistroBox...",
                 ),
-                terminal::TerminalCommand::new(
+                progress_dialog::CommandStep::normal(
                     "flatpak",
                     &["install", "-y", "io.github.dvlv.boxbuddyrs"],
+                    "Installing BoxBuddy GUI...",
                 ),
             ];
 
-            terminal::run_terminal_commands(
-                button,
-                &terminal_clone,
-                &title_clone,
-                commands,
-                "Distrobox Installation",
-            );
+            let widget = button.clone().upcast::<gtk4::Widget>();
+            let window = widget
+                .root()
+                .and_then(|r| r.downcast::<ApplicationWindow>().ok());
+            if let Some(window) = window {
+                let window_ref = window.upcast_ref::<gtk4::Window>();
+                progress_dialog::run_commands_with_progress(
+                    window_ref,
+                    commands,
+                    "DistroBox Setup",
+                    None,
+                );
+            }
         });
     }
 }
 
-fn setup_kvm(page_builder: &Builder, terminal: &Terminal, terminal_title: &Label) {
+fn setup_kvm(page_builder: &Builder) {
     if let Some(btn_kvm) = page_builder.object::<gtk4::Button>("btn_kvm") {
-        let terminal_clone = terminal.clone();
-        let title_clone = terminal_title.clone();
-
         btn_kvm.connect_clicked(move |button| {
             info!("Containers/VMs: KVM button clicked");
-
-            if terminal::is_action_running() {
-                warn!("Action already running");
-                terminal_clone.feed(
-                    b"\r\nAnother action is already running. Please wait for it to complete.\r\n",
-                );
-                return;
-            }
-
-            let helper = match utils::detect_aur_helper() {
-                Some(h) => h,
-                None => {
-                    warn!("No AUR helper detected");
-                    terminal_clone
-                        .feed(b"\r\nERROR: No AUR helper detected (paru or yay required).\r\n");
-                    return;
-                }
-            };
-
-            let mut commands = vec![];
+            let mut commands: Vec<progress_dialog::CommandStep> = vec![];
 
             if core::is_package_installed("iptables") {
-                commands.push(terminal::TerminalCommand::new(
-                    helper,
+                commands.push(progress_dialog::CommandStep::aur(
                     &["-Rdd", "--noconfirm", "iptables"],
+                    "Removing conflicting iptables...",
                 ));
             }
             if core::is_package_installed("gnu-netcat") {
-                commands.push(terminal::TerminalCommand::new(
-                    helper,
+                commands.push(progress_dialog::CommandStep::aur(
                     &["-Rdd", "--noconfirm", "gnu-netcat"],
+                    "Removing conflicting gnu-netcat...",
                 ));
             }
 
-            commands.push(terminal::TerminalCommand::new(
-                helper,
+            commands.push(progress_dialog::CommandStep::aur(
                 &[
                     "-S",
                     "--noconfirm",
@@ -325,27 +230,35 @@ fn setup_kvm(page_builder: &Builder, terminal: &Terminal, terminal_title: &Label
                     "virt-manager-meta",
                     "openbsd-netcat",
                 ],
+                "Installing virtualization packages...",
             ));
-            commands.push(terminal::TerminalCommand::new(
-                "sudo",
+            commands.push(progress_dialog::CommandStep::privileged(
+                "sh",
                 &[
-                    "sh",
                     "-c",
                     "echo 'options kvm-intel nested=1' > /etc/modprobe.d/kvm-intel.conf",
                 ],
+                "Enabling nested virtualization...",
             ));
-            commands.push(terminal::TerminalCommand::new(
-                "sudo",
-                &["systemctl", "restart", "libvirtd.service"],
+            commands.push(progress_dialog::CommandStep::privileged(
+                "systemctl",
+                &["restart", "libvirtd.service"],
+                "Restarting libvirtd service...",
             ));
 
-            terminal::run_terminal_commands(
-                button,
-                &terminal_clone,
-                &title_clone,
-                commands,
-                "KVM/QEMU Virtualization Setup",
-            );
+            let widget = button.clone().upcast::<gtk4::Widget>();
+            let window = widget
+                .root()
+                .and_then(|r| r.downcast::<ApplicationWindow>().ok());
+            if let Some(window) = window {
+                let window_ref = window.upcast_ref::<gtk4::Window>();
+                progress_dialog::run_commands_with_progress(
+                    window_ref,
+                    commands,
+                    "KVM / QEMU Setup",
+                    None,
+                );
+            }
         });
     }
 }

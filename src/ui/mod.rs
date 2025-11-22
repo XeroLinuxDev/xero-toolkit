@@ -4,14 +4,14 @@
 //! - `app`: Application setup and initialization
 //! - `pages`: Page-specific button handlers
 //! - `tabs`: Tab navigation and management
-//! - `terminal`: Terminal command execution with PTY support
+//! - `command_execution`: Command execution flow with progress UI
 //! - `selection_dialog`: Reusable multi-choice selection dialogs
 
 pub mod app;
+pub mod command_execution;
 pub mod pages;
 pub mod selection_dialog;
 pub mod tabs;
-pub mod terminal;
 
 // Re-export commonly used items
 pub use app::setup_application_ui;

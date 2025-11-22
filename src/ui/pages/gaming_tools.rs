@@ -8,61 +8,28 @@
 //! - Game launchers (Lutris, Heroic, Bottles)
 
 use crate::core;
+use crate::ui::command_execution as progress_dialog;
 use crate::ui::selection_dialog;
-use crate::ui::terminal;
-use crate::utils;
 use gtk4::prelude::*;
-use gtk4::{ApplicationWindow, Builder, Label};
-use log::{info, warn};
-use vte4::prelude::*;
-use vte4::Terminal;
+use gtk4::{ApplicationWindow, Builder};
+use log::{info};
 
 /// Set up all button handlers for the gaming tools page
-pub fn setup_handlers(page_builder: &Builder, main_builder: &Builder) {
-    let terminal_output: Terminal = main_builder
-        .object("global_terminal_output_view")
-        .expect("Failed to get terminal output view");
-    let terminal_title: Label = main_builder
-        .object("global_terminal_title")
-        .expect("Failed to get terminal title label");
-
-    setup_steam_aio(&page_builder, &terminal_output, &terminal_title);
-    setup_controllers(&page_builder, &terminal_output, &terminal_title);
-    setup_gamescope_cfg(&page_builder);
-    setup_lact_oc(&page_builder, &terminal_output, &terminal_title);
-    setup_lutris(&page_builder, &terminal_output, &terminal_title);
-    setup_heroic(&page_builder, &terminal_output, &terminal_title);
-    setup_bottles(&page_builder, &terminal_output, &terminal_title);
+pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder) {
+    setup_steam_aio(page_builder);
+    setup_controllers(page_builder);
+    setup_gamescope_cfg(page_builder);
+    setup_lact_oc(page_builder);
+    setup_lutris(page_builder);
+    setup_heroic(page_builder);
+    setup_bottles(page_builder);
 }
 
-fn setup_steam_aio(page_builder: &Builder, terminal: &Terminal, terminal_title: &Label) {
+fn setup_steam_aio(page_builder: &Builder) {
     if let Some(btn_steam_aio) = page_builder.object::<gtk4::Button>("btn_steam_aio") {
-        let terminal_clone = terminal.clone();
-        let title_clone = terminal_title.clone();
-
         btn_steam_aio.connect_clicked(move |button| {
             info!("Gaming tools: Steam AiO button clicked");
-
-            if terminal::is_action_running() {
-                warn!("Action already running");
-                terminal_clone.feed(
-                    b"\r\nAnother action is already running. Please wait for it to complete.\r\n",
-                );
-                return;
-            }
-
-            let helper = match utils::detect_aur_helper() {
-                Some(h) => h,
-                None => {
-                    warn!("No AUR helper detected");
-                    terminal_clone
-                        .feed(b"\r\nERROR: No AUR helper detected (paru or yay required).\r\n");
-                    return;
-                }
-            };
-
-            let commands = vec![terminal::TerminalCommand::new(
-                helper,
+            let commands = vec![progress_dialog::CommandStep::aur(
                 &[
                     "-S",
                     "--noconfirm",
@@ -132,50 +99,45 @@ fn setup_steam_aio(page_builder: &Builder, terminal: &Terminal, terminal_title: 
                     "lib32-vkd3d",
                     "opencl-icd-loader",
                 ],
+                "Installing Steam and gaming dependencies...",
             )];
 
-            terminal::run_terminal_commands(
-                button,
-                &terminal_clone,
-                &title_clone,
-                commands,
-                "Steam AiO Installation",
-            );
+            let widget = button.clone().upcast::<gtk4::Widget>();
+            if let Some(window) = widget
+                .root()
+                .and_then(|r| r.downcast::<ApplicationWindow>().ok())
+            {
+                let window_ref = window.upcast_ref::<gtk4::Window>();
+                progress_dialog::run_commands_with_progress(
+                    window_ref,
+                    commands,
+                    "Steam AiO Installation",
+                    None,
+                );
+            }
         });
     }
 }
 
-fn setup_controllers(page_builder: &Builder, terminal: &Terminal, terminal_title: &Label) {
+fn setup_controllers(page_builder: &Builder) {
     if let Some(btn_controllers) = page_builder.object::<gtk4::Button>("btn_controllers") {
-        let terminal_clone = terminal.clone();
-        let title_clone = terminal_title.clone();
-
         btn_controllers.connect_clicked(move |button| {
             info!("Gaming tools: Controllers button clicked");
-
-            if terminal::is_action_running() {
-                warn!("Action already running");
-                terminal_clone.feed(b"\r\nAnother action is already running. Please wait for it to complete.\r\n");
-                return;
-            }
-
             let dualsense_installed = core::is_package_installed("dualsensectl");
             let dualshock4_installed = core::is_package_installed("ds4drv");
             let xboxone_installed = core::is_package_installed("xone-dkms");
 
             let widget = button.clone().upcast::<gtk4::Widget>();
-            let window = widget.root()
-                .and_then(|root| root.downcast::<ApplicationWindow>().ok());
+            let window = widget
+                .root()
+                .and_then(|r| r.downcast::<ApplicationWindow>().ok());
 
             if let Some(window) = window {
-                let terminal_for_dialog = terminal_clone.clone();
-                let title_for_dialog = title_clone.clone();
-                let button_for_dialog = button.clone();
+                let window_clone = window.clone();
                 let window_ref = window.upcast_ref::<gtk4::Window>();
-
                 let config = selection_dialog::SelectionDialogConfig::new(
                     "Game Controller Drivers",
-                    "Select which controller drivers to install. Already installed drivers are not shown.",
+                    "Select which controller drivers to install.",
                 )
                 .add_option(selection_dialog::SelectionOption::new(
                     "dualsense",
@@ -197,57 +159,53 @@ fn setup_controllers(page_builder: &Builder, terminal: &Terminal, terminal_title
                 ))
                 .confirm_label("Install");
 
-                selection_dialog::show_selection_dialog(
-                    window_ref,
-                    config,
-                    move |selected_ids| {
-                        info!("Selected controllers: {:?}", selected_ids);
-                        let helper = match utils::detect_aur_helper() {
-                            Some(h) => h,
-                            None => {
-                                warn!("No AUR helper detected");
-                                terminal_for_dialog.feed(b"\r\nERROR: No AUR helper detected (paru or yay required).\r\n");
-                                return;
-                            }
-                        };
-
-                        let mut commands = Vec::new();
-
-                        for id in selected_ids {
-                            match id.as_str() {
-                                "dualsense" => {
-                                    commands.push(terminal::TerminalCommand::new(
-                                        helper,
-                                        &["-S", "--noconfirm", "--needed", "dualsensectl", "game-devices-udev"],
-                                    ));
-                                }
-                                "dualshock4" => {
-                                    commands.push(terminal::TerminalCommand::new(
-                                        helper,
-                                        &["-S", "--noconfirm", "--needed", "ds4drv", "game-devices-udev"],
-                                    ));
-                                }
-                                "xboxone" => {
-                                    commands.push(terminal::TerminalCommand::new(
-                                        helper,
-                                        &["-S", "--noconfirm", "--needed", "xone-dkms", "game-devices-udev"],
-                                    ));
-                                }
-                                _ => {}
-                            }
+                selection_dialog::show_selection_dialog(window_ref, config, move |selected_ids| {
+                    let mut commands = Vec::new();
+                    for id in selected_ids {
+                        match id.as_str() {
+                            "dualsense" => commands.push(progress_dialog::CommandStep::aur(
+                                &[
+                                    "-S",
+                                    "--noconfirm",
+                                    "--needed",
+                                    "dualsensectl",
+                                    "game-devices-udev",
+                                ],
+                                "Installing DualSense driver...",
+                            )),
+                            "dualshock4" => commands.push(progress_dialog::CommandStep::aur(
+                                &[
+                                    "-S",
+                                    "--noconfirm",
+                                    "--needed",
+                                    "ds4drv",
+                                    "game-devices-udev",
+                                ],
+                                "Installing DualShock 4 driver...",
+                            )),
+                            "xboxone" => commands.push(progress_dialog::CommandStep::aur(
+                                &[
+                                    "-S",
+                                    "--noconfirm",
+                                    "--needed",
+                                    "xone-dkms",
+                                    "game-devices-udev",
+                                ],
+                                "Installing Xbox One controller driver...",
+                            )),
+                            _ => {}
                         }
-
-                        if !commands.is_empty() {
-                            terminal::run_terminal_commands(
-                                &button_for_dialog,
-                                &terminal_for_dialog,
-                                &title_for_dialog,
-                                commands,
-                                "Game Controller Drivers Installation",
-                            );
-                        }
-                    },
-                );
+                    }
+                    if !commands.is_empty() {
+                        let window_ref2 = window_clone.upcast_ref::<gtk4::Window>();
+                        progress_dialog::run_commands_with_progress(
+                            window_ref2,
+                            commands,
+                            "Controller Driver Installation",
+                            None,
+                        );
+                    }
+                });
             }
         });
     }
@@ -264,65 +222,44 @@ fn setup_gamescope_cfg(page_builder: &Builder) {
     }
 }
 
-fn setup_lact_oc(page_builder: &Builder, terminal: &Terminal, terminal_title: &Label) {
+fn setup_lact_oc(page_builder: &Builder) {
     if let Some(btn_lact_oc) = page_builder.object::<gtk4::Button>("btn_lact_oc") {
-        let terminal_clone = terminal.clone();
-        let title_clone = terminal_title.clone();
-
         btn_lact_oc.connect_clicked(move |button| {
             info!("Gaming tools: LACT OC button clicked");
-
-            if terminal::is_action_running() {
-                warn!("Action already running");
-                terminal_clone.feed(
-                    b"\r\nAnother action is already running. Please wait for it to complete.\r\n",
-                );
-                return;
-            }
-
-            let helper = match utils::detect_aur_helper() {
-                Some(h) => h,
-                None => {
-                    warn!("No AUR helper detected");
-                    terminal_clone
-                        .feed(b"\r\nERROR: No AUR helper detected (paru or yay required).\r\n");
-                    return;
-                }
-            };
-
             let commands = vec![
-                terminal::TerminalCommand::new(helper, &["-S", "--noconfirm", "--needed", "lact"]),
-                terminal::TerminalCommand::new("sudo", &["systemctl", "enable", "--now", "lactd"]),
+                progress_dialog::CommandStep::aur(
+                    &["-S", "--noconfirm", "--needed", "lact"],
+                    "Installing LACT GPU control utility...",
+                ),
+                progress_dialog::CommandStep::privileged(
+                    "systemctl",
+                    &["enable", "--now", "lactd"],
+                    "Enabling LACT background service...",
+                ),
             ];
 
-            terminal::run_terminal_commands(
-                button,
-                &terminal_clone,
-                &title_clone,
-                commands,
-                "LACT GPU OC Installation & Setup",
-            );
+            let widget = button.clone().upcast::<gtk4::Widget>();
+            if let Some(window) = widget
+                .root()
+                .and_then(|r| r.downcast::<ApplicationWindow>().ok())
+            {
+                let window_ref = window.upcast_ref::<gtk4::Window>();
+                progress_dialog::run_commands_with_progress(
+                    window_ref,
+                    commands,
+                    "LACT GPU Tools",
+                    None,
+                );
+            }
         });
     }
 }
 
-fn setup_lutris(page_builder: &Builder, terminal: &Terminal, terminal_title: &Label) {
+fn setup_lutris(page_builder: &Builder) {
     if let Some(btn_lutris) = page_builder.object::<gtk4::Button>("btn_lutris") {
-        let terminal_clone = terminal.clone();
-        let title_clone = terminal_title.clone();
-
         btn_lutris.connect_clicked(move |button| {
             info!("Gaming tools: Lutris button clicked");
-
-            if terminal::is_action_running() {
-                warn!("Action already running");
-                terminal_clone.feed(
-                    b"\r\nAnother action is already running. Please wait for it to complete.\r\n",
-                );
-                return;
-            }
-
-            let commands = vec![terminal::TerminalCommand::new(
+            let commands = vec![progress_dialog::CommandStep::normal(
                 "flatpak",
                 &[
                     "install",
@@ -331,36 +268,31 @@ fn setup_lutris(page_builder: &Builder, terminal: &Terminal, terminal_title: &La
                     "org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08",
                     "org.freedesktop.Platform.VulkanLayer.MangoHud",
                 ],
+                "Installing Lutris and Vulkan layers...",
             )];
 
-            terminal::run_terminal_commands(
-                button,
-                &terminal_clone,
-                &title_clone,
-                commands,
-                "Lutris Installation",
-            );
+            let widget = button.clone().upcast::<gtk4::Widget>();
+            if let Some(window) = widget
+                .root()
+                .and_then(|r| r.downcast::<ApplicationWindow>().ok())
+            {
+                let window_ref = window.upcast_ref::<gtk4::Window>();
+                progress_dialog::run_commands_with_progress(
+                    window_ref,
+                    commands,
+                    "Lutris Installation",
+                    None,
+                );
+            }
         });
     }
 }
 
-fn setup_heroic(page_builder: &Builder, terminal: &Terminal, terminal_title: &Label) {
+fn setup_heroic(page_builder: &Builder) {
     if let Some(btn_heroic) = page_builder.object::<gtk4::Button>("btn_heroic") {
-        let terminal_clone = terminal.clone();
-        let title_clone = terminal_title.clone();
-
         btn_heroic.connect_clicked(move |button| {
             info!("Gaming tools: Heroic button clicked");
-
-            if terminal::is_action_running() {
-                warn!("Action already running");
-                terminal_clone.feed(
-                    b"\r\nAnother action is already running. Please wait for it to complete.\r\n",
-                );
-                return;
-            }
-
-            let commands = vec![terminal::TerminalCommand::new(
+            let commands = vec![progress_dialog::CommandStep::normal(
                 "flatpak",
                 &[
                     "install",
@@ -369,36 +301,31 @@ fn setup_heroic(page_builder: &Builder, terminal: &Terminal, terminal_title: &La
                     "org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08",
                     "org.freedesktop.Platform.VulkanLayer.MangoHud",
                 ],
+                "Installing Heroic Games Launcher...",
             )];
 
-            terminal::run_terminal_commands(
-                button,
-                &terminal_clone,
-                &title_clone,
-                commands,
-                "Heroic Games Launcher Installation",
-            );
+            let widget = button.clone().upcast::<gtk4::Widget>();
+            if let Some(window) = widget
+                .root()
+                .and_then(|r| r.downcast::<ApplicationWindow>().ok())
+            {
+                let window_ref = window.upcast_ref::<gtk4::Window>();
+                progress_dialog::run_commands_with_progress(
+                    window_ref,
+                    commands,
+                    "Heroic Launcher Installation",
+                    None,
+                );
+            }
         });
     }
 }
 
-fn setup_bottles(page_builder: &Builder, terminal: &Terminal, terminal_title: &Label) {
+fn setup_bottles(page_builder: &Builder) {
     if let Some(btn_bottles) = page_builder.object::<gtk4::Button>("btn_bottles") {
-        let terminal_clone = terminal.clone();
-        let title_clone = terminal_title.clone();
-
         btn_bottles.connect_clicked(move |button| {
             info!("Gaming tools: Bottles button clicked");
-
-            if terminal::is_action_running() {
-                warn!("Action already running");
-                terminal_clone.feed(
-                    b"\r\nAnother action is already running. Please wait for it to complete.\r\n",
-                );
-                return;
-            }
-
-            let commands = vec![terminal::TerminalCommand::new(
+            let commands = vec![progress_dialog::CommandStep::normal(
                 "flatpak",
                 &[
                     "install",
@@ -407,15 +334,22 @@ fn setup_bottles(page_builder: &Builder, terminal: &Terminal, terminal_title: &L
                     "org.freedesktop.Platform.VulkanLayer.gamescope",
                     "org.freedesktop.Platform.VulkanLayer.MangoHud",
                 ],
+                "Installing Bottles and Vulkan layers...",
             )];
 
-            terminal::run_terminal_commands(
-                button,
-                &terminal_clone,
-                &title_clone,
-                commands,
-                "Bottles Installation",
-            );
+            let widget = button.clone().upcast::<gtk4::Widget>();
+            if let Some(window) = widget
+                .root()
+                .and_then(|r| r.downcast::<ApplicationWindow>().ok())
+            {
+                let window_ref = window.upcast_ref::<gtk4::Window>();
+                progress_dialog::run_commands_with_progress(
+                    window_ref,
+                    commands,
+                    "Bottles Installation",
+                    None,
+                );
+            }
         });
     }
 }

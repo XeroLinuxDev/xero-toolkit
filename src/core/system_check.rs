@@ -43,7 +43,7 @@ impl DependencyCheckResult {
         let mut hints = Vec::new();
 
         if self.flatpak_missing {
-            hints.push("Install flatpak: <tt>sudo pacman -S flatpak</tt>");
+            hints.push("Install flatpak: <tt>pkexec pacman -S flatpak</tt>");
         }
         if self.aur_helper_missing {
             hints.push("AUR Helper repositories:\n• Paru: <a href=\"https://github.com/Morganamilo/paru\">https://github.com/Morganamilo/paru</a>\n• Yay: <a href=\"https://github.com/Jguer/yay\">https://github.com/Jguer/yay</a>");

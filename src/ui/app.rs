@@ -23,6 +23,9 @@ pub fn setup_application_ui(app: &Application) {
         warn!("Dependency check failed - application will not continue");
         return;
     }
+    if let Some(helper) = crate::utils::detect_aur_helper() {
+        crate::set_aur_helper(helper);
+    }
     info!("Dependency check passed");
 
     info!("Loading individual page UI components");

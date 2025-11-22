@@ -53,7 +53,6 @@ package() {
   install -Dm644 "resources/icons/scalable/apps/xero-toolkit.png" \
     "${pkgdir}/usr/share/icons/hicolor/scalable/apps/xero-toolkit.png"
 
-
   # Install license
   install -Dm644 "LICENSE" \
     "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"

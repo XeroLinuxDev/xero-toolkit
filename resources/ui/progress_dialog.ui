@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<interface>
+  <requires lib="gtk" version="4.0" />
+
+  <object class="GtkWindow" id="progress_window">
+    <property name="title">Operation in Progress</property>
+    <property name="default-width">500</property>
+    <property name="default-height">300</property>
+    <property name="modal">true</property>
+    <property name="resizable">true</property>
+
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">16</property>
+        <property name="margin-top">16</property>
+        <property name="margin-bottom">16</property>
+        <property name="margin-start">16</property>
+        <property name="margin-end">16</property>
+
+        <!-- Title Label -->
+        <child>
+          <object class="GtkLabel" id="progress_title">
+            <property name="label">Installing packages...</property>
+            <property name="wrap">true</property>
+            <property name="xalign">0</property>
+            <property name="css-classes">title-2</property>
+          </object>
+        </child>
+
+        <!-- Progress Bar -->
+        <child>
+          <object class="GtkProgressBar" id="progress_bar">
+            <property name="hexpand">true</property>
+            <property name="show-text">true</property>
+          </object>
+        </child>
+
+        <!-- Expander for Output -->
+        <child>
+          <object class="GtkExpander" id="output_expander">
+            <property name="label">Show Details</property>
+            <property name="hexpand">true</property>
+            <property name="vexpand">true</property>
+
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <property name="min-content-height">200</property>
+
+                <child>
+                  <object class="GtkTextView" id="output_view">
+                    <property name="editable">false</property>
+                    <property name="monospace">true</property>
+                    <property name="wrap-mode">word-char</property>
+                    <property name="left-margin">8</property>
+                    <property name="right-margin">8</property>
+                    <property name="top-margin">8</property>
+                    <property name="bottom-margin">8</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Button Box -->
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">8</property>
+            <property name="halign">end</property>
+
+            <child>
+              <object class="GtkButton" id="cancel_button">
+                <property name="label">Cancel</property>
+                <property name="sensitive">true</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkButton" id="close_button">
+                <property name="label">Close</property>
+                <property name="sensitive">false</property>
+                <property name="visible">false</property>
+                <property name="css-classes">suggested-action</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
+

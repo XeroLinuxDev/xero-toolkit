@@ -6,85 +6,54 @@
 //! - External links (Discord, YouTube, Website, Donate)
 
 use crate::core;
+use crate::ui::command_execution as progress_dialog;
 use crate::ui::selection_dialog;
-use crate::ui::terminal;
-use crate::utils;
 use gtk4::prelude::*;
-use gtk4::{ApplicationWindow, Builder, Button, Label};
-use log::{info, warn};
-use vte4::prelude::*;
-use vte4::Terminal;
+use gtk4::{ApplicationWindow, Builder, Button};
+use log::{info};
 
 /// Set up all button handlers for the main page
-pub fn setup_handlers(page_builder: &Builder, main_builder: &Builder) {
-    setup_update_system_button(page_builder, main_builder);
-    setup_pkg_manager_button(page_builder, main_builder);
+pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder) {
+    setup_update_system_button(page_builder);
+    setup_pkg_manager_button(page_builder);
     setup_external_links(page_builder);
 }
 
 /// Setup system update button
-fn setup_update_system_button(page_builder: &Builder, main_builder: &Builder) {
-    let terminal_output: Terminal = main_builder
-        .object("global_terminal_output_view")
-        .expect("Failed to get terminal output view");
-    let terminal_title: Label = main_builder
-        .object("global_terminal_title")
-        .expect("Failed to get terminal title label");
-
+fn setup_update_system_button(page_builder: &Builder) {
     if let Some(btn_update_system) = page_builder.object::<Button>("btn_update_system") {
-        let terminal_clone = terminal_output.clone();
-        let title_clone = terminal_title.clone();
-        let button_clone = btn_update_system.clone();
-
-        btn_update_system.connect_clicked(move |_| {
+        btn_update_system.connect_clicked(move |button| {
             info!("Main page: Update System button clicked");
+            let widget = button.clone().upcast::<gtk4::Widget>();
+            let window = widget
+                .root()
+                .and_then(|root| root.downcast::<ApplicationWindow>().ok());
 
-            if terminal::is_action_running() {
-                warn!("Action already running, ignoring button click");
-                terminal_clone.feed(
-                    b"\r\nAnother action is already running. Please wait for it to complete.\r\n",
+            if let Some(window) = window {
+                let commands = vec![progress_dialog::CommandStep::privileged(
+                    "/usr/local/bin/upd",
+                    &[],
+                    "Updating system packages...",
+                )];
+
+                let window_ref = window.upcast_ref::<gtk4::Window>();
+                progress_dialog::run_commands_with_progress(
+                    window_ref,
+                    commands,
+                    "System Update",
+                    None,
                 );
-                return;
             }
-
-            let commands = vec![terminal::TerminalCommand::new("/usr/local/bin/upd", &[])];
-
-            terminal::run_terminal_commands(
-                &button_clone,
-                &terminal_clone,
-                &title_clone,
-                commands,
-                "System Update",
-            );
         });
     }
 }
 
 /// Setup package manager GUI button
-fn setup_pkg_manager_button(page_builder: &Builder, main_builder: &Builder) {
-    let terminal_output: Terminal = main_builder
-        .object("global_terminal_output_view")
-        .expect("Failed to get terminal output view");
-    let terminal_title: Label = main_builder
-        .object("global_terminal_title")
-        .expect("Failed to get terminal title label");
-
+fn setup_pkg_manager_button(page_builder: &Builder) {
     if let Some(btn_pkg_manager) = page_builder.object::<Button>("btn_pkg_manager") {
-        let terminal_clone = terminal_output.clone();
-        let title_clone = terminal_title.clone();
-
         btn_pkg_manager.connect_clicked(move |button| {
             info!("Main page: PKG Manager GUI button clicked");
-
-            if terminal::is_action_running() {
-                warn!("Action already running");
-                terminal_clone.feed(
-                    b"\r\nAnother action is already running. Please wait for it to complete.\r\n",
-                );
-                return;
-            }
-
-            show_pkg_manager_dialog(button, &terminal_clone, &title_clone);
+            show_pkg_manager_dialog(button);
         });
     }
 }
@@ -129,16 +98,14 @@ fn setup_external_links(page_builder: &Builder) {
 }
 
 /// Show package manager selection dialog
-fn show_pkg_manager_dialog(button: &Button, terminal: &Terminal, terminal_title: &Label) {
+fn show_pkg_manager_dialog(button: &Button) {
     let widget = button.clone().upcast::<gtk4::Widget>();
     let window = widget
         .root()
         .and_then(|root| root.downcast::<ApplicationWindow>().ok());
 
     if let Some(window) = window {
-        let terminal_for_dialog = terminal.clone();
-        let title_for_dialog = terminal_title.clone();
-        let button_for_dialog = button.clone();
+        let window_clone = window.clone();
         let window_ref = window.upcast_ref::<gtk4::Window>();
 
         // Check which package managers are already installed
@@ -192,67 +159,60 @@ fn show_pkg_manager_dialog(button: &Button, terminal: &Terminal, terminal_title:
         .confirm_label("Install");
 
         selection_dialog::show_selection_dialog(window_ref, config, move |selected_ids| {
-            let helper = match utils::detect_aur_helper() {
-                Some(h) => h,
-                None => {
-                    warn!("No AUR helper detected");
-                    terminal_for_dialog
-                        .feed(b"\r\nERROR: No AUR helper detected (paru or yay required).\r\n");
-                    return;
-                }
-            };
-
             let mut commands = vec![];
 
             if selected_ids.contains(&"octopi".to_string()) {
-                commands.push(terminal::TerminalCommand::new(
-                    helper,
+                commands.push(progress_dialog::CommandStep::aur(
                     &["-S", "--noconfirm", "--needed", "octopi"],
+                    "Installing Octopi package manager...",
                 ));
             }
 
             if selected_ids.contains(&"pacseek".to_string()) {
-                commands.push(terminal::TerminalCommand::new(
-                    helper,
+                commands.push(progress_dialog::CommandStep::aur(
                     &["-S", "--noconfirm", "--needed", "pacseek", "pacfinder"],
+                    "Installing PacSeek package browser...",
                 ));
             }
 
             if selected_ids.contains(&"bauh".to_string()) {
-                commands.push(terminal::TerminalCommand::new(
-                    helper,
+                commands.push(progress_dialog::CommandStep::aur(
                     &["-S", "--noconfirm", "--needed", "bauh"],
+                    "Installing Bauh package manager...",
                 ));
             }
 
             if selected_ids.contains(&"warehouse".to_string()) {
-                commands.push(terminal::TerminalCommand::new(
+                commands.push(progress_dialog::CommandStep::normal(
                     "flatpak",
                     &["install", "-y", "io.github.flattool.Warehouse"],
+                    "Installing Warehouse from Flathub...",
                 ));
             }
 
             if selected_ids.contains(&"flatseal".to_string()) {
-                commands.push(terminal::TerminalCommand::new(
+                commands.push(progress_dialog::CommandStep::normal(
                     "flatpak",
                     &["install", "-y", "com.github.tchx84.Flatseal"],
+                    "Installing Flatseal from Flathub...",
                 ));
             }
 
             if selected_ids.contains(&"bazaar".to_string()) {
-                commands.push(terminal::TerminalCommand::new(
+                commands.push(progress_dialog::CommandStep::normal(
                     "flatpak",
                     &["install", "-y", "io.github.kolunmi.Bazaar"],
+                    "Installing Bazaar from Flathub...",
                 ));
             }
 
             if !commands.is_empty() {
-                terminal::run_terminal_commands(
-                    &button_for_dialog,
-                    &terminal_for_dialog,
-                    &title_for_dialog,
+                let window_ref = window_clone.upcast_ref::<gtk4::Window>();
+                progress_dialog::run_commands_with_progress(
+                    window_ref,
                     commands,
                     "Package Manager GUI Installation",
+                    None,
                 );
             }
         });
