@@ -276,8 +276,8 @@ fn setup_lutris(builder: &Builder) {
                 "install",
                 "-y",
                 "net.lutris.Lutris",
-                "org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08",
-                "org.freedesktop.Platform.VulkanLayer.MangoHud",
+                "org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/25.08",
+                "org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/25.08",
             ],
             "Installing Lutris and Vulkan layers...",
         )];
@@ -304,8 +304,8 @@ fn setup_heroic(builder: &Builder) {
                 "install",
                 "-y",
                 "com.heroicgameslauncher.hgl",
-                "org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08",
-                "org.freedesktop.Platform.VulkanLayer.MangoHud",
+                "org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/25.08",
+                "org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/25.08",
             ],
             "Installing Heroic Games Launcher...",
         )];
@@ -337,8 +337,8 @@ fn setup_bottles(builder: &Builder) {
                 "install",
                 "-y",
                 "com.usebottles.bottles",
-                "org.freedesktop.Platform.VulkanLayer.gamescope",
-                "org.freedesktop.Platform.VulkanLayer.MangoHud",
+                "org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/25.08",
+                "org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/25.08",
             ],
             "Installing Bottles and Vulkan layers...",
         )];

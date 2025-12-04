@@ -111,7 +111,7 @@ fn setup_obs_studio_aio(page_builder: &Builder) {
                                 "install",
                                 "-y",
                                 "com.obsproject.Studio.Plugin.OBSVkCapture",
-                                "org.freedesktop.Platform.VulkanLayer.OBSVkCapture",
+                                "org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/25.08",
                                 "com.obsproject.Studio.Plugin.Gstreamer",
                                 "com.obsproject.Studio.Plugin.GStreamerVaapi",
                             ],
