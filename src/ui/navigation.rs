@@ -3,7 +3,7 @@
 //! This module handles the sidebar navigation tabs that allow users
 //! to switch between different pages in the application.
 
-use crate::ui::{context::UiComponents, pages};
+use crate::ui::pages;
 use gtk4::prelude::*;
 use gtk4::{Box as GtkBox, Builder, Button, Image, Label, Orientation, Stack};
 use log::{info, warn};
