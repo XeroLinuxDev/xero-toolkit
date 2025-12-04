@@ -3,29 +3,84 @@
 //! This module handles the sidebar navigation tabs that allow users
 //! to switch between different pages in the application.
 
-use crate::ui::context::UiComponents;
+use crate::ui::{context::UiComponents, pages};
 use gtk4::prelude::*;
-use gtk4::{Box, Button, Image, Label, Orientation, Stack};
-use log::info;
+use gtk4::{Box as GtkBox, Builder, Button, Image, Label, Orientation, Stack};
+use log::{info, warn};
 
-/// Tab configuration: (label, page_name, icon_name)
-const TABS: &[(&str, &str, &str)] = &[
-    ("Main Page", "main_page", "house-symbolic"),
-    ("Drivers", "drivers", "gear-symbolic"),
-    ("Customization", "customization", "brush-symbolic"),
-    ("Gaming Tools", "gaming_tools", "gamepad-symbolic"),
-    ("Containers/VMs", "containers_vms", "box-symbolic"),
-    ("Multimedia Tools", "multimedia_tools", "play-symbolic"),
-    (
-        "Kernel Manager/SCX",
-        "kernel_manager_scx",
-        "hammer-symbolic",
-    ),
-    (
-        "Servicing/System tweaks",
-        "servicing_system_tweaks",
-        "toolbox-symbolic",
-    ),
+/// Configuration for a single page in the application.
+pub struct PageConfig {
+    /// Internal identifier for the page (used in navigation)
+    pub id: &'static str,
+    /// Display title for the page
+    pub title: &'static str,
+    /// Icon name for the tab button
+    pub icon: &'static str,
+    /// Resource path to the UI file
+    pub ui_resource: &'static str,
+    /// Function to set up event handlers for the page
+    pub setup_handler: Option<fn(&Builder, &Builder)>,
+}
+
+/// Central list of all pages in the application.
+/// Comment out any page to disable it entirely.
+pub const PAGES: &[PageConfig] = &[
+    PageConfig {
+        id: "main_page",
+        title: "Main Page",
+        icon: "house-symbolic",
+        ui_resource: "/xyz/xerolinux/xero-toolkit/ui/tabs/main_page.ui",
+        setup_handler: Some(pages::main_page::setup_handlers),
+    },
+    PageConfig {
+        id: "drivers",
+        title: "Drivers",
+        icon: "gear-symbolic",
+        ui_resource: "/xyz/xerolinux/xero-toolkit/ui/tabs/drivers.ui",
+        setup_handler: Some(pages::drivers::setup_handlers),
+    },
+    PageConfig {
+        id: "customization",
+        title: "Customization",
+        icon: "brush-symbolic",
+        ui_resource: "/xyz/xerolinux/xero-toolkit/ui/tabs/customization.ui",
+        setup_handler: Some(pages::customization::setup_handlers),
+    },
+    PageConfig {
+        id: "gaming_tools",
+        title: "Gaming Tools",
+        icon: "gamepad-symbolic",
+        ui_resource: "/xyz/xerolinux/xero-toolkit/ui/tabs/gaming_tools.ui",
+        setup_handler: Some(pages::gaming_tools::setup_handlers),
+    },
+    PageConfig {
+        id: "containers_vms",
+        title: "Containers/VMs",
+        icon: "box-symbolic",
+        ui_resource: "/xyz/xerolinux/xero-toolkit/ui/tabs/containers_vms.ui",
+        setup_handler: Some(pages::containers_vms::setup_handlers),
+    },
+    PageConfig {
+        id: "multimedia_tools",
+        title: "Multimedia Tools",
+        icon: "play-symbolic",
+        ui_resource: "/xyz/xerolinux/xero-toolkit/ui/tabs/multimedia_tools.ui",
+        setup_handler: Some(pages::multimedia_tools::setup_handlers),
+    },
+    // PageConfig {
+    //     id: "kernel_manager_scx",
+    //     title: "Kernel Manager/SCX",
+    //     icon: "hammer-symbolic",
+    //     ui_resource: "/xyz/xerolinux/xero-toolkit/ui/tabs/kernel_manager_scx.ui",
+    //     setup_handler: None,
+    // },
+    PageConfig {
+        id: "servicing_system_tweaks",
+        title: "Servicing/System tweaks",
+        icon: "toolbox-symbolic",
+        ui_resource: "/xyz/xerolinux/xero-toolkit/ui/tabs/servicing_system_tweaks.ui",
+        setup_handler: Some(pages::servicing::setup_handlers),
+    },
 ];
 
 /// Represents a single tab in the navigation sidebar.
@@ -37,7 +92,7 @@ struct Tab {
 impl Tab {
     /// Create a new tab with the given label, page name and icon.
     fn new(label: &str, page_name: &str, icon_name: &str) -> Self {
-        let content_box = Box::builder()
+        let content_box = GtkBox::builder()
             .orientation(Orientation::Horizontal)
             .spacing(8)
             .hexpand(true)
@@ -66,7 +121,7 @@ impl Tab {
     }
 
     /// Connect this tab's button to navigate to its page.
-    fn connect(&self, stack: &Stack, tabs_container: &Box) {
+    fn connect(&self, stack: &Stack, tabs_container: &GtkBox) {
         let stack_clone = stack.clone();
         let page_name = self.page_name.clone();
         let button_clone = self.button.clone();
@@ -80,35 +135,107 @@ impl Tab {
     }
 }
 
-/// Set up the navigation tabs in the sidebar.
-pub fn setup(ui: &UiComponents) {
+/// Create dynamic stack with pages and set up navigation tabs.
+/// Returns the fully configured stack with all pages and tabs ready.
+pub fn create_stack_and_tabs(tabs_container: &GtkBox, main_builder: &Builder) -> Stack {
+    info!("Creating dynamic stack and loading pages");
+
+    // Create new stack and populate with pages
+    let stack = create_dynamic_stack(main_builder);
+
+    info!("Dynamic stack created with {} pages", PAGES.len());
+
+    // Set up navigation tabs
     info!("Setting up navigation tabs");
-
-    let tabs_container = ui.tabs_container();
-    let stack = ui.stack();
-
     let mut first_button: Option<Button> = None;
 
-    for &(label, page_name, icon_name) in TABS {
-        let tab = Tab::new(label, page_name, icon_name);
-        tab.connect(stack, tabs_container);
+    for page_config in PAGES {
+        let tab = Tab::new(page_config.title, page_config.id, page_config.icon);
+        tab.connect(&stack, tabs_container);
 
         if first_button.is_none() {
             first_button = Some(tab.button.clone());
         }
 
         tabs_container.append(&tab.button);
-        info!("Added tab: {} -> '{}'", label, page_name);
+        info!("Added tab: {} -> '{}'", page_config.title, page_config.id);
     }
 
     // Set first tab as active
     if let Some(button) = first_button {
         button.add_css_class("active");
     }
+
+    stack
+}
+
+/// Create a dynamic stack with pages from PAGES configuration.
+fn create_dynamic_stack(main_builder: &Builder) -> Stack {
+    let stack = Stack::new();
+    stack.set_hexpand(true);
+    stack.set_vexpand(true);
+    stack.set_transition_type(gtk4::StackTransitionType::Crossfade);
+
+    // Dynamically create stack pages from PAGES configuration
+    for page_config in PAGES {
+        match create_page_from_config(page_config, main_builder) {
+            Ok(page_widget) => {
+                stack.add_titled(&page_widget, Some(page_config.id), page_config.title);
+                info!("Successfully loaded page: {}", page_config.id);
+            }
+            Err(e) => {
+                warn!("Failed to load page '{}': {}", page_config.id, e);
+                // Create a fallback page
+                let fallback = GtkBox::new(gtk4::Orientation::Vertical, 0);
+                let label = gtk4::Label::builder()
+                    .label(format!("{} page content not available", page_config.title))
+                    .build();
+                fallback.append(&label);
+                stack.add_titled(&fallback, Some(page_config.id), page_config.title);
+            }
+        }
+    }
+
+    // Add the dynamic stack to the right container
+    if let Some(right_container) = main_builder.object::<GtkBox>("right_container") {
+        right_container.append(&stack);
+        info!("Dynamic stack added to right container");
+    } else {
+        warn!("Could not find right_container to add stack");
+    }
+
+    stack
+}
+
+/// Create a page widget from PageConfig.
+fn create_page_from_config(config: &PageConfig, main_builder: &Builder) -> anyhow::Result<GtkBox> {
+    let page_builder = Builder::from_resource(config.ui_resource);
+
+    let page_widget: gtk4::Widget = page_builder
+        .object(format!("page_{}", config.id))
+        .ok_or_else(|| {
+            anyhow::anyhow!(
+                "Could not find page_{} widget in {}",
+                config.id,
+                config.ui_resource
+            )
+        })?;
+
+    let container = GtkBox::new(gtk4::Orientation::Vertical, 0);
+    container.set_hexpand(true);
+    container.set_vexpand(true);
+    container.append(&page_widget);
+
+    // Call setup handler if provided
+    if let Some(setup_fn) = config.setup_handler {
+        setup_fn(&page_builder, main_builder);
+    }
+
+    Ok(container)
 }
 
 /// Update which tab is marked as active.
-fn update_active_tab(tabs_container: &Box, clicked_button: &Button) {
+fn update_active_tab(tabs_container: &GtkBox, clicked_button: &Button) {
     let mut child = tabs_container.first_child();
 
     while let Some(widget) = child {

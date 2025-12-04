@@ -69,11 +69,13 @@ impl UiComponents {
     }
 
     /// Get the tabs container for tab management.
+    #[allow(dead_code)]
     pub fn tabs_container(&self) -> &GtkBox {
         &self.tabs_container
     }
 
     /// Get the stack widget for page navigation.
+    #[allow(dead_code)]
     pub fn stack(&self) -> &Stack {
         &self.stack
     }
