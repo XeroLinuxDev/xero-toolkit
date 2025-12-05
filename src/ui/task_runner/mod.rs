@@ -135,13 +135,10 @@ pub fn run(
     // Cancel button handler
     let widgets_clone = widgets.clone();
     let cancelled_clone = cancelled.clone();
-    let running_process = current_process.clone();
     cancel_button.connect_clicked(move |_| {
         *cancelled_clone.borrow_mut() = true;
         widgets_clone.disable_cancel();
-        if let Some(process) = running_process.borrow().as_ref() {
-            process.force_exit();
-        }
+        widgets_clone.set_title("Waiting for current command to finish...");
     });
 
     // Close button handler
@@ -156,12 +153,10 @@ pub fn run(
 
     // Window close handler
     let on_complete_clone = on_complete.clone();
-    let current_process_clone = current_process.clone();
+    let cancelled_clone = cancelled.clone();
     window.connect_close_request(move |_| {
         ACTION_RUNNING.store(false, Ordering::SeqCst);
-        if let Some(process) = current_process_clone.borrow().as_ref() {
-            process.force_exit();
-        }
+        *cancelled_clone.borrow_mut() = true;
         if let Some(ref callback) = on_complete_clone {
             callback(false);
         }

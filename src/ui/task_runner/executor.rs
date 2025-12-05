@@ -73,7 +73,7 @@ impl RunningContext {
             return;
         }
 
-        // Handle result
+        // Handle result normally
         match result {
             CommandResult::Success => {
                 self.widgets
