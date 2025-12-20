@@ -232,7 +232,13 @@ fn resolve_command(command: &Command) -> Result<(String, Vec<String>), String> {
             let helper = core::aur_helper()
                 .ok_or_else(|| "AUR helper not available (paru or yay required)".to_string())?;
             let mut args = Vec::with_capacity(command.args.len() + 2);
-            args.push("--sudo".to_string());
+            
+            if helper == "yay" {
+                args.push("--sudobin".to_string());
+            } else {
+                args.push("--sudo".to_string());
+            }
+            
             args.push("pkexec".to_string());
             args.extend(command.args.clone());
             Ok((helper.to_string(), args))
