@@ -12,6 +12,7 @@ use crate::ui::dialogs::download::show_download_dialog;
 use crate::ui::dialogs::selection::{
     show_selection_dialog, SelectionDialogConfig, SelectionOption,
 };
+use crate::ui::dialogs::terminal;
 use crate::ui::task_runner::{self, Command, CommandSequence};
 use gtk4::prelude::*;
 use gtk4::{ApplicationWindow, Builder, Button};
@@ -38,18 +39,13 @@ fn setup_update_system(builder: &Builder) {
             return;
         };
 
-        let commands = CommandSequence::new()
-            .then(
-                Command::builder()
-                    .privileged()
-                    .program("/usr/local/bin/upd")
-                    .args(&[])
-                    .description("Updating system packages...")
-                    .build(),
-            )
-            .build();
-
-        task_runner::run(window.upcast_ref(), commands, "System Update");
+        // Use terminal dialog for interactive system update
+        terminal::show_terminal_dialog(
+            window.upcast_ref(),
+            "System Update",
+            "pkexec",
+            &["/usr/local/bin/upd"],
+        );
     });
 }
 

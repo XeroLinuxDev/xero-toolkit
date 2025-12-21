@@ -21,15 +21,32 @@
                 </child>
 
                 <property name="content">
-                    <object class="GtkScrolledWindow" id="terminal_scrolled">
-                        <property name="vexpand">true</property>
-                        <property name="hexpand">true</property>
-                        <property name="child">
-                            <object class="VteTerminal" id="terminal">
+                    <object class="GtkBox" id="terminal_container">
+                        <property name="orientation">vertical</property>
+                        <property name="margin-top">12</property>
+                        <property name="margin-bottom">12</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-end">12</property>
+                        <child>
+                            <object class="GtkFrame" id="terminal_frame">
                                 <property name="vexpand">true</property>
                                 <property name="hexpand">true</property>
+                                <property name="css-classes">terminal-rounded</property>
+                                <property name="child">
+                                    <object class="GtkScrolledWindow" id="terminal_scrolled">
+                                        <property name="vexpand">true</property>
+                                        <property name="hexpand">true</property>
+                                        <property name="child">
+                                            <object class="VteTerminal" id="terminal">
+                                                <property name="vexpand">true</property>
+                                                <property name="hexpand">true</property>
+                                                <property name="css-classes">terminal-padded</property>
+                                            </object>
+                                        </property>
+                                    </object>
+                                </property>
                             </object>
-                        </property>
+                        </child>
                     </object>
                 </property>
 

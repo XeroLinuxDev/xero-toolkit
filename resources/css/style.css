@@ -68,3 +68,17 @@
     font-weight: 600;
 }
 
+/* ============================================
+   Terminal Dialog
+   ============================================ */
+
+.terminal-rounded {
+    border-radius: 12px;
+    background: @window_bg_color;
+    border: none;
+}
+
+.terminal-padded {
+    padding: 16px;
+}
+
