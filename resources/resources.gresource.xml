@@ -64,6 +64,10 @@
             preprocess="xml-stripblanks"
             compressed="true"
         >ui/dialogs/terminal_dialog.ui</file>
+        <file
+            preprocess="xml-stripblanks"
+            compressed="true"
+        >ui/dialogs/about_dialog.ui</file>
 
         <!-- Stylesheet -->
         <file compressed="true">css/style.css</file>
@@ -102,6 +106,7 @@
         <file
             compressed="true"
         >icons/scalable/actions/terminal-symbolic.svg</file>
+        <file compressed="true">icons/scalable/actions/heart.svg</file>
         <file compressed="true">icons/scalable/apps/xero-toolkit.png</file>
     </gresource>
 </gresources>

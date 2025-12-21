@@ -41,7 +41,7 @@ pub fn setup_application_ui(app: &Application) {
     let stack = navigation::create_stack_and_tabs(&tabs_container, &builder);
 
     // Set up UI components with the dynamic stack
-    let ctx = setup_ui_components(&builder, stack);
+    let ctx = setup_ui_components(&builder, stack, &window);
 
     info!("Setting initial view to first page");
     if let Some(first_page) = navigation::PAGES.first() {
@@ -101,13 +101,16 @@ pub fn extract_widget<T: IsA<glib::Object>>(builder: &Builder, name: &str) -> T 
 }
 
 /// Set up UI components and return application context.
-fn setup_ui_components(builder: &Builder, stack: Stack) -> AppContext {
+fn setup_ui_components(builder: &Builder, stack: Stack, window: &ApplicationWindow) -> AppContext {
     let tabs_container = extract_widget(builder, "tabs_container");
     let main_split_view = extract_widget(builder, "main_split_view");
     let sidebar_toggle = extract_widget(builder, "sidebar_toggle_button");
 
     // Set up autostart toggle in sidebar
     setup_autostart_toggle(builder);
+
+    // Set up about button
+    setup_about_button(builder, &window);
 
     info!("All UI components successfully initialized from UI builder");
 
@@ -144,6 +147,26 @@ fn setup_autostart_toggle(builder: &Builder) {
 
             // Return Propagation::Proceed to allow the switch to update its state
             glib::Propagation::Proceed
+        });
+    }
+}
+
+/// Set up the about button in the header bar.
+fn setup_about_button(builder: &Builder, window: &ApplicationWindow) {
+    use crate::ui::dialogs::about;
+    use gtk4::Image;
+
+    if let Some(button) = builder.object::<gtk4::Button>("about_button") {
+        // Set icon from resource (heart.svg is not symbolic, so use file path)
+        let icon =
+            Image::from_resource("/xyz/xerolinux/xero-toolkit/icons/scalable/actions/heart.svg");
+        icon.set_pixel_size(16);
+        button.set_child(Some(&icon));
+
+        let window_clone = window.clone();
+        button.connect_clicked(move |_| {
+            info!("About button clicked");
+            about::show_about_dialog(window_clone.upcast_ref());
         });
     }
 }

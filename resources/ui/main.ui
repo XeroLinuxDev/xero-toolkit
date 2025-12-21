@@ -25,6 +25,13 @@
                                 <property name="active">true</property>
                             </object>
                         </child>
+
+                        <!-- About button -->
+                        <child type="end">
+                            <object class="GtkButton" id="about_button">
+                                <property name="tooltip-text">About</property>
+                            </object>
+                        </child>
                     </object>
                 </child>
 
