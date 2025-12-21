@@ -4,6 +4,7 @@ use crate::core::download::{
     download_file, fetch_arch_iso_info, format_bytes, format_speed, format_time_remaining,
     DownloadState,
 };
+use crate::ui::app::extract_widget;
 use gtk4::glib;
 use gtk4::prelude::*;
 use gtk4::{Button, Entry, Image, Label, ProgressBar, Window};
@@ -20,27 +21,13 @@ pub fn show_download_dialog(parent: &Window) {
         "/xyz/xerolinux/xero-toolkit/ui/dialogs/download_setup_dialog.ui",
     );
 
-    let window: adw::Window = builder
-        .object("download_setup_window")
-        .expect("Failed to get download_setup_window");
-    let version_label: Label = builder
-        .object("version_label")
-        .expect("Failed to get version_label");
-    let download_path_entry: Entry = builder
-        .object("download_path_entry")
-        .expect("Failed to get download_path_entry");
-    let browse_button: Button = builder
-        .object("browse_button")
-        .expect("Failed to get browse_button");
-    let cancel_button: Button = builder
-        .object("cancel_button")
-        .expect("Failed to get cancel_button");
-    let start_download_button: Button = builder
-        .object("start_download_button")
-        .expect("Failed to get start_download_button");
-    let fetching_spinner: Image = builder
-        .object("fetching_spinner")
-        .expect("Failed to get fetching_spinner");
+    let window: adw::Window = extract_widget(&builder, "download_setup_window");
+    let version_label: Label = extract_widget(&builder, "version_label");
+    let download_path_entry: Entry = extract_widget(&builder, "download_path_entry");
+    let browse_button: Button = extract_widget(&builder, "browse_button");
+    let cancel_button: Button = extract_widget(&builder, "cancel_button");
+    let start_download_button: Button = extract_widget(&builder, "start_download_button");
+    let fetching_spinner: Image = extract_widget(&builder, "fetching_spinner");
 
     window.set_transient_for(Some(parent));
 
@@ -212,30 +199,14 @@ fn start_download(parent: &Window, iso_name: String, download_url: String, save_
     let builder =
         gtk4::Builder::from_resource("/xyz/xerolinux/xero-toolkit/ui/dialogs/download_dialog.ui");
 
-    let window: adw::Window = builder
-        .object("download_window")
-        .expect("Failed to get download_window");
-    let filename_label: Label = builder
-        .object("filename_label")
-        .expect("Failed to get filename_label");
-    let progress_bar: ProgressBar = builder
-        .object("progress_bar")
-        .expect("Failed to get progress_bar");
-    let speed_label: Label = builder
-        .object("speed_label")
-        .expect("Failed to get speed_label");
-    let downloaded_label: Label = builder
-        .object("downloaded_label")
-        .expect("Failed to get downloaded_label");
-    let time_remaining_label: Label = builder
-        .object("time_remaining_label")
-        .expect("Failed to get time_remaining_label");
-    let pause_button: Button = builder
-        .object("pause_button")
-        .expect("Failed to get pause_button");
-    let cancel_button: Button = builder
-        .object("cancel_button")
-        .expect("Failed to get cancel_button");
+    let window: adw::Window = extract_widget(&builder, "download_window");
+    let filename_label: Label = extract_widget(&builder, "filename_label");
+    let progress_bar: ProgressBar = extract_widget(&builder, "progress_bar");
+    let speed_label: Label = extract_widget(&builder, "speed_label");
+    let downloaded_label: Label = extract_widget(&builder, "downloaded_label");
+    let time_remaining_label: Label = extract_widget(&builder, "time_remaining_label");
+    let pause_button: Button = extract_widget(&builder, "pause_button");
+    let cancel_button: Button = extract_widget(&builder, "cancel_button");
 
     window.set_transient_for(Some(parent));
 

@@ -30,6 +30,8 @@
                         <child type="end">
                             <object class="GtkButton" id="about_button">
                                 <property name="tooltip-text">About</property>
+                                <!-- Use icon-name so the icon comes from the registered resources/icon theme -->
+                                <property name="icon-name">heart</property>
                             </object>
                         </child>
                     </object>

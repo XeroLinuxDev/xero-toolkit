@@ -1,5 +1,6 @@
 //! System dependency checks and validation.
 
+use crate::ui::app::extract_widget;
 use gtk4::prelude::*;
 use gtk4::{ApplicationWindow, Builder, Button, Label};
 use log::{error, info, warn};
@@ -236,17 +237,11 @@ pub fn show_xerolinux_error_dialog(main_window: &ApplicationWindow) {
     let builder =
         Builder::from_resource("/xyz/xerolinux/xero-toolkit/ui/dialogs/xerolinux_check_dialog.ui");
 
-    let error_window: gtk4::Window = builder
-        .object("xerolinux_error_window")
-        .expect("Failed to get xerolinux_error_window");
+    let error_window: gtk4::Window = extract_widget(&builder, "xerolinux_error_window");
 
-    let distro_label: Label = builder
-        .object("distro_label")
-        .expect("Failed to get distro_label");
+    let distro_label: Label = extract_widget(&builder, "distro_label");
 
-    let exit_button: Button = builder
-        .object("exit_button")
-        .expect("Failed to get exit_button");
+    let exit_button: Button = extract_widget(&builder, "exit_button");
 
     distro_label.set_label(&format!("Current distribution: <b>{}</b>", distro_name));
 
@@ -273,21 +268,13 @@ pub fn show_dependency_error_dialog(
     let builder =
         Builder::from_resource("/xyz/xerolinux/xero-toolkit/ui/dialogs/dependency_error_dialog.ui");
 
-    let error_window: gtk4::Window = builder
-        .object("dependency_error_window")
-        .expect("Failed to get dependency_error_window");
+    let error_window: gtk4::Window = extract_widget(&builder, "dependency_error_window");
 
-    let missing_deps_label: Label = builder
-        .object("missing_deps_label")
-        .expect("Failed to get missing_deps_label");
+    let missing_deps_label: Label = extract_widget(&builder, "missing_deps_label");
 
-    let install_hint_label: Label = builder
-        .object("install_hint_label")
-        .expect("Failed to get install_hint_label");
+    let install_hint_label: Label = extract_widget(&builder, "install_hint_label");
 
-    let exit_button: Button = builder
-        .object("exit_button")
-        .expect("Failed to get exit_button");
+    let exit_button: Button = extract_widget(&builder, "exit_button");
 
     missing_deps_label.set_label(&check_result.format_missing_list());
 

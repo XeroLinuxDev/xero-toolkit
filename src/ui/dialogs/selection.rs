@@ -3,6 +3,7 @@
 //! This module provides a reusable dialog window for presenting users with
 //! multiple options to select from, with customizable title, description, and actions.
 
+use crate::ui::app::extract_widget;
 use gtk4::prelude::*;
 use gtk4::{Box as GtkBox, Builder, Button, CheckButton, Label, Separator, Window};
 use log::info;
@@ -74,29 +75,17 @@ where
         Builder::from_resource("/xyz/xerolinux/xero-toolkit/ui/dialogs/selection_dialog.ui");
 
     // Get the dialog window
-    let dialog: Window = builder
-        .object("selection_dialog")
-        .expect("Failed to get selection_dialog");
+    let dialog: Window = extract_widget(&builder, "selection_dialog");
 
     // Set transient parent
     dialog.set_transient_for(Some(parent));
 
     // Get UI elements
-    let title_label: Label = builder
-        .object("dialog_title")
-        .expect("Failed to get dialog_title");
-    let description_label: Label = builder
-        .object("dialog_description")
-        .expect("Failed to get dialog_description");
-    let options_container: GtkBox = builder
-        .object("options_container")
-        .expect("Failed to get options_container");
-    let cancel_button: Button = builder
-        .object("cancel_button")
-        .expect("Failed to get cancel_button");
-    let confirm_button: Button = builder
-        .object("confirm_button")
-        .expect("Failed to get confirm_button");
+    let title_label: Label = extract_widget(&builder, "dialog_title");
+    let description_label: Label = extract_widget(&builder, "dialog_description");
+    let options_container: GtkBox = extract_widget(&builder, "options_container");
+    let cancel_button: Button = extract_widget(&builder, "cancel_button");
+    let confirm_button: Button = extract_widget(&builder, "confirm_button");
 
     // Set title and description
     title_label.set_label(&config.title);

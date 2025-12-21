@@ -55,6 +55,7 @@ mod command;
 mod executor;
 mod widgets;
 
+use crate::ui::app::extract_widget;
 use gtk4::glib;
 use gtk4::prelude::*;
 use gtk4::{Button, Label, Separator, ToggleButton, Window};
@@ -185,33 +186,15 @@ pub fn run(parent: &Window, commands: CommandSequence, title: &str) {
 
     let builder = gtk4::Builder::from_resource(TASK_DIALOG_RESOURCE);
 
-    let window: Window = builder
-        .object("task_window")
-        .expect("Failed to get task_window");
-    let title_label: Label = builder
-        .object("task_title")
-        .expect("Failed to get task_title");
-    let task_list_container: gtk4::Box = builder
-        .object("task_list_container")
-        .expect("Failed to get task_list_container");
-    let scrolled_window: gtk4::ScrolledWindow = builder
-        .object("task_scrolled_window")
-        .expect("Failed to get task_scrolled_window");
-    let cancel_button: Button = builder
-        .object("cancel_button")
-        .expect("Failed to get cancel_button");
-    let close_button: Button = builder
-        .object("close_button")
-        .expect("Failed to get close_button");
-    let sidebar_toggle: ToggleButton = builder
-        .object("sidebar_toggle_button")
-        .expect("Failed to get sidebar_toggle_button");
-    let split_view: adw::OverlaySplitView = builder
-        .object("split_view")
-        .expect("Failed to get split_view");
-    let output_text_view: gtk4::TextView = builder
-        .object("output_text_view")
-        .expect("Failed to get output_text_view");
+    let window: Window = extract_widget(&builder, "task_window");
+    let title_label: Label = extract_widget(&builder, "task_title");
+    let task_list_container: gtk4::Box = extract_widget(&builder, "task_list_container");
+    let scrolled_window: gtk4::ScrolledWindow = extract_widget(&builder, "task_scrolled_window");
+    let cancel_button: Button = extract_widget(&builder, "cancel_button");
+    let close_button: Button = extract_widget(&builder, "close_button");
+    let sidebar_toggle: ToggleButton = extract_widget(&builder, "sidebar_toggle_button");
+    let split_view: adw::OverlaySplitView = extract_widget(&builder, "split_view");
+    let output_text_view: gtk4::TextView = extract_widget(&builder, "output_text_view");
     let output_text_buffer = output_text_view.buffer();
 
     window.set_transient_for(Some(parent));

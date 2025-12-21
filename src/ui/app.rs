@@ -154,15 +154,8 @@ fn setup_autostart_toggle(builder: &Builder) {
 /// Set up the about button in the header bar.
 fn setup_about_button(builder: &Builder, window: &ApplicationWindow) {
     use crate::ui::dialogs::about;
-    use gtk4::Image;
 
     if let Some(button) = builder.object::<gtk4::Button>("about_button") {
-        // Set icon from resource (heart.svg is not symbolic, so use file path)
-        let icon =
-            Image::from_resource("/xyz/xerolinux/xero-toolkit/icons/scalable/actions/heart.svg");
-        icon.set_pixel_size(16);
-        button.set_child(Some(&icon));
-
         let window_clone = window.clone();
         button.connect_clicked(move |_| {
             info!("About button clicked");

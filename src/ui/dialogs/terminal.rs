@@ -1,8 +1,9 @@
 //! Interactive terminal dialog for running shell commands.
 
+use crate::ui::app::extract_widget;
 use gtk4::gdk::RGBA;
 use gtk4::prelude::*;
-use gtk4::{Button, Window};
+use gtk4::{Builder, Button, Window};
 use log::{error, info};
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -47,15 +48,11 @@ fn update_terminal_style(terminal: &Terminal) {
 pub fn show_terminal_dialog(parent: &Window, title: &str, command: &str, args: &[&str]) {
     // Load the UI
     let builder =
-        gtk4::Builder::from_resource("/xyz/xerolinux/xero-toolkit/ui/dialogs/terminal_dialog.ui");
+        Builder::from_resource("/xyz/xerolinux/xero-toolkit/ui/dialogs/terminal_dialog.ui");
 
-    let window: adw::Window = builder
-        .object("terminal_window")
-        .expect("Failed to get terminal_window");
-    let terminal: Terminal = builder.object("terminal").expect("Failed to get terminal");
-    let close_button: Button = builder
-        .object("close_button")
-        .expect("Failed to get close_button");
+    let window: adw::Window = extract_widget(&builder, "terminal_window");
+    let terminal: Terminal = extract_widget(&builder, "terminal");
+    let close_button: Button = extract_widget(&builder, "close_button");
 
     window.set_transient_for(Some(parent));
     window.set_title(Some(title));
@@ -127,17 +124,13 @@ pub fn show_terminal_dialog(parent: &Window, title: &str, command: &str, args: &
     terminal.connect_child_exited(move |_, status| {
         // Print exit message to terminal with improved formatting
         let exit_code = status;
-        let status_text = if exit_code == 0 {
-            "success"
-        } else {
-            "error"
-        };
+        let status_text = if exit_code == 0 { "success" } else { "error" };
         let message = format!(
             "\r\n[Process completed] Command exited with code {} ({})\r\n",
             exit_code, status_text
         );
         terminal_exit.feed(message.as_bytes());
-        
+
         // Enable close button and ensure it's blue
         close_button_clone.add_css_class("suggested-action");
         close_button_clone.set_sensitive(true);

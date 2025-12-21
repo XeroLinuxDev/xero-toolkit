@@ -1,6 +1,7 @@
 //! About dialog showing creator information and credits.
 
 use crate::core::package;
+use crate::ui::app::extract_widget;
 use gtk4::glib;
 use gtk4::prelude::*;
 use gtk4::{Builder, Button, Label, Window};
@@ -11,14 +12,10 @@ pub fn show_about_dialog(parent: &Window) {
     let builder = Builder::from_resource("/xyz/xerolinux/xero-toolkit/ui/dialogs/about_dialog.ui");
 
     // Get the dialog window
-    let dialog: Window = builder
-        .object("about_window")
-        .expect("Failed to get about_window");
+    let dialog: Window = extract_widget(&builder, "about_window");
 
     // Get the close button
-    let close_button: Button = builder
-        .object("close_button")
-        .expect("Failed to get close_button");
+    let close_button: Button = extract_widget(&builder, "close_button");
 
     // Get labels with links and set up link activation
     if let Some(darkxero_label) = builder.object::<Label>("darkxero_donate_label") {
