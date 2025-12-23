@@ -6,7 +6,8 @@
 use super::command::TaskStatus;
 use adw::prelude::*;
 use gtk4::{
-    Box as GtkBox, Button, Image, Label, ScrolledWindow, TextBuffer, TextView, ToggleButton, Window,
+    Box as GtkBox, Button, Image, Label, Revealer, ScrolledWindow, TextBuffer, TextView,
+    ToggleButton, Window,
 };
 
 /// Container for all task runner dialog widgets.
@@ -20,7 +21,7 @@ pub struct TaskRunnerWidgets {
     pub close_button: Button,
     pub task_items: Vec<TaskItem>,
     pub sidebar_toggle: ToggleButton,
-    pub split_view: adw::OverlaySplitView,
+    pub sidebar_revealer: Revealer,
     pub output_text_view: TextView,
     pub output_text_buffer: TextBuffer,
 }
@@ -37,7 +38,7 @@ impl TaskRunnerWidgets {
         close_button: Button,
         task_items: Vec<TaskItem>,
         sidebar_toggle: ToggleButton,
-        split_view: adw::OverlaySplitView,
+        sidebar_revealer: Revealer,
         output_text_view: TextView,
         output_text_buffer: TextBuffer,
     ) -> Self {
@@ -50,7 +51,7 @@ impl TaskRunnerWidgets {
             close_button,
             task_items,
             sidebar_toggle,
-            split_view,
+            sidebar_revealer,
             output_text_view,
             output_text_buffer,
         };
@@ -95,20 +96,20 @@ impl TaskRunnerWidgets {
         tag_table.add(&error_tag);
     }
 
-    /// Bind the sidebar toggle button to the split view.
+    /// Bind the sidebar toggle button to the revealer.
     pub fn setup_sidebar_toggle(&self) {
-        // Bind toggle button's active state to split view's show-sidebar
+        // Bind toggle button's active state to revealer's reveal-child
         self.sidebar_toggle
-            .bind_property("active", &self.split_view, "show-sidebar")
+            .bind_property("active", &self.sidebar_revealer, "reveal-child")
             .sync_create()
             .bidirectional()
             .build();
 
         // Update tooltip based on state
         let toggle = self.sidebar_toggle.clone();
-        self.split_view
-            .connect_show_sidebar_notify(move |split_view| {
-                let tooltip = if split_view.shows_sidebar() {
+        self.sidebar_revealer
+            .connect_reveal_child_notify(move |revealer| {
+                let tooltip = if revealer.reveals_child() {
                     "Hide command output"
                 } else {
                     "Show command output"
@@ -362,6 +363,6 @@ impl TaskRunnerWidgets {
     /// Initialize sidebar to collapsed state.
     pub fn init_sidebar_collapsed(&self) {
         self.sidebar_toggle.set_active(false);
-        self.split_view.set_show_sidebar(false);
+        self.sidebar_revealer.set_reveal_child(false);
     }
 }

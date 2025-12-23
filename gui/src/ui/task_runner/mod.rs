@@ -188,7 +188,7 @@ pub fn run(parent: &Window, commands: CommandSequence, title: &str) {
     let cancel_button: Button = extract_widget(&builder, "cancel_button");
     let close_button: Button = extract_widget(&builder, "close_button");
     let sidebar_toggle: ToggleButton = extract_widget(&builder, "sidebar_toggle_button");
-    let split_view: adw::OverlaySplitView = extract_widget(&builder, "split_view");
+    let sidebar_revealer: gtk4::Revealer = extract_widget(&builder, "sidebar_revealer");
     let output_text_view: gtk4::TextView = extract_widget(&builder, "output_text_view");
     let output_text_buffer = output_text_view.buffer();
 
@@ -223,7 +223,7 @@ pub fn run(parent: &Window, commands: CommandSequence, title: &str) {
         close_button.clone(),
         task_items,
         sidebar_toggle,
-        split_view,
+        sidebar_revealer,
         output_text_view,
         output_text_buffer,
     ));

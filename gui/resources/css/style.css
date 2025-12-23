@@ -82,3 +82,13 @@
     padding: 16px;
 }
 
+/* ============================================
+   Task Runner Sidebar Overlay
+   ============================================ */
+
+.sidebar {
+    background: @window_bg_color;
+    box-shadow: -4px 0 12px alpha(@window_fg_color, 0.15);
+    border-left: 1px solid alpha(@borders, 0.5);
+}
+
