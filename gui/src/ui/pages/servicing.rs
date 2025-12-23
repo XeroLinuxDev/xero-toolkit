@@ -18,43 +18,43 @@ use crate::ui::dialogs::selection::{
 };
 use crate::ui::dialogs::terminal;
 use crate::ui::task_runner::{self, Command, CommandSequence};
-use crate::ui::utils::{extract_widget, get_window_from_button};
+use crate::ui::utils::extract_widget;
 use gtk4::prelude::*;
 use gtk4::{ApplicationWindow, Builder};
 use log::info;
 
 /// Set up all button handlers for the servicing/system tweaks page
-pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder) {
-    setup_clr_pacman(page_builder);
-    setup_unlock_pacman(page_builder);
-    setup_plasma_x11(page_builder);
-    setup_vm_guest_utils(page_builder);
+pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    setup_clr_pacman(page_builder, window);
+    setup_unlock_pacman(page_builder, window);
+    setup_plasma_x11(page_builder, window);
+    setup_vm_guest_utils(page_builder, window);
     setup_waydroid_guide(page_builder);
-    setup_fix_gpgme(page_builder);
-    setup_fix_arch_keyring(page_builder);
-    setup_update_mirrorlist(page_builder);
-    setup_parallel_downloads(page_builder);
+    setup_fix_gpgme(page_builder, window);
+    setup_fix_arch_keyring(page_builder, window);
+    setup_update_mirrorlist(page_builder, window);
+    setup_parallel_downloads(page_builder, window);
 }
 
-fn setup_clr_pacman(page_builder: &Builder) {
+fn setup_clr_pacman(page_builder: &Builder, window: &ApplicationWindow) {
     let btn_clr_pacman = extract_widget::<gtk4::Button>(page_builder, "btn_clr_pacman");
-    btn_clr_pacman.connect_clicked(move |button| {
+    let window = window.clone();
+    btn_clr_pacman.connect_clicked(move |_| {
         info!("Servicing: Clear Pacman Cache button clicked");
-        if let Some(window) = get_window_from_button(button) {
-            // Use terminal dialog for interactive pacman cache clearing
-            terminal::show_terminal_dialog(
-                window.upcast_ref(),
-                "Clear Pacman Cache",
-                "pkexec",
-                &["pacman", "-Scc"],
-            );
-        }
+        // Use terminal dialog for interactive pacman cache clearing
+        terminal::show_terminal_dialog(
+            window.upcast_ref(),
+            "Clear Pacman Cache",
+            "pkexec",
+            &["pacman", "-Scc"],
+        );
     });
 }
 
-fn setup_unlock_pacman(page_builder: &Builder) {
+fn setup_unlock_pacman(page_builder: &Builder, window: &ApplicationWindow) {
     let btn_unlock_pacman = extract_widget::<gtk4::Button>(page_builder, "btn_unlock_pacman");
-    btn_unlock_pacman.connect_clicked(move |button| {
+    let window = window.clone();
+    btn_unlock_pacman.connect_clicked(move |_| {
         info!("Servicing: Unlock Pacman DB button clicked");
         let commands = CommandSequence::new()
             .then(
@@ -66,16 +66,14 @@ fn setup_unlock_pacman(page_builder: &Builder) {
                     .build(),
             )
             .build();
-        if let Some(window) = get_window_from_button(button) {
-            let window_ref = window.upcast_ref::<gtk4::Window>();
-            task_runner::run(window_ref, commands, "Unlock Pacman Database");
-        }
+        task_runner::run(window.upcast_ref(), commands, "Unlock Pacman Database");
     });
 }
 
-fn setup_plasma_x11(page_builder: &Builder) {
+fn setup_plasma_x11(page_builder: &Builder, window: &ApplicationWindow) {
     let btn_plasma_x11 = extract_widget::<gtk4::Button>(page_builder, "btn_plasma_x11");
-    btn_plasma_x11.connect_clicked(move |button| {
+    let window = window.clone();
+    btn_plasma_x11.connect_clicked(move |_| {
         info!("Servicing: Plasma X11 Session button clicked");
         let commands = CommandSequence::new()
             .then(
@@ -86,16 +84,14 @@ fn setup_plasma_x11(page_builder: &Builder) {
                     .build(),
             )
             .build();
-        if let Some(window) = get_window_from_button(button) {
-            let window_ref = window.upcast_ref::<gtk4::Window>();
-            task_runner::run(window_ref, commands, "Install KDE X11 Session");
-        }
+        task_runner::run(window.upcast_ref(), commands, "Install KDE X11 Session");
     });
 }
 
-fn setup_vm_guest_utils(page_builder: &Builder) {
+fn setup_vm_guest_utils(page_builder: &Builder, window: &ApplicationWindow) {
     let btn_vm_guest_utils = extract_widget::<gtk4::Button>(page_builder, "btn_vm_guest_utils");
-    btn_vm_guest_utils.connect_clicked(move |button| {
+    let window = window.clone();
+    btn_vm_guest_utils.connect_clicked(move |_| {
         info!("Servicing: VM Guest Utils button clicked");
         let output = std::process::Command::new("systemd-detect-virt").output();
         let mut commands = CommandSequence::new();
@@ -128,38 +124,23 @@ fn setup_vm_guest_utils(page_builder: &Builder) {
                         )
                     }
                     _ => {
-                        let widget = button.clone().upcast::<gtk4::Widget>();
-                        if let Some(window) = widget
-                            .root()
-                            .and_then(|r| r.downcast::<ApplicationWindow>().ok())
-                        {
-                            show_error(&window, "Unsupported or no virtualization detected.");
-                        }
+                        show_error(&window, "Unsupported or no virtualization detected.");
                         return;
                     }
                 }
             }
             _ => {
-                let widget = button.clone().upcast::<gtk4::Widget>();
-                if let Some(window) = widget
-                    .root()
-                    .and_then(|r| r.downcast::<ApplicationWindow>().ok())
-                {
-                    show_error(&window, "Failed to detect virtualization environment.");
-                }
+                show_error(&window, "Failed to detect virtualization environment.");
                 return;
             }
         }
 
         if !commands.is_empty() {
-            let widget = button.clone().upcast::<gtk4::Widget>();
-            if let Some(window) = widget
-                .root()
-                .and_then(|r| r.downcast::<ApplicationWindow>().ok())
-            {
-                let window_ref = window.upcast_ref::<gtk4::Window>();
-                task_runner::run(window_ref, commands.build(), "Install VM Guest Utilities");
-            }
+            task_runner::run(
+                window.upcast_ref(),
+                commands.build(),
+                "Install VM Guest Utilities",
+            );
         }
     });
 }
@@ -174,74 +155,70 @@ fn setup_waydroid_guide(page_builder: &Builder) {
     });
 }
 
-fn setup_fix_gpgme(page_builder: &Builder) {
+fn setup_fix_gpgme(page_builder: &Builder, window: &ApplicationWindow) {
     let btn_fix_gpgme = extract_widget::<gtk4::Button>(page_builder, "btn_fix_gpgme");
-    btn_fix_gpgme.connect_clicked(move |button| {
+    let window = window.clone();
+    btn_fix_gpgme.connect_clicked(move |_| {
         info!("Servicing: Fix GPGME Database button clicked");
-        if let Some(window) = get_window_from_button(button) {
-            // Use terminal dialog for interactive GPGME fix
-            terminal::show_terminal_dialog(
-                window.upcast_ref(),
-                "Fix GPGME Database",
-                "pkexec",
-                &["sh", "-c", "rm -rf /var/lib/pacman/sync && pacman -Syy"],
-            );
-        }
+        // Use terminal dialog for interactive GPGME fix
+        terminal::show_terminal_dialog(
+            window.upcast_ref(),
+            "Fix GPGME Database",
+            "pkexec",
+            &["sh", "-c", "rm -rf /var/lib/pacman/sync && pacman -Syy"],
+        );
     });
 }
 
-fn setup_fix_arch_keyring(page_builder: &Builder) {
+fn setup_fix_arch_keyring(page_builder: &Builder, window: &ApplicationWindow) {
     let btn_fix_arch_keyring = extract_widget::<gtk4::Button>(page_builder, "btn_fix_arch_keyring");
-    btn_fix_arch_keyring.connect_clicked(move |button| {
-            info!("Servicing: Fix Arch Keyring button clicked");
-            let commands = CommandSequence::new()
-                .then(Command::builder()
-                    .privileged()
-                    .program("rm")
-                    .args(&["-rf", "/etc/pacman.d/gnupg"])
-                    .description("Removing existing GnuPG keyring...")
-                    .build())
-                .then(Command::builder()
-                    .privileged()
-                    .program("pacman-key")
-                    .args(&["--init"])
-                    .description("Initializing new keyring...")
-                    .build())
-                .then(Command::builder()
-                    .privileged()
-                    .program("pacman-key")
-                    .args(&["--populate"])
-                    .description("Populating keyring...")
-                    .build())
-                .then(Command::builder()
-                    .privileged()
-                    .program("sh")
-                    .args(&["-c", "echo 'keyserver hkp://keyserver.ubuntu.com:80' >> /etc/pacman.d/gnupg/gpg.conf"])
-                    .description("Setting keyserver...")
-                    .build())
-                .then(Command::builder()
-                    .privileged()
-                    .program("pacman")
-                    .args(&["-Syy", "--noconfirm", "archlinux-keyring"])
-                    .description("Reinstalling Arch Linux keyring...")
-                    .build())
-                .build();
-            if let Some(window) = get_window_from_button(button) {
-                let window_ref = window.upcast_ref::<gtk4::Window>();
-                task_runner::run(window_ref, commands, "Fix GnuPG Keyring");
-            }
-        });
+    let window = window.clone();
+    btn_fix_arch_keyring.connect_clicked(move |_| {
+        info!("Servicing: Fix Arch Keyring button clicked");
+        let commands = CommandSequence::new()
+            .then(Command::builder()
+                .privileged()
+                .program("rm")
+                .args(&["-rf", "/etc/pacman.d/gnupg"])
+                .description("Removing existing GnuPG keyring...")
+                .build())
+            .then(Command::builder()
+                .privileged()
+                .program("pacman-key")
+                .args(&["--init"])
+                .description("Initializing new keyring...")
+                .build())
+            .then(Command::builder()
+                .privileged()
+                .program("pacman-key")
+                .args(&["--populate"])
+                .description("Populating keyring...")
+                .build())
+            .then(Command::builder()
+                .privileged()
+                .program("sh")
+                .args(&["-c", "echo 'keyserver hkp://keyserver.ubuntu.com:80' >> /etc/pacman.d/gnupg/gpg.conf"])
+                .description("Setting keyserver...")
+                .build())
+            .then(Command::builder()
+                .privileged()
+                .program("pacman")
+                .args(&["-Syy", "--noconfirm", "archlinux-keyring"])
+                .description("Reinstalling Arch Linux keyring...")
+                .build())
+            .build();
+        task_runner::run(window.upcast_ref(), commands, "Fix GnuPG Keyring");
+    });
 }
 
-fn setup_update_mirrorlist(page_builder: &Builder) {
+fn setup_update_mirrorlist(page_builder: &Builder, window: &ApplicationWindow) {
     let btn_update_mirrorlist =
         extract_widget::<gtk4::Button>(page_builder, "btn_update_mirrorlist");
-    btn_update_mirrorlist.connect_clicked(move |button| {
-            info!("Servicing: Update Mirrorlist button clicked");            let widget = button.clone().upcast::<gtk4::Widget>();
-            let window = widget.root().and_then(|r| r.downcast::<ApplicationWindow>().ok());
-            if let Some(window) = window {
-                let window_clone = window.clone();
-                let window_ref = window.upcast_ref::<gtk4::Window>();
+    let window = window.clone();
+    let window_clone = window.clone();
+    btn_update_mirrorlist.connect_clicked(move |_| {
+        info!("Servicing: Update Mirrorlist button clicked");
+        let window_ref = window.upcast_ref();
 
                 let rate_mirrors_installed = core::is_package_installed("rate-mirrors");
                 let config = SelectionDialogConfig::new(
@@ -256,6 +233,7 @@ fn setup_update_mirrorlist(page_builder: &Builder) {
                 ))
                 .confirm_label("Update");
 
+                let window_for_closure = window_clone.clone();
                 show_selection_dialog(window_ref, config, move |selected_ids| {
                     let mut commands = CommandSequence::new();
 
@@ -284,27 +262,24 @@ fn setup_update_mirrorlist(page_builder: &Builder) {
                     }
 
                     if !commands.is_empty() {
-                        let window_ref2 = window_clone.upcast_ref::<gtk4::Window>();
-                        task_runner::run(window_ref2, commands.build(), "Update System Mirrorlist");
+                        task_runner::run(window_for_closure.upcast_ref(), commands.build(), "Update System Mirrorlist");
                     }
                 });
-            }
-        });
+    });
 }
 
-fn setup_parallel_downloads(page_builder: &Builder) {
+fn setup_parallel_downloads(page_builder: &Builder, window: &ApplicationWindow) {
     let btn_parallel_downloads =
         extract_widget::<gtk4::Button>(page_builder, "btn_parallel_downloads");
-    btn_parallel_downloads.connect_clicked(move |button| {
+    let window = window.clone();
+    btn_parallel_downloads.connect_clicked(move |_| {
         info!("Servicing: Change Parallel Downloads button clicked");
-        if let Some(window) = get_window_from_button(button) {
-            // Use terminal dialog for interactive pmpd tool
-            terminal::show_terminal_dialog(
-                window.upcast_ref(),
-                "Change Parallel Downloads",
-                "pkexec",
-                &["pmpd"],
-            );
-        }
+        // Use terminal dialog for interactive pmpd tool
+        terminal::show_terminal_dialog(
+            window.upcast_ref(),
+            "Change Parallel Downloads",
+            "pkexec",
+            &["pmpd"],
+        );
     });
 }

@@ -12,29 +12,26 @@ use crate::ui::dialogs::selection::{
     show_selection_dialog, SelectionDialogConfig, SelectionOption,
 };
 use crate::ui::task_runner::{self, Command, CommandSequence};
-use crate::ui::utils::{extract_widget, get_window_from_button};
+use crate::ui::utils::extract_widget;
 use gtk4::prelude::*;
-use gtk4::{Builder, Button};
+use gtk4::{ApplicationWindow, Builder, Button};
 use log::info;
 
 /// Set up all button handlers for the containers/VMs page.
-pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder) {
-    setup_docker(page_builder);
-    setup_podman(page_builder);
-    setup_vbox(page_builder);
-    setup_distrobox(page_builder);
-    setup_kvm(page_builder);
+pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    setup_docker(page_builder, window);
+    setup_podman(page_builder, window);
+    setup_vbox(page_builder, window);
+    setup_distrobox(page_builder, window);
+    setup_kvm(page_builder, window);
 }
 
-fn setup_docker(builder: &Builder) {
+fn setup_docker(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_docker");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("Docker button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let user = std::env::var("USER").unwrap_or_else(|_| "user".to_string());
 
@@ -83,17 +80,12 @@ fn setup_docker(builder: &Builder) {
     });
 }
 
-fn setup_podman(builder: &Builder) {
+fn setup_podman(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_podman");
-
-    button.connect_clicked(move |btn| {
+    let window = window.clone();
+    let window_clone = window.clone();
+    button.connect_clicked(move |_| {
         info!("Podman button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
-
-        let window_clone = window.clone();
 
         let config = SelectionDialogConfig::new(
             "Podman Installation",
@@ -107,6 +99,7 @@ fn setup_podman(builder: &Builder) {
         ))
         .confirm_label("Install");
 
+        let window_for_closure = window_clone.clone();
         show_selection_dialog(window.upcast_ref(), config, move |selected| {
             let mut commands = CommandSequence::new()
                 .then(
@@ -142,21 +135,22 @@ fn setup_podman(builder: &Builder) {
             }
 
             if !commands.is_empty() {
-                task_runner::run(window_clone.upcast_ref(), commands.build(), "Podman Setup");
+                task_runner::run(
+                    window_for_closure.upcast_ref(),
+                    commands.build(),
+                    "Podman Setup",
+                );
             }
         });
     });
 }
 
-fn setup_vbox(builder: &Builder) {
+fn setup_vbox(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_vbox");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("VirtualBox button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let commands = CommandSequence::new()
             .then(
@@ -172,15 +166,12 @@ fn setup_vbox(builder: &Builder) {
     });
 }
 
-fn setup_distrobox(builder: &Builder) {
+fn setup_distrobox(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_distrobox");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("DistroBox button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let commands = CommandSequence::new()
             .then(
@@ -204,15 +195,12 @@ fn setup_distrobox(builder: &Builder) {
     });
 }
 
-fn setup_kvm(builder: &Builder) {
+fn setup_kvm(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_kvm");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("KVM button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let mut commands = CommandSequence::new();
 

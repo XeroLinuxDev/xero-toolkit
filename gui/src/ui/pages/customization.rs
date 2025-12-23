@@ -8,29 +8,26 @@
 //! - Layan GTK4 patch
 
 use crate::ui::task_runner::{self, Command, CommandSequence};
-use crate::ui::utils::{extract_widget, get_window_from_button};
+use crate::ui::utils::extract_widget;
 use gtk4::prelude::*;
-use gtk4::{Builder, Button};
+use gtk4::{ApplicationWindow, Builder, Button};
 use log::info;
 
 /// Set up all button handlers for the customization page.
-pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder) {
-    setup_zsh_aio(page_builder);
-    setup_save_desktop(page_builder);
-    setup_grub_theme(page_builder);
-    setup_wallpapers(page_builder);
-    setup_layan_patch(page_builder);
+pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    setup_zsh_aio(page_builder, window);
+    setup_save_desktop(page_builder, window);
+    setup_grub_theme(page_builder, window);
+    setup_wallpapers(page_builder, window);
+    setup_layan_patch(page_builder, window);
 }
 
-fn setup_zsh_aio(builder: &Builder) {
+fn setup_zsh_aio(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_zsh_aio");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("ZSH AiO button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let home = std::env::var("HOME").unwrap_or_default();
         let user = std::env::var("USER").unwrap_or_default();
@@ -147,15 +144,12 @@ fn setup_zsh_aio(builder: &Builder) {
     });
 }
 
-fn setup_save_desktop(builder: &Builder) {
+fn setup_save_desktop(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_save_desktop");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("Save Desktop Tool button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let commands = CommandSequence::new()
             .then(
@@ -176,15 +170,12 @@ fn setup_save_desktop(builder: &Builder) {
     });
 }
 
-fn setup_grub_theme(builder: &Builder) {
+fn setup_grub_theme(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_grub_theme");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("GRUB Theme button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let home = std::env::var("HOME").unwrap_or_default();
 
@@ -229,15 +220,12 @@ fn setup_grub_theme(builder: &Builder) {
     });
 }
 
-fn setup_wallpapers(builder: &Builder) {
+fn setup_wallpapers(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_wallpapers");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("Plasma Wallpapers button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let commands = CommandSequence::new()
             .then(
@@ -257,15 +245,12 @@ fn setup_wallpapers(builder: &Builder) {
     });
 }
 
-fn setup_layan_patch(builder: &Builder) {
+fn setup_layan_patch(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_layan_patch");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("Layan GTK4 Patch button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let home = std::env::var("HOME").unwrap_or_default();
 

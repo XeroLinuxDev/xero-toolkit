@@ -9,25 +9,24 @@ use crate::ui::dialogs::selection::{
     show_selection_dialog, SelectionDialogConfig, SelectionOption,
 };
 use crate::ui::task_runner::{self, Command, CommandSequence};
-use crate::ui::utils::{extract_widget, get_window_from_button};
+use crate::ui::utils::extract_widget;
 use gtk4::prelude::*;
 use gtk4::{ApplicationWindow, Builder};
 use log::info;
 
 /// Set up all button handlers for the multimedia tools page
-pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder) {
-    setup_obs_studio_aio(page_builder);
-    setup_jellyfin(page_builder);
+pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    setup_obs_studio_aio(page_builder, window);
+    setup_jellyfin(page_builder, window);
 }
 
-fn setup_obs_studio_aio(page_builder: &Builder) {
+fn setup_obs_studio_aio(page_builder: &Builder, window: &ApplicationWindow) {
     let btn_obs_studio_aio = extract_widget::<gtk4::Button>(page_builder, "btn_obs_studio_aio");
-    btn_obs_studio_aio.connect_clicked(move |button| {
-            info!("Multimedia tools: OBS-Studio AiO button clicked");            let window = get_window_from_button(button);
-
-            if let Some(window) = window {
-                let window_clone = window.clone();
-                let window_ref = window.upcast_ref::<gtk4::Window>();
+    let window = window.clone();
+    let window_clone = window.clone();
+    btn_obs_studio_aio.connect_clicked(move |_| {
+        info!("Multimedia tools: OBS-Studio AiO button clicked");
+        let window_ref = window.upcast_ref();
 
                 let obs_installed = core::is_flatpak_installed("com.obsproject.Studio");
                 let wayland_hotkeys_installed =
@@ -102,6 +101,7 @@ fn setup_obs_studio_aio(page_builder: &Builder) {
                 ))
                 .confirm_label("Install");
 
+                let window_for_closure = window_clone.clone();
                 show_selection_dialog(window_ref, config, move |selected_ids| {
                     let mut commands = CommandSequence::new();
 
@@ -202,17 +202,16 @@ fn setup_obs_studio_aio(page_builder: &Builder) {
                     }
 
                     if !commands.is_empty() {
-                        let window_ref2 = window_clone.upcast_ref::<gtk4::Window>();
-                        task_runner::run(window_ref2, commands.build(), "OBS-Studio Setup");
+                        task_runner::run(window_for_closure.upcast_ref(), commands.build(), "OBS-Studio Setup");
                     }
                 });
-            }
-        });
+    });
 }
 
-fn setup_jellyfin(page_builder: &Builder) {
+fn setup_jellyfin(page_builder: &Builder, window: &ApplicationWindow) {
     let btn_jellyfin = extract_widget::<gtk4::Button>(page_builder, "btn_jellyfin");
-    btn_jellyfin.connect_clicked(move |button| {
+    let window = window.clone();
+    btn_jellyfin.connect_clicked(move |_| {
         info!("Multimedia tools: Jellyfin button clicked");
         let commands = CommandSequence::new()
             .then(
@@ -239,13 +238,6 @@ fn setup_jellyfin(page_builder: &Builder) {
             )
             .build();
 
-        let widget = button.clone().upcast::<gtk4::Widget>();
-        let window = widget
-            .root()
-            .and_then(|r| r.downcast::<ApplicationWindow>().ok());
-        if let Some(window) = window {
-            let window_ref = window.upcast_ref::<gtk4::Window>();
-            task_runner::run(window_ref, commands, "Jellyfin Server Setup");
-        }
+        task_runner::run(window.upcast_ref(), commands, "Jellyfin Server Setup");
     });
 }

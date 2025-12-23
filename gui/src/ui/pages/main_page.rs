@@ -14,30 +14,27 @@ use crate::ui::dialogs::selection::{
 };
 use crate::ui::dialogs::terminal;
 use crate::ui::task_runner::{self, Command, CommandSequence};
-use crate::ui::utils::{extract_widget, get_window_from_button};
+use crate::ui::utils::extract_widget;
 use gtk4::prelude::*;
-use gtk4::{Builder, Button};
+use gtk4::{ApplicationWindow, Builder, Button};
 use log::info;
 
 /// Set up all button handlers for the main page.
-pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder) {
-    setup_update_system(page_builder);
-    setup_pkg_manager(page_builder);
-    setup_download_arch_iso(page_builder);
-    setup_install_nix(page_builder);
+pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    setup_update_system(page_builder, window);
+    setup_pkg_manager(page_builder, window);
+    setup_download_arch_iso(page_builder, window);
+    setup_install_nix(page_builder, window);
     setup_external_links(page_builder);
 }
 
 /// Setup system update button.
-fn setup_update_system(builder: &Builder) {
+fn setup_update_system(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_update_system");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("Update System button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         // Use terminal dialog for interactive system update
         terminal::show_terminal_dialog(
@@ -50,17 +47,13 @@ fn setup_update_system(builder: &Builder) {
 }
 
 /// Setup package manager GUI button.
-fn setup_pkg_manager(builder: &Builder) {
+fn setup_pkg_manager(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_pkg_manager");
+    let window = window.clone();
+    let window_clone = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("PKG Manager GUI button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
-
-        let window_clone = window.clone();
 
         // Check which package managers are already installed
         let config = SelectionDialogConfig::new(
@@ -105,12 +98,13 @@ fn setup_pkg_manager(builder: &Builder) {
         ))
         .confirm_label("Install");
 
+        let window_for_closure = window_clone.clone();
         show_selection_dialog(window.upcast_ref(), config, move |selected| {
             let commands = build_pkg_manager_commands(&selected);
 
             if !commands.is_empty() {
                 task_runner::run(
-                    window_clone.upcast_ref(),
+                    window_for_closure.upcast_ref(),
                     commands.build(),
                     "Package Manager GUI Installation",
                 );
@@ -190,32 +184,24 @@ fn build_pkg_manager_commands(selected: &[String]) -> CommandSequence {
 }
 
 /// Setup download Arch ISO button.
-fn setup_download_arch_iso(builder: &Builder) {
+fn setup_download_arch_iso(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_download_arch_iso");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("Download Arch ISO button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         show_download_dialog(window.upcast_ref());
     });
 }
 
 /// Setup Nix package manager installation button.
-fn setup_install_nix(builder: &Builder) {
+fn setup_install_nix(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_install_nix");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("Install Nix button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
-
-        let window_clone = window.clone();
 
         // Build Nix installation command sequence
         let commands = CommandSequence::new()
@@ -344,7 +330,7 @@ fn setup_install_nix(builder: &Builder) {
             .build();
 
         task_runner::run(
-            window_clone.upcast_ref(),
+            window.upcast_ref(),
             commands,
             "Install Nix Package Manager",
         );

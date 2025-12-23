@@ -5,7 +5,7 @@
 
 use crate::ui::pages;
 use gtk4::prelude::*;
-use gtk4::{Box as GtkBox, Builder, Button, Image, Label, Orientation, Stack};
+use gtk4::{ApplicationWindow, Box as GtkBox, Builder, Button, Image, Label, Orientation, Stack};
 use log::{info, warn};
 
 /// Configuration for a single page in the application.
@@ -19,7 +19,7 @@ pub struct PageConfig {
     /// Resource path to the UI file
     pub ui_resource: &'static str,
     /// Function to set up event handlers for the page
-    pub setup_handler: Option<fn(&Builder, &Builder)>,
+    pub setup_handler: Option<fn(&Builder, &Builder, &ApplicationWindow)>,
 }
 
 /// Central list of all pages in the application.
@@ -207,6 +207,9 @@ fn create_dynamic_stack(main_builder: &Builder) -> Stack {
 
 /// Create a page widget from PageConfig.
 fn create_page_from_config(config: &PageConfig, main_builder: &Builder) -> anyhow::Result<GtkBox> {
+    use crate::ui::utils::extract_widget;
+    use gtk4::ApplicationWindow;
+
     let page_builder = Builder::from_resource(config.ui_resource);
 
     let page_widget: gtk4::Widget = page_builder
@@ -224,9 +227,12 @@ fn create_page_from_config(config: &PageConfig, main_builder: &Builder) -> anyho
     container.set_vexpand(true);
     container.append(&page_widget);
 
+    // Extract main window from builder
+    let window: ApplicationWindow = extract_widget(main_builder, "app_window");
+
     // Call setup handler if provided
     if let Some(setup_fn) = config.setup_handler {
-        setup_fn(&page_builder, main_builder);
+        setup_fn(&page_builder, main_builder, &window);
     }
 
     Ok(container)

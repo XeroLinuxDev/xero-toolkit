@@ -5,26 +5,23 @@
 //! - ASUS ROG laptop tools
 
 use crate::ui::task_runner::{self, Command, CommandSequence};
-use crate::ui::utils::{extract_widget, get_window_from_button};
+use crate::ui::utils::extract_widget;
 use gtk4::prelude::*;
-use gtk4::{Builder, Button};
+use gtk4::{ApplicationWindow, Builder, Button};
 use log::info;
 
 /// Set up all button handlers for the drivers page.
-pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder) {
-    setup_tailscale(page_builder);
-    setup_asus_rog(page_builder);
+pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    setup_tailscale(page_builder, window);
+    setup_asus_rog(page_builder, window);
 }
 
-fn setup_tailscale(builder: &Builder) {
+fn setup_tailscale(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_tailscale");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("Tailscale VPN button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let commands = CommandSequence::new()
             .then(Command::builder()
@@ -42,15 +39,12 @@ fn setup_tailscale(builder: &Builder) {
     });
 }
 
-fn setup_asus_rog(builder: &Builder) {
+fn setup_asus_rog(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_asus_rog");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("ASUS ROG Tools button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let commands = CommandSequence::new()
             .then(

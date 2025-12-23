@@ -7,30 +7,27 @@
 //! - Game launchers (Lutris, Heroic, Bottles)
 
 use crate::ui::task_runner::{self, Command, CommandSequence};
-use crate::ui::utils::{extract_widget, get_window_from_button};
+use crate::ui::utils::extract_widget;
 use gtk4::prelude::*;
-use gtk4::{Builder, Button};
+use gtk4::{ApplicationWindow, Builder, Button};
 use log::info;
 
 /// Set up all button handlers for the gaming tools page.
-pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder) {
-    setup_steam_aio(page_builder);
-    setup_gamescope_cfg(page_builder);
-    setup_lact_oc(page_builder);
-    setup_lutris(page_builder);
-    setup_heroic(page_builder);
-    setup_bottles(page_builder);
+pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    setup_steam_aio(page_builder, window);
+    setup_gamescope_cfg(page_builder, window);
+    setup_lact_oc(page_builder, window);
+    setup_lutris(page_builder, window);
+    setup_heroic(page_builder, window);
+    setup_bottles(page_builder, window);
 }
 
-fn setup_steam_aio(builder: &Builder) {
+fn setup_steam_aio(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_steam_aio");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("Steam AiO button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let commands = CommandSequence::new()
             .then(
@@ -114,7 +111,7 @@ fn setup_steam_aio(builder: &Builder) {
     });
 }
 
-fn setup_gamescope_cfg(builder: &Builder) {
+fn setup_gamescope_cfg(builder: &Builder, _window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_gamescope_cfg");
 
     button.connect_clicked(|_| {
@@ -125,15 +122,12 @@ fn setup_gamescope_cfg(builder: &Builder) {
     });
 }
 
-fn setup_lact_oc(builder: &Builder) {
+fn setup_lact_oc(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_lact_oc");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("LACT OC button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let commands = CommandSequence::new()
             .then(
@@ -157,15 +151,12 @@ fn setup_lact_oc(builder: &Builder) {
     });
 }
 
-fn setup_lutris(builder: &Builder) {
+fn setup_lutris(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_lutris");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("Lutris button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let commands = CommandSequence::new()
             .then(
@@ -188,15 +179,12 @@ fn setup_lutris(builder: &Builder) {
     });
 }
 
-fn setup_heroic(builder: &Builder) {
+fn setup_heroic(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_heroic");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("Heroic button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let commands = CommandSequence::new()
             .then(
@@ -223,15 +211,12 @@ fn setup_heroic(builder: &Builder) {
     });
 }
 
-fn setup_bottles(builder: &Builder) {
+fn setup_bottles(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_bottles");
+    let window = window.clone();
 
-    button.connect_clicked(move |btn| {
+    button.connect_clicked(move |_| {
         info!("Bottles button clicked");
-
-        let Some(window) = get_window_from_button(btn) else {
-            return;
-        };
 
         let commands = CommandSequence::new()
             .then(
