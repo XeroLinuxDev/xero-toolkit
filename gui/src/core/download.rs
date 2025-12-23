@@ -106,7 +106,7 @@ where
     let max_samples = 20; // Average over last 20 samples (2 seconds)
 
     while let Some(chunk_result) = stream.next().await {
-        // Check if cancelled
+        // Check if canceled
         if cancel_flag.load(Ordering::Relaxed) {
             info!("Download cancelled");
             drop(file);
@@ -182,7 +182,7 @@ where
     Ok(())
 }
 
-/// Format bytes to human readable string
+/// Format bytes to human-readable string
 pub fn format_bytes(bytes: u64) -> String {
     const UNITS: &[&str] = &["B", "KB", "MB", "GB", "TB"];
     let mut size = bytes as f64;
@@ -200,7 +200,7 @@ pub fn format_bytes(bytes: u64) -> String {
     }
 }
 
-/// Format speed to human readable string
+/// Format speed to human-readable string
 pub fn format_speed(bytes_per_sec: f64) -> String {
     format!("{}/s", format_bytes(bytes_per_sec as u64))
 }

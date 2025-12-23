@@ -182,7 +182,7 @@ fn setup_grub_theme(builder: &Builder, window: &ApplicationWindow) {
         let home = crate::config::env::get().home.clone();
         let repo_path = format!("{}/xero-grubs", home);
 
-        // Run everything in terminal - clone if needed, then run interactive install script
+        // Run everything in terminal - clone if needed, then run interactive installation script
         let install_command = format!(
             "if [ ! -d \"{}\" ]; then git clone --depth 1 https://github.com/xerolinux/xero-grubs \"{}\"; fi && cd \"{}\" && pkexec ./install.sh",
             repo_path, repo_path, repo_path

@@ -251,18 +251,19 @@ where
     };
 
     // Connect selection change handlers
-    for (_, checkbox) in checkboxes.borrow().iter() {
+    let connect_toggle_handler = |button: &CheckButton| {
         let update = update_confirm_button.clone();
-        checkbox.connect_toggled(move |_| {
+        button.connect_toggled(move |_| {
             update();
         });
+    };
+
+    for (_, checkbox) in checkboxes.borrow().iter() {
+        connect_toggle_handler(checkbox);
     }
 
     for (_, radio) in radio_buttons.borrow().iter() {
-        let update = update_confirm_button.clone();
-        radio.connect_toggled(move |_| {
-            update();
-        });
+        connect_toggle_handler(radio);
     }
 
     // Confirm button - collect selected options and call callback
@@ -270,18 +271,20 @@ where
     let checkboxes_clone = checkboxes.clone();
     let radio_buttons_clone = radio_buttons.clone();
     confirm_button.connect_clicked(move |_| {
+        let collect_selected = |(id, button): &(String, CheckButton)| {
+            (button.is_active() && button.is_sensitive()).then_some(id.clone())
+        };
+
         let selected: Vec<String> = match selection_type {
             SelectionType::Multi => checkboxes_clone
                 .borrow()
                 .iter()
-                .filter(|(_, checkbox)| checkbox.is_active() && checkbox.is_sensitive())
-                .map(|(id, _)| id.clone())
+                .filter_map(collect_selected)
                 .collect(),
             SelectionType::Single => radio_buttons_clone
                 .borrow()
                 .iter()
-                .filter(|(_, radio)| radio.is_active() && radio.is_sensitive())
-                .map(|(id, _)| id.clone())
+                .filter_map(collect_selected)
                 .collect(),
         };
 

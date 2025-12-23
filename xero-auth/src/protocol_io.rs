@@ -7,7 +7,7 @@ use rkyv::ser::allocator::ArenaHandle;
 use rkyv::util::AlignedVec;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
-/// Write an rkyv-serialized message to a writer.
+/// Write a rkyv-serialized message to a writer.
 ///
 /// The format is: [8-byte length (u64, little-endian)][message bytes]
 pub async fn write_message<W, M>(writer: &mut W, message: &M) -> Result<()>

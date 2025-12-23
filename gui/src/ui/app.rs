@@ -18,7 +18,7 @@ pub fn setup_application_ui(app: &Application) {
 
     setup_resources_and_theme();
 
-    let builder = Builder::from_resource(crate::config::resources::MAIN_UI);
+    let builder = Builder::from_resource(config::resources::MAIN_UI);
     let window = create_main_window(app, &builder);
 
     window.present();
@@ -76,11 +76,11 @@ fn setup_resources_and_theme() {
         let theme = gtk4::IconTheme::for_display(&display);
         // Don't inherit system icon themes
         theme.set_search_path(&[]);
-        theme.add_resource_path(crate::config::resources::ICONS);
+        theme.add_resource_path(config::resources::ICONS);
         info!("Icon theme paths configured");
 
         let css_provider = CssProvider::new();
-        css_provider.load_from_resource(crate::config::resources::CSS);
+        css_provider.load_from_resource(config::resources::CSS);
         gtk4::style_context_add_provider_for_display(
             &display,
             &css_provider,

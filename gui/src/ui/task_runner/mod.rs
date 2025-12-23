@@ -123,7 +123,7 @@ impl CommandSequence {
 /// Message displayed when waiting for current command to finish after cancellation.
 pub(super) const CANCEL_WAITING_MESSAGE: &str = "Waiting for current command to finish...";
 
-/// Message displayed when operation is cancelled.
+/// Message displayed when operation is canceled.
 pub(super) const CANCELLED_MESSAGE: &str = "Operation cancelled by user";
 
 /// Message displayed when all operations complete successfully.

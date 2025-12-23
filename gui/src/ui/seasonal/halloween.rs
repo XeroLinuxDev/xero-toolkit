@@ -139,7 +139,7 @@ impl Bat {
             velocity_x: direction.cos() * speed,
             velocity_y: direction.sin() * speed,
             flap_phase: rng.f64() * 2.0 * PI,
-            flap_speed: (rng.f64() * 5.0 + 10.0),
+            flap_speed: rng.f64() * 5.0 + 10.0,
             color_offset: rng.f64() * 0.1,
         }
     }

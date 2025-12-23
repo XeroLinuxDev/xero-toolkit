@@ -186,8 +186,8 @@ fn create_dynamic_stack(main_builder: &Builder) -> Stack {
             Err(e) => {
                 warn!("Failed to load page '{}': {}", page_config.id, e);
                 // Create a fallback page
-                let fallback = GtkBox::new(gtk4::Orientation::Vertical, 0);
-                let label = gtk4::Label::builder()
+                let fallback = GtkBox::new(Orientation::Vertical, 0);
+                let label = Label::builder()
                     .label(format!("{} page content not available", page_config.title))
                     .build();
                 fallback.append(&label);
@@ -222,7 +222,7 @@ fn create_page_from_config(config: &PageConfig, main_builder: &Builder) -> anyho
             )
         })?;
 
-    let container = GtkBox::new(gtk4::Orientation::Vertical, 0);
+    let container = GtkBox::new(Orientation::Vertical, 0);
     container.set_hexpand(true);
     container.set_vexpand(true);
     container.append(&page_widget);

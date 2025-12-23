@@ -66,9 +66,9 @@ impl RunningContext {
         // Clear current process
         self.current_process.borrow_mut().take();
 
-        // Check if cancelled
+        // Check if canceled
         if *self.cancelled.borrow() {
-            // Mark the current task as cancelled
+            // Mark the current task as canceled
             self.widgets
                 .update_task_status(self.index, TaskStatus::Cancelled);
             finalize_execution(&self.widgets, false, super::CANCELLED_MESSAGE);
@@ -114,7 +114,7 @@ pub fn execute_commands(
     current_process: Rc<RefCell<Option<gio::Subprocess>>>,
 ) {
     if *cancelled.borrow() {
-        // If there's a current task being processed, mark it as cancelled
+        // If there's a current task being processed, mark it as canceled
         if index < commands.len() {
             widgets.update_task_status(index, TaskStatus::Cancelled);
         }
@@ -186,11 +186,11 @@ pub fn execute_commands(
     };
 
     // Store child process for cancellation
-    let child_arc = Arc::new(std::sync::Mutex::new(Some(child)));
+    use std::sync::Mutex;
+    let child_arc = Arc::new(Mutex::new(Some(child)));
     *current_process.borrow_mut() = None; // Clear gio subprocess reference
 
     // Set up result storage
-    use std::sync::Mutex;
     let result_arc: Arc<Mutex<Option<CommandResult>>> = Arc::new(Mutex::new(None));
 
     // Set up real-time output streaming using channels
@@ -364,7 +364,7 @@ fn resolve_command(command: &Command) -> Result<(String, Vec<String>), String> {
 /// Stop the daemon if needed.
 fn stop_daemon_if_needed() {
     let rt = tokio::runtime::Runtime::new().unwrap();
-    if let Err(e) = rt.block_on(crate::core::daemon::stop_daemon()) {
+    if let Err(e) = rt.block_on(core::daemon::stop_daemon()) {
         error!("Failed to stop daemon: {}", e);
     }
 }
