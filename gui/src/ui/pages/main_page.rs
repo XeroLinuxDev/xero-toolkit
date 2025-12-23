@@ -211,137 +211,14 @@ fn setup_install_nix(builder: &Builder, window: &ApplicationWindow) {
             "Experimental Feature Warning",
             move || {
                 info!("User confirmed Nix installation after warning");
-
-                // Build Nix installation command sequence
-                let commands = CommandSequence::new()
-                    .then(
-                        Command::builder()
-                            .privileged()
-                            .program("pacman")
-                            .args(&["-Sy", "--noconfirm", "curl", "xz"])
-                            .description("Installing basic dependencies (curl, xz)...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .normal()
-                            .program("bash")
-                            .args(&[
-                                "-c",
-                                "rm -rf ~/.nix-profile ~/.nix-defexpr ~/.nix-channels ~/.config/nix",
-                            ])
-                            .description("Removing previous Nix installation remnants...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .normal()
-                            .program("curl")
-                            .args(&["-L", "https://nixos.org/nix/install", "-o", "/tmp/nix-install.sh"])
-                            .description("Downloading Nix installer...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .normal()
-                            .program("bash")
-                            .args(&["/tmp/nix-install.sh", "--daemon"])
-                            .description("Running Nix installer in daemon mode...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .privileged()
-                            .program("systemctl")
-                            .args(&["daemon-reexec"])
-                            .description("Reloading systemd daemon...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .privileged()
-                            .program("systemctl")
-                            .args(&["daemon-reload"])
-                            .description("Reloading systemd configuration...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .privileged()
-                            .program("systemctl")
-                            .args(&["enable", "--now", "nix-daemon.service"])
-                            .description("Enabling and starting nix-daemon service...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .privileged()
-                            .program("mkdir")
-                            .args(&["-p", "/etc/nix"])
-                            .description("Creating /etc/nix directory...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .privileged()
-                            .program("bash")
-                            .args(&[
-                                "-c",
-                                "echo 'experimental-features = nix-command' | tee /etc/nix/nix.conf",
-                            ])
-                            .description("Configuring Nix experimental features...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .privileged()
-                            .program("bash")
-                            .args(&[
-                                "-c",
-                                "if ! grep -qF '. /etc/profile.d/nix.sh' /etc/profile; then echo '. /etc/profile.d/nix.sh' | tee -a /etc/profile; fi",
-                            ])
-                            .description("Configuring Bash shell integration...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .privileged()
-                            .program("bash")
-                            .args(&[
-                                "-c",
-                                "if command -v zsh >/dev/null 2>&1 && [ -f /etc/zsh/zprofile ] && ! grep -qF '. /etc/profile.d/nix.sh' /etc/zsh/zprofile; then echo '. /etc/profile.d/nix.sh' | tee -a /etc/zsh/zprofile; fi",
-                            ])
-                            .description("Configuring Zsh shell integration...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .normal()
-                            .program("bash")
-                            .args(&[
-                                "-c",
-                                r##"if [ -f ~/.bashrc ]; then { echo ""; echo "# Nix aliases"; echo "nstall() { nix-env -iA \"nixpkgs.\$1\"; }"; echo "nsearch() { nix-env -qaP \"\$@\" 2>&1 | grep -vE '^(evaluation warning:|warning: name collision)'; }"; } >> ~/.bashrc; fi"##,
-                            ])
-                            .description("Adding Nix aliases to .bashrc...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .normal()
-                            .program("bash")
-                            .args(&[
-                                "-c",
-                                r##"if [ -f ~/.zshrc ]; then { echo ""; echo "# Nix aliases"; echo "nstall() { nix-env -iA \"nixpkgs.\$1\"; }"; echo "nsearch() { nix-env -qaP \"\$@\" 2>&1 | grep -vE '^(evaluation warning:|warning: name collision)'; }"; } >> ~/.zshrc; fi"##,
-                            ])
-                            .description("Adding Nix aliases to .zshrc...")
-                            .build(),
-                    )
-                    .build();
-
-                task_runner::run(
+                
+                // Use the official Nix installation script as recommended
+                // Reference: https://itsfoss.gitlab.io/post/how-to-install-nix-package-manager-in-linux/
+                terminal::show_terminal_dialog(
                     window_clone.upcast_ref(),
-                    commands,
                     "Install Nix Package Manager",
+                    "sh",
+                    &["-c", "sh <(curl -L https://nixos.org/install-nix)"],
                 );
             },
         );
