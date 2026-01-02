@@ -20,6 +20,7 @@ pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &
     setup_lutris(page_builder, window);
     setup_heroic(page_builder, window);
     setup_bottles(page_builder, window);
+    setup_controller(page_builder, window);
 }
 
 fn setup_steam_aio(builder: &Builder, window: &ApplicationWindow) {
@@ -238,3 +239,34 @@ fn setup_bottles(builder: &Builder, window: &ApplicationWindow) {
         task_runner::run(window.upcast_ref(), commands, "Bottles Installation");
     });
 }
+
+fn setup_controller(builder: &Builder, window: &ApplicationWindow) {
+    let button = extract_widget::<Button>(builder, "btn_controller");
+    let window = window.clone();
+
+    button.connect_clicked(move |_| {
+        info!("Controller Tools button clicked");
+
+        let commands = CommandSequence::new()
+            .then(
+                Command::builder()
+                    .aur()
+                    .args(&[
+                        "-S",
+                        "--noconfirm",
+                        "--needed",
+                        "gamepad-tool-bin",
+                        "sc-controller",
+                        "xone-dkms-git",
+                        "dualsensectl-git",
+                        "xone-dongle-firmware",
+                    ])
+                    .description("Installing controller tools and drivers...")
+                    .build(),
+            )
+            .build();
+
+        task_runner::run(window.upcast_ref(), commands, "Controller Tools Installation");
+    });
+}
+

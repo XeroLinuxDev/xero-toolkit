@@ -25,6 +25,8 @@ pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &
     setup_fingerprint(page_builder, window);
     setup_zenergy(page_builder, window);
     setup_nvidia_legacy(page_builder, window);
+    setup_rocm(page_builder, window);
+    setup_cuda(page_builder, window);
 }
 
 fn setup_tailscale(builder: &Builder, window: &ApplicationWindow) {
@@ -311,3 +313,81 @@ fn setup_nvidia_legacy(builder: &Builder, window: &ApplicationWindow) {
         );
     });
 }
+
+fn setup_rocm(builder: &Builder, window: &ApplicationWindow) {
+    let button = extract_widget::<Button>(builder, "btn_rocm");
+    let window = window.clone();
+
+    button.connect_clicked(move |_| {
+        info!("AMD ROCm button clicked");
+
+        let commands = CommandSequence::new()
+            .then(
+                Command::builder()
+                    .aur()
+                    .args(&["-S", "--noconfirm", "--needed", "rocm-hip-sdk", "rocm-opencl-sdk"])
+                    .description("Installing AMD ROCm SDK...")
+                    .build(),
+            )
+            .build();
+
+        task_runner::run(
+            window.upcast_ref(),
+            commands,
+            "Install AMD ROCm",
+        );
+    });
+}
+
+fn setup_cuda(builder: &Builder, window: &ApplicationWindow) {
+    let button = extract_widget::<Button>(builder, "btn_cuda");
+    let window = window.clone();
+
+    button.connect_clicked(move |_| {
+        info!("NVIDIA CUDA button clicked");
+
+        // Show selection dialog for CUDA version
+        let window_clone = window.clone();
+        let config = SelectionDialogConfig::new(
+            "NVIDIA CUDA Toolkit",
+            "Select the CUDA version to install. The latest version is recommended for most users.",
+        )
+        .selection_type(SelectionType::Single)
+        .selection_required(true)
+        .add_option(SelectionOption::new(
+            "cuda",
+            "CUDA (Latest)",
+            "Install the latest CUDA toolkit from official repositories",
+            core::is_package_installed("cuda"),
+        ))
+        .add_option(SelectionOption::new(
+            "cuda-12.9",
+            "CUDA 12.9",
+            "Install CUDA Toolkit version 12.9 specifically",
+            core::is_package_installed("cuda-12.9"),
+        ))
+        .confirm_label("Install");
+
+        show_selection_dialog(window.upcast_ref(), config, move |selected| {
+            if let Some(package) = selected.first() {
+                let description = format!("Installing {}...", package);
+                let commands = CommandSequence::new()
+                    .then(
+                        Command::builder()
+                            .aur()
+                            .args(&["-S", "--noconfirm", "--needed", package])
+                            .description(&description)
+                            .build(),
+                    )
+                    .build();
+
+                task_runner::run(
+                    window_clone.upcast_ref(),
+                    commands,
+                    "Install NVIDIA CUDA",
+                );
+            }
+        });
+    });
+}
+
