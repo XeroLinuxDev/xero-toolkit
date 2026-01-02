@@ -31,7 +31,6 @@ pub fn setup_application_ui(app: &Application) {
         return;
     }
 
-
     // Extract tabs_container first for stack creation
     let tabs_container = extract_widget(&builder, "tabs_container");
 

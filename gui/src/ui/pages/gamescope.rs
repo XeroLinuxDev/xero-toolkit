@@ -10,7 +10,11 @@ use log::info;
 use std::rc::Rc;
 
 /// Set up all handlers for the gamescope page.
-pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, _window: &ApplicationWindow) {
+pub fn setup_handlers(
+    page_builder: &Builder,
+    _main_builder: &Builder,
+    _window: &ApplicationWindow,
+) {
     let widgets = Rc::new(extract_all_widgets(page_builder));
 
     connect_widget_signals(&widgets);
@@ -218,18 +222,30 @@ fn add_scaler_flags(parts: &mut Vec<String>, widgets: &GamescopeWidgets) {
     }
 
     // FSR sharpness
-    add_flag_if_not_empty(parts, "--fsr-sharpness", &widgets.entry_fsr_sharpness.text());
+    add_flag_if_not_empty(
+        parts,
+        "--fsr-sharpness",
+        &widgets.entry_fsr_sharpness.text(),
+    );
 }
 
 /// Add general gameplay flags.
 fn add_general_flags(parts: &mut Vec<String>, widgets: &GamescopeWidgets) {
     add_switch_flag(parts, "-f", &widgets.check_fullscreen);
     add_switch_flag(parts, "-g", &widgets.check_grab);
-    add_switch_flag(parts, "--force-grab-cursor", &widgets.check_force_grab_cursor);
+    add_switch_flag(
+        parts,
+        "--force-grab-cursor",
+        &widgets.check_force_grab_cursor,
+    );
     add_switch_flag(parts, "--adaptive-sync", &widgets.check_adaptive_sync);
     add_switch_flag(parts, "--immediate-flips", &widgets.check_immediate_flips);
     add_switch_flag(parts, "--expose-wayland", &widgets.check_expose_wayland);
-    add_switch_flag(parts, "--force-windows-fullscreen", &widgets.check_force_windows_fullscreen);
+    add_switch_flag(
+        parts,
+        "--force-windows-fullscreen",
+        &widgets.check_force_windows_fullscreen,
+    );
 }
 
 /// Add backend and rendering flags.
@@ -248,7 +264,11 @@ fn add_backend_flags(parts: &mut Vec<String>, widgets: &GamescopeWidgets) {
     add_flag_if_not_empty(parts, "--cursor", &widgets.entry_cursor_path.text());
 
     // Framerate limit
-    add_flag_if_not_empty(parts, "--framerate-limit", &widgets.entry_framerate_limit.text());
+    add_flag_if_not_empty(
+        parts,
+        "--framerate-limit",
+        &widgets.entry_framerate_limit.text(),
+    );
 }
 
 /// Add debug and performance flags.

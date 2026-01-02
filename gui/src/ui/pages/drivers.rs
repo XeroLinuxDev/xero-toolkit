@@ -218,11 +218,7 @@ fn setup_zenergy(builder: &Builder, window: &ApplicationWindow) {
             )
             .build();
 
-        task_runner::run(
-            window.upcast_ref(),
-            commands,
-            "Install Zenergy Driver",
-        );
+        task_runner::run(window.upcast_ref(), commands, "Install Zenergy Driver");
     });
 }
 
@@ -325,17 +321,19 @@ fn setup_rocm(builder: &Builder, window: &ApplicationWindow) {
             .then(
                 Command::builder()
                     .aur()
-                    .args(&["-S", "--noconfirm", "--needed", "rocm-hip-sdk", "rocm-opencl-sdk"])
+                    .args(&[
+                        "-S",
+                        "--noconfirm",
+                        "--needed",
+                        "rocm-hip-sdk",
+                        "rocm-opencl-sdk",
+                    ])
                     .description("Installing AMD ROCm SDK...")
                     .build(),
             )
             .build();
 
-        task_runner::run(
-            window.upcast_ref(),
-            commands,
-            "Install AMD ROCm",
-        );
+        task_runner::run(window.upcast_ref(), commands, "Install AMD ROCm");
     });
 }
 
@@ -381,13 +379,8 @@ fn setup_cuda(builder: &Builder, window: &ApplicationWindow) {
                     )
                     .build();
 
-                task_runner::run(
-                    window_clone.upcast_ref(),
-                    commands,
-                    "Install NVIDIA CUDA",
-                );
+                task_runner::run(window_clone.upcast_ref(), commands, "Install NVIDIA CUDA");
             }
         });
     });
 }
-

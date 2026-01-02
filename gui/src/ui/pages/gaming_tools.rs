@@ -111,7 +111,6 @@ fn setup_steam_aio(builder: &Builder, window: &ApplicationWindow) {
     });
 }
 
-
 fn setup_lact_oc(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_lact_oc");
     let window = window.clone();
@@ -255,7 +254,10 @@ fn setup_controller(builder: &Builder, window: &ApplicationWindow) {
             )
             .build();
 
-        task_runner::run(window.upcast_ref(), commands, "Controller Tools Installation");
+        task_runner::run(
+            window.upcast_ref(),
+            commands,
+            "Controller Tools Installation",
+        );
     });
 }
-
