@@ -23,6 +23,10 @@
         <file
             preprocess="xml-stripblanks"
             compressed="true"
+        >ui/tabs/gamescope.ui</file>
+        <file
+            preprocess="xml-stripblanks"
+            compressed="true"
         >ui/tabs/containers_vms.ui</file>
         <file
             preprocess="xml-stripblanks"
@@ -116,6 +120,8 @@
         <file compressed="true">icons/scalable/actions/star-symbolic.svg</file>
         <file compressed="true">icons/scalable/actions/xfprintd-gui.svg</file>
         <file compressed="true">icons/scalable/actions/heart.svg</file>
+        <file compressed="true">icons/scalable/actions/steam-symbolic.svg</file>
+        <file compressed="true">icons/scalable/actions/document-edit-symbolic.svg</file>
         <file compressed="true">icons/scalable/apps/xero-toolkit.png</file>
     </gresource>
 </gresources>
