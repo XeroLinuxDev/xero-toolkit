@@ -61,7 +61,7 @@
                 <property name="vexpand">true</property>
                 <property name="margin-top">32</property>
 
-                <!-- Row 1: Steam AiO, Gamescope CFG, LACT OC -->
+                <!-- Row 1: Steam AiO, LACT OC -->
                 <child>
                     <object class="GtkBox">
                         <property name="orientation">horizontal</property>
@@ -71,17 +71,6 @@
                         <child>
                             <object class="GtkButton" id="btn_steam_aio">
                                 <property name="label">Steam AiO</property>
-                                <property name="width-request">200</property>
-                                <property name="height-request">50</property>
-                                <property
-                                    name="css-classes"
-                                >suggested-action pill</property>
-                            </object>
-                        </child>
-
-                        <child>
-                            <object class="GtkButton" id="btn_gamescope_cfg">
-                                <property name="label">Gamescope CFG</property>
                                 <property name="width-request">200</property>
                                 <property name="height-request">50</property>
                                 <property

@@ -2,9 +2,9 @@
 //!
 //! Handles:
 //! - Steam AiO installation
-//! - Gamescope configuration
 //! - LACT GPU overclocking
 //! - Game launchers (Lutris, Heroic, Bottles)
+//! - Controller tools
 
 use crate::ui::task_runner::{self, Command, CommandSequence};
 use crate::ui::utils::extract_widget;
@@ -15,7 +15,6 @@ use log::info;
 /// Set up all button handlers for the gaming tools page.
 pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
     setup_steam_aio(page_builder, window);
-    setup_gamescope_cfg(page_builder, window);
     setup_lact_oc(page_builder, window);
     setup_lutris(page_builder, window);
     setup_heroic(page_builder, window);
@@ -112,16 +111,6 @@ fn setup_steam_aio(builder: &Builder, window: &ApplicationWindow) {
     });
 }
 
-fn setup_gamescope_cfg(builder: &Builder, _window: &ApplicationWindow) {
-    let button = extract_widget::<Button>(builder, "btn_gamescope_cfg");
-
-    button.connect_clicked(|_| {
-        info!("Gamescope CFG button clicked");
-        let _ = std::process::Command::new("xdg-open")
-            .arg("https://sidewalksndskeletons.github.io/gamescope-gui/")
-            .spawn();
-    });
-}
 
 fn setup_lact_oc(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_lact_oc");

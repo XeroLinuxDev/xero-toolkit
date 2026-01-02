@@ -61,7 +61,65 @@
                 <property name="vexpand">true</property>
                 <property name="margin-top">32</property>
 
-                <!-- Row 1: Tailscale, ASUS ROG -->
+                <!-- Important Drivers Section -->
+
+                <!-- Row 1 (Pyramid Top): Nvidia Legacy Drivers -->
+                <child>
+                    <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">16</property>
+                        <property name="halign">center</property>
+
+                        <child>
+                            <object class="GtkButton" id="btn_nvidia_legacy">
+                                <property name="label">Nvidia Legacy Drivers</property>
+                                <property name="width-request">200</property>
+                                <property name="height-request">50</property>
+                                <property name="css-classes">suggested-action pill</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+
+                <!-- Row 2 (Pyramid Base): ROCm, CUDA -->
+                <child>
+                    <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">16</property>
+                        <property name="halign">center</property>
+
+                        <child>
+                            <object class="GtkButton" id="btn_rocm">
+                                <property name="label">AMD ROCm</property>
+                                <property name="width-request">200</property>
+                                <property name="height-request">50</property>
+                                <property name="css-classes">suggested-action pill</property>
+                            </object>
+                        </child>
+
+                        <child>
+                            <object class="GtkButton" id="btn_cuda">
+                                <property name="label">NVIDIA CUDA</property>
+                                <property name="width-request">200</property>
+                                <property name="height-request">50</property>
+                                <property name="css-classes">suggested-action pill</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+
+                <!-- Separator -->
+                <child>
+                    <object class="GtkSeparator">
+                        <property name="orientation">horizontal</property>
+                        <property name="margin-top">16</property>
+                        <property name="margin-bottom">16</property>
+                    </object>
+                </child>
+
+                <!-- Other Tools Section -->
+
+                <!-- Row 3: Tailscale, ASUS ROG -->
                 <child>
                     <object class="GtkBox">
                         <property name="orientation">horizontal</property>
@@ -88,7 +146,7 @@
                     </object>
                 </child>
 
-                <!-- Row 2: OpenRazer, Fingerprint GUI -->
+                <!-- Row 4: OpenRazer, Fingerprint GUI -->
                 <child>
                     <object class="GtkBox">
                         <property name="orientation">horizontal</property>
@@ -132,7 +190,7 @@
                     </object>
                 </child>
 
-                <!-- Row 3: Zenergy, Nvidia Legacy -->
+                <!-- Row 5: Zenergy -->
                 <child>
                     <object class="GtkBox">
                         <property name="orientation">horizontal</property>
@@ -142,42 +200,6 @@
                         <child>
                             <object class="GtkButton" id="btn_zenergy">
                                 <property name="label">Zenergy Driver</property>
-                                <property name="width-request">200</property>
-                                <property name="height-request">50</property>
-                                <property name="css-classes">suggested-action pill</property>
-                            </object>
-                        </child>
-
-                        <child>
-                            <object class="GtkButton" id="btn_nvidia_legacy">
-                                <property name="label">Nvidia Legacy Drivers</property>
-                                <property name="width-request">200</property>
-                                <property name="height-request">50</property>
-                                <property name="css-classes">suggested-action pill</property>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-
-                <!-- Row 4: ROCm, CUDA -->
-                <child>
-                    <object class="GtkBox">
-                        <property name="orientation">horizontal</property>
-                        <property name="spacing">16</property>
-                        <property name="halign">center</property>
-
-                        <child>
-                            <object class="GtkButton" id="btn_rocm">
-                                <property name="label">AMD ROCm</property>
-                                <property name="width-request">200</property>
-                                <property name="height-request">50</property>
-                                <property name="css-classes">suggested-action pill</property>
-                            </object>
-                        </child>
-
-                        <child>
-                            <object class="GtkButton" id="btn_cuda">
-                                <property name="label">NVIDIA CUDA</property>
                                 <property name="width-request">200</property>
                                 <property name="height-request">50</property>
                                 <property name="css-classes">suggested-action pill</property>
