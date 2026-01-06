@@ -233,8 +233,9 @@ fn setup_nvidia_legacy(builder: &Builder, window: &ApplicationWindow) {
         show_warning_confirmation(
             window.upcast_ref(),
             "Nvidia Legacy Drivers",
-            "If you have <span foreground=\"red\" weight=\"bold\">RTX 20XX+</span>, download the Nvidia ISO from XeroLinux.\n\n\
-            This option is <span foreground=\"red\" weight=\"bold\">ONLY</span> for legacy GPUs (GTX 10XX and below).",
+            "This is only intended for <span foreground=\"red\" weight=\"bold\">GTX900/1000</span> Series Legacy GPUs\n\
+            For <span foreground=\"cyan\" weight=\"bold\">RTX/Turing+</span> GPUs download the <span foreground=\"green\" weight=\"bold\">nVidia</span> ISO instead.\n\n\
+            <span foreground=\"red\" weight=\"bold\">No Support/Help</span> will be provided for those Legacy GPUs !",
             move || {
                 // Use configured path
                 let script_dir = crate::config::paths::scripts();

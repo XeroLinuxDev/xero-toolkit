@@ -2,11 +2,11 @@
 # Maintainer: Steve C. <steve@techxero.com>
 
 pkgname=xero-toolkit
-pkgver=0.1.0
-pkgrel=1
+pkgver=0.1.2
+pkgrel=3
 pkgdesc="GTK4 GUI to manage XeroLinux specific tools and settings"
 arch=('x86_64')
-url="https://github.com/BananikXenos/xero-toolkit"
+url="https://github.com/synsejse/xero-toolkit"
 license=('GPL-3.0-or-later')
 depends=(
     'gtk4'
@@ -14,13 +14,11 @@ depends=(
     'libadwaita'
     'vte4'
     'flatpak'
-    'polkit'
-)
+    'polkit')
 makedepends=(
     'rust'
     'cargo'
-    'pkgconf'
-)
+    'pkgconf')
 provides=('xero-toolkit')
 conflicts=('xero-toolkit')
 replaces=('xlapit-cli')
