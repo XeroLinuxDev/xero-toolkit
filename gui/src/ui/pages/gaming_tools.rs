@@ -5,6 +5,7 @@
 //! - LACT GPU overclocking
 //! - Game launchers (Lutris, Heroic, Bottles)
 //! - Controller tools
+//! - Falcond gaming utility
 
 use crate::ui::task_runner::{self, Command, CommandSequence};
 use crate::ui::utils::extract_widget;
@@ -20,6 +21,7 @@ pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &
     setup_heroic(page_builder, window);
     setup_bottles(page_builder, window);
     setup_controller(page_builder, window);
+    setup_falcond(page_builder, window);
 }
 
 fn setup_steam_aio(builder: &Builder, window: &ApplicationWindow) {
@@ -259,5 +261,41 @@ fn setup_controller(builder: &Builder, window: &ApplicationWindow) {
             commands,
             "Controller Tools Installation",
         );
+    });
+}
+
+fn setup_falcond(builder: &Builder, window: &ApplicationWindow) {
+    let button = extract_widget::<Button>(builder, "btn_falcond");
+    let window = window.clone();
+
+    button.connect_clicked(move |_| {
+        info!("Falcond button clicked");
+
+        let commands = CommandSequence::new()
+            .then(
+                Command::builder()
+                    .aur()
+                    .args(&[
+                        "-S",
+                        "--noconfirm",
+                        "--needed",
+                        "falcond",
+                        "falcond-gui",
+                        "falcond-profiles",
+                    ])
+                    .description("Installing Falcond Gaming utility...")
+                    .build(),
+            )
+            .then(
+                Command::builder()
+                    .privileged()
+                    .program("systemctl")
+                    .args(&["enable", "--now", "falcond"])
+                    .description("Enabling falcond background service...")
+                    .build(),
+            )
+            .build();
+
+        task_runner::run(window.upcast_ref(), commands, "Falcond Installation");
     });
 }
