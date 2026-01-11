@@ -6,6 +6,7 @@
 //! - GRUB theme installation
 //! - Plymouth Manager
 //! - Update Layan Theme
+//! - Config/Rice reset
 
 use crate::ui::dialogs::terminal;
 use crate::ui::task_runner::{self, Command, CommandSequence};
@@ -21,6 +22,7 @@ pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &
     setup_grub_theme(page_builder, window);
     setup_plymouth_manager(page_builder, window);
     setup_layan_patch(page_builder, window);
+    setup_config_reset(page_builder, window);
 }
 
 fn setup_zsh_aio(builder: &Builder, window: &ApplicationWindow) {
@@ -268,5 +270,59 @@ fn setup_layan_patch(builder: &Builder, window: &ApplicationWindow) {
             .build();
 
         task_runner::run(window.upcast_ref(), commands, "Update Layan Theme");
+    });
+}
+
+fn setup_config_reset(builder: &Builder, window: &ApplicationWindow) {
+    let button = extract_widget::<Button>(builder, "btn_config_reset");
+    let window = window.clone();
+
+    button.connect_clicked(move |_| {
+        info!("Config/Rice Reset button clicked");
+
+        let window_clone = window.clone();
+        crate::ui::dialogs::warning::show_warning_confirmation(
+            window.upcast_ref(),
+            "Config/Rice Reset",
+            "A backup of <span foreground=\"cyan\" weight=\"bold\">~/.config</span> will be created.\n\
+             Once reset, the system will <span foreground=\"red\" weight=\"bold\">reboot</span>.\n\n\
+             You will be getting updated config as of reset time.",
+            move || {
+                let commands = CommandSequence::new()
+                    .then(
+                        Command::builder()
+                            .normal()
+                            .program("bash")
+                            .args(&[
+                                "-c",
+                                "cp -Rf ~/.config ~/.config-backup-$(date +%Y.%m.%d-%H.%M.%S)",
+                            ])
+                            .description("Backing up configuration...")
+                            .build(),
+                    )
+                    .then(
+                        Command::builder()
+                            .normal()
+                            .program("bash")
+                            .args(&["-c", "cp -Rf /etc/skel/. ~"])
+                            .description("Restoring default configuration...")
+                            .build(),
+                    )
+                    .then(
+                        Command::builder()
+                            .normal()
+                            .program("reboot")
+                            .description("Rebooting system...")
+                            .build(),
+                    )
+                    .build();
+
+                task_runner::run(
+                    window_clone.upcast_ref(),
+                    commands,
+                    "Config/Rice Reset",
+                );
+            },
+        );
     });
 }
