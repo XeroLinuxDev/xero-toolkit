@@ -5,8 +5,8 @@
 
     <object class="AdwApplicationWindow" id="app_window">
         <property name="title">Xero Toolkit</property>
-        <property name="default-width">1050</property>
-        <property name="default-height">700</property>
+        <property name="default-width">1100</property>
+        <property name="default-height">750</property>
 
         <property name="content">
             <object class="AdwToolbarView">
