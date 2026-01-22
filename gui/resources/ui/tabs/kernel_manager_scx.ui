@@ -15,12 +15,12 @@
         <property name="halign">fill</property>
         <property name="valign">fill</property>
 
-        <!-- Top Section: Compact Header -->
+        <!-- Top Section: Compact Header with Refresh Button -->
         <child>
             <object class="GtkBox">
                 <property name="orientation">horizontal</property>
                 <property name="spacing">16</property>
-                <property name="halign">start</property>
+                <property name="halign">fill</property>
                 <property name="valign">start</property>
                 <property name="vexpand">false</property>
                 <property name="margin-start">12</property>
@@ -39,6 +39,7 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">4</property>
                         <property name="valign">center</property>
+                        <property name="hexpand">true</property>
 
                         <child>
                             <object class="GtkLabel">
@@ -60,21 +61,11 @@
                         </child>
                     </object>
                 </child>
-            </object>
-        </child>
-
-        <!-- Refresh Button Bar -->
-        <child>
-            <object class="GtkBox">
-                <property name="orientation">horizontal</property>
-                <property name="spacing">12</property>
-                <property name="halign">center</property>
-                <property name="margin-top">16</property>
-                <property name="margin-bottom">8</property>
 
                 <child>
                     <object class="GtkButton" id="btn_refresh_kernels">
                         <property name="tooltip-text">Scan for available and installed kernels</property>
+                        <property name="valign">start</property>
                         <style>
                             <class name="pill"/>
                             <class name="suggested-action"/>
@@ -92,7 +83,7 @@
                                 </child>
                                 <child>
                                     <object class="GtkLabel">
-                                        <property name="label">Refresh Kernel Lists</property>
+                                        <property name="label">Refresh</property>
                                     </object>
                                 </child>
                             </object>
