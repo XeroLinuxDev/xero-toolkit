@@ -10,7 +10,7 @@ use crate::ui::task_runner::{self, Command, CommandSequence};
 use crate::ui::utils::extract_widget;
 use gtk4::glib;
 use gtk4::prelude::*;
-use gtk4::{ApplicationWindow, Box as GtkBox, Builder, Button, Label, ListBox, Orientation};
+use gtk4::{ApplicationWindow, Box as GtkBox, Builder, Button, Image, Label, ListBox, Orientation};
 use log::{info, warn};
 use std::process::{Command as StdCommand, Stdio};
 use std::sync::mpsc;
@@ -36,13 +36,32 @@ fn setup_refresh_button(builder: &Builder, window: &ApplicationWindow) {
     let window = window.clone();
     let builder = builder.clone();
 
-    button.connect_clicked(move |_| {
+    button.connect_clicked(move |btn| {
         info!("Refresh kernels button clicked");
         let builder = builder.clone();
         let window = window.clone();
 
+        // Make the button icon spin
+        btn.set_sensitive(false);
+        // Find the Image widget inside the Box child
+        if let Some(box_child) = btn.child().and_downcast::<GtkBox>() {
+            if let Some(image) = box_child.first_child().and_downcast::<Image>() {
+                image.add_css_class("spinning");
+            }
+        }
+        let btn_clone = btn.clone();
+
         glib::spawn_future_local(async move {
             scan_and_populate_kernels(&builder, &window).await;
+
+            // Stop spinning and re-enable button after scan
+            btn_clone.set_sensitive(true);
+            // Find the Image widget inside the Box child
+            if let Some(box_child) = btn_clone.child().and_downcast::<GtkBox>() {
+                if let Some(image) = box_child.first_child().and_downcast::<Image>() {
+                    image.remove_css_class("spinning");
+                }
+            }
         });
     });
 }
@@ -54,11 +73,9 @@ async fn scan_and_populate_kernels(builder: &Builder, window: &ApplicationWindow
     let builder = builder.clone();
     let window = window.clone();
 
-    // Show loading state
+    // Show loading state (keep the lists visible, just show loading indicator)
     let loading_box = extract_widget::<GtkBox>(&builder, "loading_box");
-    let content_box = extract_widget::<GtkBox>(&builder, "content_box");
     loading_box.set_visible(true);
-    content_box.set_visible(false);
 
     // Create a channel to communicate between threads
     let (sender, receiver) = mpsc::channel();
@@ -103,7 +120,6 @@ async fn scan_and_populate_kernels(builder: &Builder, window: &ApplicationWindow
 
             // Hide loading state
             loading_box.set_visible(false);
-            content_box.set_visible(true);
         }
     });
 }
