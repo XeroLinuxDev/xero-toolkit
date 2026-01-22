@@ -110,6 +110,8 @@
                             <object class="GtkBox">
                                 <property name="orientation">vertical</property>
                                 <property name="spacing">24</property>
+                                <property name="vexpand">true</property>
+                                <property name="valign">fill</property>
 
                                 <!-- Loading State -->
                                 <child>
@@ -144,7 +146,8 @@
                                         <property name="orientation">horizontal</property>
                                         <property name="spacing">24</property>
                                         <property name="homogeneous">true</property>
-                                        <property name="valign">start</property>
+                                        <property name="vexpand">true</property>
+                                        <property name="valign">fill</property>
 
                                         <!-- Installed Kernels -->
                                         <child>
@@ -164,15 +167,13 @@
                                                 </child>
                                                 <child>
                                                     <object class="GtkFrame">
-                                                        <property name="vexpand">false</property>
+                                                        <property name="vexpand">true</property>
                                                         <style>
                                                             <class name="view"/>
                                                         </style>
                                                         <child>
                                                             <object class="GtkScrolledWindow">
-                                                                <property name="min-content-height">350</property>
-                                                                <property name="max-content-height">350</property>
-                                                                <property name="propagate-natural-height">false</property>
+                                                                <property name="vexpand">true</property>
                                                                 <child>
                                                                     <object class="GtkListBox" id="installed_kernels_list">
                                                                         <property name="selection-mode">none</property>
@@ -206,15 +207,13 @@
                                                 </child>
                                                 <child>
                                                     <object class="GtkFrame">
-                                                        <property name="vexpand">false</property>
+                                                        <property name="vexpand">true</property>
                                                         <style>
                                                             <class name="view"/>
                                                         </style>
                                                         <child>
                                                             <object class="GtkScrolledWindow">
-                                                                <property name="min-content-height">350</property>
-                                                                <property name="max-content-height">350</property>
-                                                                <property name="propagate-natural-height">false</property>
+                                                                <property name="vexpand">true</property>
                                                                 <child>
                                                                     <object class="GtkListBox" id="available_kernels_list">
                                                                         <property name="selection-mode">none</property>
