@@ -49,9 +49,36 @@
                                 <property name="orientation">vertical</property>
                                 <property name="spacing">24</property>
 
+                                <!-- Loading State -->
+                                <child>
+                                    <object class="GtkBox" id="loading_box">
+                                        <property name="orientation">horizontal</property>
+                                        <property name="spacing">8</property>
+                                        <property name="halign">center</property>
+                                        <property name="margin-top">24</property>
+                                        <property name="margin-bottom">24</property>
+                                        <property name="visible">false</property>
+
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="label">Scanning for kernels...</property>
+                                                <style>
+                                                    <class name="accent"/>
+                                                </style>
+                                            </object>
+                                        </child>
+
+                                        <child>
+                                            <object class="GtkSpinner" id="loading_spinner">
+                                                <property name="spinning">true</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+
                                 <!-- Kernel Lists Section -->
                                 <child>
-                                    <object class="GtkBox">
+                                    <object class="GtkBox" id="content_box">
                                         <property name="orientation">horizontal</property>
                                         <property name="spacing">24</property>
                                         <property name="homogeneous">true</property>
@@ -81,33 +108,17 @@
                                                         </style>
                                                         <child>
                                                             <object class="GtkScrolledWindow">
-                                                                <property name="min-content-height">300</property>
-                                                                <property name="max-content-height">400</property>
-                                                                <property name="propagate-natural-height">true</property>
+                                                                <property name="min-content-height">350</property>
+                                                                <property name="max-content-height">350</property>
+                                                                <property name="propagate-natural-height">false</property>
                                                                 <child>
                                                                     <object class="GtkListBox" id="installed_kernels_list">
-                                                                        <property name="selection-mode">single</property>
+                                                                        <property name="selection-mode">none</property>
                                                                         <style>
                                                                             <class name="boxed-list"/>
                                                                         </style>
                                                                     </object>
                                                                 </child>
-                                                            </object>
-                                                        </child>
-                                                    </object>
-                                                </child>
-                                                <child>
-                                                    <object class="GtkBox">
-                                                        <property name="orientation">horizontal</property>
-                                                        <property name="spacing">8</property>
-                                                        <property name="halign">end</property>
-                                                        <property name="margin-top">12</property>
-                                                        <child>
-                                                            <object class="GtkButton" id="btn_remove_kernel">
-                                                                <property name="label">Remove Selected</property>
-                                                                <style>
-                                                                    <class name="destructive-action"/>
-                                                                </style>
                                                             </object>
                                                         </child>
                                                     </object>
@@ -139,33 +150,17 @@
                                                         </style>
                                                         <child>
                                                             <object class="GtkScrolledWindow">
-                                                                <property name="min-content-height">300</property>
-                                                                <property name="max-content-height">400</property>
-                                                                <property name="propagate-natural-height">true</property>
+                                                                <property name="min-content-height">350</property>
+                                                                <property name="max-content-height">350</property>
+                                                                <property name="propagate-natural-height">false</property>
                                                                 <child>
                                                                     <object class="GtkListBox" id="available_kernels_list">
-                                                                        <property name="selection-mode">single</property>
+                                                                        <property name="selection-mode">none</property>
                                                                         <style>
                                                                             <class name="boxed-list"/>
                                                                         </style>
                                                                     </object>
                                                                 </child>
-                                                            </object>
-                                                        </child>
-                                                    </object>
-                                                </child>
-                                                <child>
-                                                    <object class="GtkBox">
-                                                        <property name="orientation">horizontal</property>
-                                                        <property name="spacing">8</property>
-                                                        <property name="halign">end</property>
-                                                        <property name="margin-top">12</property>
-                                                        <child>
-                                                            <object class="GtkButton" id="btn_install_kernel">
-                                                                <property name="label">Install Selected</property>
-                                                                <style>
-                                                                    <class name="suggested-action"/>
-                                                                </style>
                                                             </object>
                                                         </child>
                                                     </object>
@@ -197,7 +192,6 @@
                                         </child>
                                     </object>
                                 </child>
-
 
                             </object>
                         </child>

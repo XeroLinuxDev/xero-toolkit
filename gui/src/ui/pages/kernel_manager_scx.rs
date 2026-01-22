@@ -10,7 +10,7 @@ use crate::ui::task_runner::{self, Command, CommandSequence};
 use crate::ui::utils::extract_widget;
 use gtk4::glib;
 use gtk4::prelude::*;
-use gtk4::{ApplicationWindow, Builder, Button, Label, ListBox};
+use gtk4::{ApplicationWindow, Box as GtkBox, Builder, Button, Label, ListBox, Orientation};
 use log::{info, warn};
 use std::process::{Command as StdCommand, Stdio};
 use std::sync::mpsc;
@@ -19,8 +19,6 @@ use std::sync::mpsc;
 pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
     setup_kernel_lists(page_builder, window);
     setup_refresh_button(page_builder, window);
-    setup_install_button(page_builder, window);
-    setup_remove_button(page_builder, window);
 }
 
 /// Initialize and populate kernel lists.
@@ -49,65 +47,18 @@ fn setup_refresh_button(builder: &Builder, window: &ApplicationWindow) {
     });
 }
 
-/// Set up install button to install selected kernel.
-fn setup_install_button(builder: &Builder, window: &ApplicationWindow) {
-    let button = extract_widget::<Button>(builder, "btn_install_kernel");
-    let window = window.clone();
-    let builder = builder.clone();
-
-    button.connect_clicked(move |_| {
-        info!("Install kernel button clicked");
-
-        let available_list = extract_widget::<ListBox>(&builder, "available_kernels_list");
-
-        if let Some(row) = available_list.selected_row() {
-            if let Some(label) = row.child().and_then(|w| w.downcast::<Label>().ok()) {
-                let kernel_name = label.label().to_string();
-                install_kernel(&kernel_name, &window, &builder);
-            }
-        } else {
-            show_warning_confirmation(
-                window.upcast_ref(),
-                "No Selection",
-                "Please select a kernel from the available list to install.",
-                || {},
-            );
-        }
-    });
-}
-
-/// Set up remove button to remove selected kernel.
-fn setup_remove_button(builder: &Builder, window: &ApplicationWindow) {
-    let button = extract_widget::<Button>(builder, "btn_remove_kernel");
-    let window = window.clone();
-    let builder = builder.clone();
-
-    button.connect_clicked(move |_| {
-        info!("Remove kernel button clicked");
-
-        let installed_list = extract_widget::<ListBox>(&builder, "installed_kernels_list");
-
-        if let Some(row) = installed_list.selected_row() {
-            if let Some(label) = row.child().and_then(|w| w.downcast::<Label>().ok()) {
-                let kernel_name = label.label().to_string();
-                remove_kernel(&kernel_name, &window, &builder);
-            }
-        } else {
-            show_warning_confirmation(
-                window.upcast_ref(),
-                "No Selection",
-                "Please select a kernel from the installed list to remove.",
-                || {},
-            );
-        }
-    });
-}
-
 /// Scan for available and installed kernels and populate lists.
-async fn scan_and_populate_kernels(builder: &Builder, _window: &ApplicationWindow) {
+async fn scan_and_populate_kernels(builder: &Builder, window: &ApplicationWindow) {
     info!("Scanning for kernels...");
 
     let builder = builder.clone();
+    let window = window.clone();
+
+    // Show loading state
+    let loading_box = extract_widget::<GtkBox>(&builder, "loading_box");
+    let content_box = extract_widget::<GtkBox>(&builder, "content_box");
+    loading_box.set_visible(true);
+    content_box.set_visible(false);
 
     // Create a channel to communicate between threads
     let (sender, receiver) = mpsc::channel();
@@ -146,9 +97,13 @@ async fn scan_and_populate_kernels(builder: &Builder, _window: &ApplicationWindo
     // Receive results in main thread and update UI
     glib::idle_add_local_once(move || {
         if let Ok((available_kernels, installed_kernels)) = receiver.recv() {
-            populate_installed_list(&builder, &installed_kernels);
-            populate_available_list(&builder, &available_kernels, &installed_kernels);
+            populate_installed_list(&builder, &installed_kernels, &window);
+            populate_available_list(&builder, &available_kernels, &installed_kernels, &window);
             update_status_labels(&builder, &available_kernels, &installed_kernels);
+
+            // Hide loading state
+            loading_box.set_visible(false);
+            content_box.set_visible(true);
         }
     });
 }
@@ -274,7 +229,7 @@ fn get_installed_kernels() -> anyhow::Result<Vec<String>> {
 }
 
 /// Populate the installed kernels list.
-fn populate_installed_list(builder: &Builder, kernels: &[String]) {
+fn populate_installed_list(builder: &Builder, kernels: &[String], window: &ApplicationWindow) {
     let list = extract_widget::<ListBox>(builder, "installed_kernels_list");
 
     // Clear existing items
@@ -282,16 +237,34 @@ fn populate_installed_list(builder: &Builder, kernels: &[String]) {
         list.remove(&row);
     }
 
-    // Add kernels
+    // Add kernels with remove buttons
     for kernel in kernels {
+        let row_box = GtkBox::new(Orientation::Horizontal, 8);
+        row_box.set_margin_start(12);
+        row_box.set_margin_end(12);
+        row_box.set_margin_top(8);
+        row_box.set_margin_bottom(8);
+
         let label = Label::new(Some(kernel));
         label.set_xalign(0.0);
-        label.set_margin_start(12);
-        label.set_margin_end(12);
-        label.set_margin_top(8);
-        label.set_margin_bottom(8);
+        label.set_hexpand(true);
+        row_box.append(&label);
 
-        list.append(&label);
+        let remove_button = Button::new();
+        remove_button.set_icon_name("user-trash-symbolic");
+        remove_button.set_valign(gtk4::Align::Center);
+        remove_button.add_css_class("flat");
+        remove_button.add_css_class("destructive-action");
+
+        let kernel_name = kernel.clone();
+        let window_clone = window.clone();
+        let builder_clone = builder.clone();
+        remove_button.connect_clicked(move |_| {
+            remove_kernel(&kernel_name, &window_clone, &builder_clone);
+        });
+
+        row_box.append(&remove_button);
+        list.append(&row_box);
     }
 
     if kernels.is_empty() {
@@ -306,7 +279,12 @@ fn populate_installed_list(builder: &Builder, kernels: &[String]) {
 }
 
 /// Populate the available kernels list (excluding installed ones).
-fn populate_available_list(builder: &Builder, available: &[String], installed: &[String]) {
+fn populate_available_list(
+    builder: &Builder,
+    available: &[String],
+    installed: &[String],
+    window: &ApplicationWindow,
+) {
     let list = extract_widget::<ListBox>(builder, "available_kernels_list");
 
     // Clear existing items
@@ -314,18 +292,36 @@ fn populate_available_list(builder: &Builder, available: &[String], installed: &
         list.remove(&row);
     }
 
-    // Add kernels that are not installed
+    // Add kernels that are not installed with install buttons
     let mut added = 0;
     for kernel in available {
         if !installed.contains(kernel) {
+            let row_box = GtkBox::new(Orientation::Horizontal, 8);
+            row_box.set_margin_start(12);
+            row_box.set_margin_end(12);
+            row_box.set_margin_top(8);
+            row_box.set_margin_bottom(8);
+
             let label = Label::new(Some(kernel));
             label.set_xalign(0.0);
-            label.set_margin_start(12);
-            label.set_margin_end(12);
-            label.set_margin_top(8);
-            label.set_margin_bottom(8);
+            label.set_hexpand(true);
+            row_box.append(&label);
 
-            list.append(&label);
+            let install_button = Button::new();
+            install_button.set_icon_name("folder-download-symbolic");
+            install_button.set_valign(gtk4::Align::Center);
+            install_button.add_css_class("flat");
+            install_button.add_css_class("suggested-action");
+
+            let kernel_name = kernel.clone();
+            let window_clone = window.clone();
+            let builder_clone = builder.clone();
+            install_button.connect_clicked(move |_| {
+                install_kernel(&kernel_name, &window_clone, &builder_clone);
+            });
+
+            row_box.append(&install_button);
+            list.append(&row_box);
             added += 1;
         }
     }
@@ -384,7 +380,7 @@ fn install_kernel(kernel_name: &str, window: &ApplicationWindow, builder: &Build
             task_runner::run(window_clone.upcast_ref(), commands, "Install Kernel");
 
             // Schedule refresh after dialog closes
-            glib::timeout_add_seconds_local(1, move || {
+            glib::timeout_add_seconds_local(2, move || {
                 if !task_runner::is_running() {
                     let builder = builder_clone.clone();
                     let window = window_clone.clone();
@@ -434,7 +430,7 @@ fn remove_kernel(kernel_name: &str, window: &ApplicationWindow, builder: &Builde
             task_runner::run(window_clone.upcast_ref(), commands, "Remove Kernel");
 
             // Schedule refresh after dialog closes
-            glib::timeout_add_seconds_local(1, move || {
+            glib::timeout_add_seconds_local(2, move || {
                 if !task_runner::is_running() {
                     let builder = builder_clone.clone();
                     let window = window_clone.clone();
