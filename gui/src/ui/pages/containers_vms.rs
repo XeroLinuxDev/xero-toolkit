@@ -6,7 +6,7 @@
 //! - VirtualBox installation
 //! - DistroBox installation
 //! - KVM/QEMU virtualization setup
-//! - iOS iPA Sideloader (Plume Impactor)
+//! - iOS iPA Sideloader (Plume Impactor from Flathub)
 
 use crate::core;
 use crate::ui::dialogs::selection::{
@@ -277,9 +277,15 @@ fn setup_ipa_sideloader(builder: &Builder, window: &ApplicationWindow) {
         let commands = CommandSequence::new()
             .then(
                 Command::builder()
-                    .aur()
-                    .args(&["-S", "--noconfirm", "--needed", "plume-impactor"])
-                    .description("Installing Plume Impactor...")
+                    .normal()
+                    .args(&[
+                        "flatpak",
+                        "install",
+                        "-y",
+                        "flathub",
+                        "dev.khcrysalis.PlumeImpactor",
+                    ])
+                    .description("Installing Plume Impactor from Flathub...")
                     .build(),
             )
             .build();

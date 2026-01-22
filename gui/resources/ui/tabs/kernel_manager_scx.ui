@@ -52,6 +52,29 @@
             </object>
         </child>
 
+        <!-- Refresh Button Bar -->
+        <child>
+            <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">12</property>
+                <property name="halign">center</property>
+                <property name="margin-top">16</property>
+                <property name="margin-bottom">8</property>
+
+                <child>
+                    <object class="GtkButton" id="btn_refresh_kernels">
+                        <property name="label">Refresh Kernel Lists</property>
+                        <property name="icon-name">view-refresh-symbolic</property>
+                        <property name="tooltip-text">Scan for available and installed kernels</property>
+                        <style>
+                            <class name="pill"/>
+                            <class name="suggested-action"/>
+                        </style>
+                    </object>
+                </child>
+            </object>
+        </child>
+
         <!-- Main Content Section -->
         <child>
             <object class="GtkScrolledWindow">
@@ -184,29 +207,6 @@
                                                                 </child>
                                                             </object>
                                                         </child>
-                                                    </object>
-                                                </child>
-                                            </object>
-                                        </child>
-                                    </object>
-                                </child>
-
-                                <!-- Actions Section -->
-                                <child>
-                                    <object class="AdwPreferencesGroup">
-                                        <property name="title">Actions</property>
-                                        <child>
-                                            <object class="AdwActionRow">
-                                                <property name="title">Refresh Kernel Lists</property>
-                                                <property name="subtitle">Scan for available and installed kernels</property>
-                                                <property name="activatable-widget">btn_refresh_kernels</property>
-                                                <child>
-                                                    <object class="GtkButton" id="btn_refresh_kernels">
-                                                        <property name="icon-name">view-refresh-symbolic</property>
-                                                        <property name="valign">center</property>
-                                                        <style>
-                                                            <class name="flat"/>
-                                                        </style>
                                                     </object>
                                                 </child>
                                             </object>
