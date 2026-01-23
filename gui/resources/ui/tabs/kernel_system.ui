@@ -378,13 +378,14 @@
                                                         <child>
                                                             <object class="AdwComboRow" id="mode_combo">
                                                                 <property name="title">Scheduler Mode</property>
-                                                                <property name="subtitle">Auto mode selects based on system configuration</property>
+                                                                <property name="subtitle">Select a profile that best fits your workload</property>
                                                                 <property name="model">
                                                                     <object class="GtkStringList">
                                                                         <items>
                                                                             <item>auto</item>
-                                                                            <item>user</item>
-                                                                            <item>kernel</item>
+                                                                            <item>gaming</item>
+                                                                            <item>lowlatency</item>
+                                                                            <item>powersave</item>
                                                                         </items>
                                                                     </object>
                                                                 </property>
