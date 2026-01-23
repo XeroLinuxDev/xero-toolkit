@@ -94,12 +94,13 @@ fn setup_buttons(builder: &Builder, window: &ApplicationWindow, state: &Rc<RefCe
         let mode = get_combo_row_value(&extract_widget::<adw::ComboRow>(&b, "mode_combo"))
             .unwrap_or_else(|| "auto".to_string());
 
-        let Some(sched) = scheduler.filter(|s| s.starts_with("scx_")) else {
+        let Some(sched_display) = scheduler else {
             warn!("No valid scheduler selected");
             return;
         };
 
-        let sched_name = sched.replace("scx_", "");
+        let sched_name = sched_display.to_lowercase();
+        let sched = format!("scx_{}", sched_name);
         let cmd = if s.borrow().is_active {
             "switch"
         } else {
@@ -176,13 +177,14 @@ fn setup_persistence(builder: &Builder, window: &ApplicationWindow) {
             let mode = get_combo_row_value(&extract_widget::<adw::ComboRow>(&b, "mode_combo"))
                 .unwrap_or_else(|| "auto".to_string());
 
-            let Some(sched) = scheduler.filter(|s| s.starts_with("scx_")) else {
+            let Some(sched_display) = scheduler else {
                 warn!("No valid scheduler selected for persistence");
                 sw.set_active(false);
                 return;
             };
 
-            let sched_name = sched.replace("scx_", "");
+            let sched_name = sched_display.to_lowercase();
+            let sched = format!("scx_{}", sched_name);
             let template_path = crate::config::paths::systemd().join("scx.service.in");
 
             let Ok(content) = std::fs::read_to_string(&template_path) else {
@@ -264,7 +266,8 @@ fn refresh_state(builder: &Builder, state: &Rc<RefCell<State>>) {
 
     // Populate dropdown
     let combo = extract_widget::<adw::ComboRow>(builder, "scheduler_combo");
-    let list = StringList::new(&schedulers.iter().map(|s| s.as_str()).collect::<Vec<_>>());
+    let display_names: Vec<String> = schedulers.iter().map(|s| humanize_name(s)).collect();
+    let list = StringList::new(&display_names.iter().map(|s| s.as_str()).collect::<Vec<_>>());
     combo.set_model(Some(&list));
     if !schedulers.is_empty() {
         combo.set_selected(0);
@@ -302,7 +305,7 @@ fn update_status_labels(builder: &Builder, is_active: bool, name: &str, mode: &s
     let mode_label = extract_widget::<Label>(builder, "mode_label");
 
     if is_active {
-        active_label.set_text(name);
+        active_label.set_text(&humanize_name(name));
         active_label.remove_css_class("dim-label");
         active_label.add_css_class("accent");
         mode_label.set_text(mode);
@@ -359,4 +362,13 @@ fn get_status() -> (bool, String, String) {
             (false, String::new(), String::new())
         })
         .unwrap_or((false, String::new(), String::new()))
+}
+
+fn humanize_name(name: &str) -> String {
+    let name = name.strip_prefix("scx_").unwrap_or(name);
+    let mut chars = name.chars();
+    match chars.next() {
+        None => String::new(),
+        Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
+    }
 }

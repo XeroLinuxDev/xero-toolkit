@@ -32,6 +32,7 @@ pub mod paths {
     pub const CLIENT: &str = "/opt/xero-toolkit/xero-auth";
 
     /// Path to the sources directory (contains scripts and systemd).
+    #[allow(dead_code)]
     pub const SOURCES: &str = "/opt/xero-toolkit/sources";
 
     /// Path to the scripts directory.
@@ -57,6 +58,7 @@ pub mod paths {
     }
 
     /// Get the sources path as a PathBuf.
+    #[allow(dead_code)]
     pub fn sources() -> PathBuf {
         PathBuf::from(SOURCES)
     }
