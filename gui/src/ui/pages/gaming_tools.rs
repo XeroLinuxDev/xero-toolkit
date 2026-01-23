@@ -305,27 +305,27 @@ fn setup_falcond(builder: &Builder, window: &ApplicationWindow) {
             )
             .then(
                 Command::builder()
-                .privileged()
-                .program("mkdir")
-                .args(&["-p", "/usr/share/falcond/profiles/user"])
-                .description("Creating necessary user directory...")
-                .build(),
+                    .privileged()
+                    .program("mkdir")
+                    .args(&["-p", "/usr/share/falcond/profiles/user"])
+                    .description("Creating necessary user directory...")
+                    .build(),
             )
             .then(
                 Command::builder()
-                .privileged()
-                .program("chown")
-                .args(&[":falcond", "/usr/share/falcond/profiles/user"])
-                .description("Adding propper ownership permissions...")
-                .build(),
+                    .privileged()
+                    .program("chown")
+                    .args(&[":falcond", "/usr/share/falcond/profiles/user"])
+                    .description("Adding propper ownership permissions...")
+                    .build(),
             )
             .then(
                 Command::builder()
-                .privileged()
-                .program("chmod")
-                .args(&["2775", "/usr/share/falcond/profiles/user"])
-                .description("Adding propper executable permissions...")
-                .build(),
+                    .privileged()
+                    .program("chmod")
+                    .args(&["2775", "/usr/share/falcond/profiles/user"])
+                    .description("Adding propper executable permissions...")
+                    .build(),
             )
             .then(
                 Command::builder()

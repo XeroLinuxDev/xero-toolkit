@@ -159,32 +159,7 @@
                                                     </object>
                                                 </child>
 
-                                                <!-- Loading State -->
-                                                <child>
-                                                    <object class="GtkBox" id="loading_box">
-                                                        <property name="orientation">horizontal</property>
-                                                        <property name="spacing">8</property>
-                                                        <property name="halign">center</property>
-                                                        <property name="margin-top">12</property>
-                                                        <property name="margin-bottom">12</property>
-                                                        <property name="visible">false</property>
 
-                                                        <child>
-                                                            <object class="GtkSpinner" id="loading_spinner">
-                                                                <property name="spinning">true</property>
-                                                            </object>
-                                                        </child>
-
-                                                        <child>
-                                                            <object class="GtkLabel">
-                                                                <property name="label">Scanning for kernels...</property>
-                                                                <style>
-                                                                    <class name="dim-label"/>
-                                                                </style>
-                                                            </object>
-                                                        </child>
-                                                    </object>
-                                                </child>
 
                                                 <!-- Kernel Lists -->
                                                 <child>

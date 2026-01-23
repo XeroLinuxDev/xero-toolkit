@@ -13,7 +13,6 @@ use gtk4::prelude::*;
 use gtk4::{ApplicationWindow, Box as GtkBox, Builder, Button, Image, Label, ListBox, Orientation};
 use log::{info, warn};
 use std::process::{Command as StdCommand, Stdio};
-use std::sync::mpsc;
 
 /// Set up all button handlers for the kernel manager page.
 pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
@@ -23,11 +22,7 @@ pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &
 
 /// Initialize and populate kernel lists.
 fn setup_kernel_lists(builder: &Builder, window: &ApplicationWindow) {
-    let window = window.clone();
-    let builder = builder.clone();
-    glib::spawn_future_local(async move {
-        scan_and_populate_kernels(&builder, &window).await;
-    });
+    scan_and_populate_kernels(builder, window, None);
 }
 
 /// Set up refresh button to rescan kernels.
@@ -38,47 +33,42 @@ fn setup_refresh_button(builder: &Builder, window: &ApplicationWindow) {
 
     button.connect_clicked(move |btn| {
         info!("Refresh kernels button clicked");
-        let builder = builder.clone();
-        let window = window.clone();
-
-        // Make the button icon spin
-        btn.set_sensitive(false);
-        // Find the Image widget inside the Box child
-        if let Some(box_child) = btn.child().and_downcast::<GtkBox>() {
-            if let Some(image) = box_child.first_child().and_downcast::<Image>() {
-                image.add_css_class("spinning");
-            }
-        }
-        let btn_clone = btn.clone();
-
-        glib::spawn_future_local(async move {
-            scan_and_populate_kernels(&builder, &window).await;
-
-            // Stop spinning and re-enable button after scan
-            btn_clone.set_sensitive(true);
-            // Find the Image widget inside the Box child
-            if let Some(box_child) = btn_clone.child().and_downcast::<GtkBox>() {
-                if let Some(image) = box_child.first_child().and_downcast::<Image>() {
-                    image.remove_css_class("spinning");
-                }
-            }
-        });
+        scan_and_populate_kernels(&builder, &window, Some(btn));
     });
 }
 
 /// Scan for available and installed kernels and populate lists.
-async fn scan_and_populate_kernels(builder: &Builder, window: &ApplicationWindow) {
+fn scan_and_populate_kernels(
+    builder: &Builder,
+    window: &ApplicationWindow,
+    refresh_btn: Option<&Button>,
+) {
     info!("Scanning for kernels...");
 
     let builder = builder.clone();
     let window = window.clone();
+    let btn_opt = refresh_btn.cloned();
 
-    // Show loading state (keep the lists visible, just show loading indicator)
-    let loading_box = extract_widget::<GtkBox>(&builder, "loading_box");
-    loading_box.set_visible(true);
+    // Disable content while scanning
+    let content_box = extract_widget::<GtkBox>(&builder, "content_box");
+    content_box.set_sensitive(false);
 
-    // Create a channel to communicate between threads
-    let (sender, receiver) = mpsc::channel();
+    if let Some(btn) = refresh_btn {
+        btn.set_sensitive(false);
+        // Try to find image child to animate
+        if let Some(child) = btn.child() {
+            if let Some(img) = child.downcast_ref::<Image>() {
+                img.add_css_class("spinning");
+            } else if let Some(box_child) = child.downcast_ref::<GtkBox>() {
+                if let Some(img) = box_child.first_child().and_downcast::<Image>() {
+                    img.add_css_class("spinning");
+                }
+            }
+        }
+    }
+
+    // Use std::sync::mpsc for thread communication
+    let (sender, receiver) = std::sync::mpsc::channel::<(Vec<String>, Vec<String>)>();
 
     // Run blocking operations in a separate thread
     std::thread::spawn(move || {
@@ -111,17 +101,57 @@ async fn scan_and_populate_kernels(builder: &Builder, window: &ApplicationWindow
         let _ = sender.send((available_kernels, installed_kernels));
     });
 
-    // Receive results in main thread and update UI
-    glib::idle_add_local_once(move || {
-        if let Ok((available_kernels, installed_kernels)) = receiver.recv() {
-            populate_installed_list(&builder, &installed_kernels, &window);
-            populate_available_list(&builder, &available_kernels, &installed_kernels, &window);
-            update_status_labels(&builder, &available_kernels, &installed_kernels);
+    // Poll for results in main thread
+    glib::timeout_add_local(
+        std::time::Duration::from_millis(100),
+        move || match receiver.try_recv() {
+            Ok((available_kernels, installed_kernels)) => {
+                populate_installed_list(&builder, &installed_kernels, &window);
+                populate_available_list(&builder, &available_kernels, &installed_kernels, &window);
+                update_status_labels(&builder, &available_kernels, &installed_kernels);
 
-            // Hide loading state
-            loading_box.set_visible(false);
-        }
-    });
+                // Re-enable content
+                let content_box = extract_widget::<GtkBox>(&builder, "content_box");
+                content_box.set_sensitive(true);
+
+                // Restore button state
+                if let Some(btn) = &btn_opt {
+                    btn.set_sensitive(true);
+                    if let Some(child) = btn.child() {
+                        if let Some(img) = child.downcast_ref::<Image>() {
+                            img.remove_css_class("spinning");
+                        } else if let Some(box_child) = child.downcast_ref::<GtkBox>() {
+                            if let Some(img) = box_child.first_child().and_downcast::<Image>() {
+                                img.remove_css_class("spinning");
+                            }
+                        }
+                    }
+                }
+
+                glib::ControlFlow::Break
+            }
+            Err(std::sync::mpsc::TryRecvError::Empty) => glib::ControlFlow::Continue,
+            Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                warn!("Kernel scan thread disconnected");
+                // Re-enable content even on failure
+                let content_box = extract_widget::<GtkBox>(&builder, "content_box");
+                content_box.set_sensitive(true);
+                if let Some(btn) = &btn_opt {
+                    btn.set_sensitive(true);
+                    if let Some(child) = btn.child() {
+                        if let Some(img) = child.downcast_ref::<Image>() {
+                            img.remove_css_class("spinning");
+                        } else if let Some(box_child) = child.downcast_ref::<GtkBox>() {
+                            if let Some(img) = box_child.first_child().and_downcast::<Image>() {
+                                img.remove_css_class("spinning");
+                            }
+                        }
+                    }
+                }
+                glib::ControlFlow::Break
+            }
+        },
+    );
 }
 
 /// Get list of available kernel packages from repositories.
@@ -395,11 +425,7 @@ fn install_kernel(kernel_name: &str, window: &ApplicationWindow, builder: &Build
             // Schedule refresh after dialog closes
             glib::timeout_add_seconds_local(2, move || {
                 if !task_runner::is_running() {
-                    let builder = builder_clone.clone();
-                    let window = window_clone.clone();
-                    glib::spawn_future_local(async move {
-                        scan_and_populate_kernels(&builder, &window).await;
-                    });
+                    scan_and_populate_kernels(&builder_clone, &window_clone, None);
                     glib::ControlFlow::Break
                 } else {
                     glib::ControlFlow::Continue
@@ -445,11 +471,7 @@ fn remove_kernel(kernel_name: &str, window: &ApplicationWindow, builder: &Builde
             // Schedule refresh after dialog closes
             glib::timeout_add_seconds_local(2, move || {
                 if !task_runner::is_running() {
-                    let builder = builder_clone.clone();
-                    let window = window_clone.clone();
-                    glib::spawn_future_local(async move {
-                        scan_and_populate_kernels(&builder, &window).await;
-                    });
+                    scan_and_populate_kernels(&builder_clone, &window_clone, None);
                     glib::ControlFlow::Break
                 } else {
                     glib::ControlFlow::Continue

@@ -9,7 +9,7 @@ use crate::ui::utils::{
 };
 use adw::prelude::*;
 use gtk4::glib;
-use gtk4::{ApplicationWindow, Builder, Button, Image, Label, StringList};
+use gtk4::{ApplicationWindow, Box as GtkBox, Builder, Button, Image, Label, StringList};
 use log::{info, warn};
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -34,7 +34,7 @@ pub fn setup_handlers(builder: &Builder, _main_builder: &Builder, window: &Appli
     // Initial scan
     let b = builder.clone();
     let s = Rc::clone(&state);
-    glib::idle_add_local_once(move || refresh_state(&b, &s));
+    glib::idle_add_local_once(move || refresh_state(&b, &s, None));
 
     // Status monitor
     let b = builder.clone();
@@ -79,9 +79,7 @@ fn setup_buttons(builder: &Builder, window: &ApplicationWindow, state: &Rc<RefCe
     let b = builder.clone();
     let s = Rc::clone(state);
     extract_widget::<Button>(builder, "btn_refresh_schedulers").connect_clicked(move |btn| {
-        btn.set_sensitive(false);
-        refresh_state(&b, &s);
-        btn.set_sensitive(true);
+        refresh_state(&b, &s, Some(btn));
     });
 
     // Switch button
@@ -252,43 +250,134 @@ fn setup_persistence(builder: &Builder, window: &ApplicationWindow) {
     });
 }
 
-fn refresh_state(builder: &Builder, state: &Rc<RefCell<State>>) {
-    let schedulers = get_schedulers();
-    let (is_active, name, mode) = get_status();
-    let kernel_supported = path_exists(SCHED_EXT_PATH);
+fn refresh_state(builder: &Builder, state: &Rc<RefCell<State>>, refresh_btn: Option<&Button>) {
+    let builder = builder.clone();
+    let state = state.clone();
+    let btn_opt = refresh_btn.cloned();
 
-    {
-        let mut s = state.borrow_mut();
-        s.schedulers = schedulers.clone();
-        s.kernel_supported = kernel_supported;
-        s.is_active = is_active;
+    // Disable controls while refreshing
+    let combo = extract_widget::<adw::ComboRow>(&builder, "scheduler_combo");
+    let mode_combo = extract_widget::<adw::ComboRow>(&builder, "mode_combo");
+    let switch_btn = extract_widget::<Button>(&builder, "btn_switch_scheduler");
+    let stop_btn = extract_widget::<Button>(&builder, "btn_stop_scheduler");
+    let persist = extract_widget::<adw::SwitchRow>(&builder, "persist_switch");
+
+    combo.set_sensitive(false);
+    mode_combo.set_sensitive(false);
+    switch_btn.set_sensitive(false);
+    stop_btn.set_sensitive(false);
+    persist.set_sensitive(false);
+
+    if let Some(btn) = refresh_btn {
+        btn.set_sensitive(false);
+        // Try to find image child to animate
+        if let Some(child) = btn.child() {
+            if let Some(img) = child.downcast_ref::<Image>() {
+                img.add_css_class("spinning");
+            } else if let Some(box_child) = child.downcast_ref::<GtkBox>() {
+                if let Some(img) = box_child.first_child().and_downcast::<Image>() {
+                    img.add_css_class("spinning");
+                }
+            }
+        }
     }
 
-    // Populate dropdown
-    let combo = extract_widget::<adw::ComboRow>(builder, "scheduler_combo");
-    let display_names: Vec<String> = schedulers.iter().map(|s| humanize_name(s)).collect();
-    let list = StringList::new(&display_names.iter().map(|s| s.as_str()).collect::<Vec<_>>());
-    combo.set_model(Some(&list));
-    if !schedulers.is_empty() {
-        combo.set_selected(0);
-    }
+    // Use std::sync::mpsc for thread communication
+    let (sender, receiver) =
+        std::sync::mpsc::channel::<(Vec<String>, bool, String, String, bool)>();
 
-    // Update status display
-    update_status_labels(builder, is_active, &name, &mode);
+    // Run blocking operations in a separate thread
+    std::thread::spawn(move || {
+        let schedulers = get_schedulers();
+        let (is_active, name, mode) = get_status();
+        let kernel_supported = path_exists(SCHED_EXT_PATH);
+        let _ = sender.send((schedulers, is_active, name, mode, kernel_supported));
+    });
 
-    // Update buttons
-    let can_switch = kernel_supported && !schedulers.is_empty();
-    extract_widget::<Button>(builder, "btn_switch_scheduler").set_sensitive(can_switch);
-    extract_widget::<Button>(builder, "btn_stop_scheduler").set_sensitive(is_active);
+    // Poll for results in main thread
+    glib::timeout_add_local(
+        std::time::Duration::from_millis(100),
+        move || match receiver.try_recv() {
+            Ok((schedulers, is_active, name, mode, kernel_supported)) => {
+                {
+                    let mut s = state.borrow_mut();
+                    s.schedulers = schedulers.clone();
+                    s.kernel_supported = kernel_supported;
+                    s.is_active = is_active;
+                }
 
-    // Update persistence
-    extract_widget::<adw::SwitchRow>(builder, "persist_switch")
-        .set_active(is_service_enabled("scx.service"));
+                // Populate dropdown
+                let display_names: Vec<String> =
+                    schedulers.iter().map(|s| humanize_name(s)).collect();
+                let list =
+                    StringList::new(&display_names.iter().map(|s| s.as_str()).collect::<Vec<_>>());
+                combo.set_model(Some(&list));
+                if !schedulers.is_empty() {
+                    combo.set_selected(0);
+                }
 
-    info!(
-        "Found {} schedulers, active={}",
-        schedulers.len(),
-        is_active
+                // Update status display
+                update_status_labels(&builder, is_active, &name, &mode);
+
+                // Update buttons and re-enable controls
+                combo.set_sensitive(true);
+                mode_combo.set_sensitive(true);
+                persist.set_sensitive(true);
+
+                let can_switch = kernel_supported && !schedulers.is_empty();
+                switch_btn.set_sensitive(can_switch);
+                stop_btn.set_sensitive(is_active);
+
+                // Update persistence state
+                persist.set_active(is_service_enabled("scx.service"));
+
+                // Restore refresh button
+                if let Some(btn) = &btn_opt {
+                    btn.set_sensitive(true);
+                    if let Some(child) = btn.child() {
+                        if let Some(img) = child.downcast_ref::<Image>() {
+                            img.remove_css_class("spinning");
+                        } else if let Some(box_child) = child.downcast_ref::<GtkBox>() {
+                            if let Some(img) = box_child.first_child().and_downcast::<Image>() {
+                                img.remove_css_class("spinning");
+                            }
+                        }
+                    }
+                }
+
+                info!(
+                    "Found {} schedulers, active={}",
+                    schedulers.len(),
+                    is_active
+                );
+
+                glib::ControlFlow::Break
+            }
+            Err(std::sync::mpsc::TryRecvError::Empty) => glib::ControlFlow::Continue,
+            Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                warn!("Scheduler scan thread disconnected");
+                // Re-enable controls on failure
+                combo.set_sensitive(true);
+                mode_combo.set_sensitive(true);
+                switch_btn.set_sensitive(true);
+                stop_btn.set_sensitive(true);
+                persist.set_sensitive(true);
+
+                if let Some(btn) = &btn_opt {
+                    btn.set_sensitive(true);
+                    if let Some(child) = btn.child() {
+                        if let Some(img) = child.downcast_ref::<Image>() {
+                            img.remove_css_class("spinning");
+                        } else if let Some(box_child) = child.downcast_ref::<GtkBox>() {
+                            if let Some(img) = box_child.first_child().and_downcast::<Image>() {
+                                img.remove_css_class("spinning");
+                            }
+                        }
+                    }
+                }
+                glib::ControlFlow::Break
+            }
+        },
     );
 }
 
