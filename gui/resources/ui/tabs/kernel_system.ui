@@ -288,34 +288,6 @@
                                                 <property name="orientation">vertical</property>
                                                 <property name="spacing">24</property>
 
-                                                <!-- Introduction -->
-                                                <child>
-                                                    <object class="GtkBox">
-                                                        <property name="orientation">vertical</property>
-                                                        <property name="spacing">6</property>
-                                                        <property name="margin-bottom">12</property>
-                                                        <child>
-                                                            <object class="GtkLabel">
-                                                                <property name="label">Sched-ext Manager</property>
-                                                                <property name="xalign">0</property>
-                                                                <style>
-                                                                    <class name="title-2"/>
-                                                                </style>
-                                                            </object>
-                                                        </child>
-                                                        <child>
-                                                            <object class="GtkLabel">
-                                                                <property name="label">Manage BPF-based CPU schedulers for enhanced system performance and latency control.</property>
-                                                                <property name="wrap">true</property>
-                                                                <property name="xalign">0</property>
-                                                                <style>
-                                                                    <class name="dim-label"/>
-                                                                </style>
-                                                            </object>
-                                                        </child>
-                                                    </object>
-                                                </child>
-
                                                 <!-- System Status -->
                                                 <child>
                                                     <object class="AdwPreferencesGroup">
