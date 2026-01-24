@@ -548,7 +548,7 @@ fn show_scheduler_selector(
 
                 if let Some(ref current) = current_selected {
                     if current == item {
-                        row.add_suffix(&gtk4::Image::from_icon_name("object-select-symbolic"));
+                        row.add_suffix(&gtk4::Image::from_icon_name("circle-check-symbolic"));
                     }
                 }
 
@@ -592,7 +592,7 @@ fn show_scheduler_selector(
 
             if let Some(ref current) = current_selected {
                 if current == item {
-                    row.add_suffix(&gtk4::Image::from_icon_name("object-select-symbolic"));
+                    row.add_suffix(&gtk4::Image::from_icon_name("circle-check-symbolic"));
                 }
             }
 
