@@ -224,8 +224,28 @@ fn setup_persistence(builder: &Builder, window: &ApplicationWindow) {
                         Command::builder()
                             .privileged()
                             .program("systemctl")
-                            .args(&["enable", "scx.service"])
-                            .description("Enabling service...")
+                            .args(&["enable", "--now", "scx.service"])
+                            .description("Enabling and starting service...")
+                            .build(),
+                    )
+                    .then(
+                        Command::builder()
+                            .privileged()
+                            .program("mkdir")
+                            .args(&["-p", "/etc/systemd/system/sysinit.target.wants"])
+                            .description("Preparing sysinit target...")
+                            .build(),
+                    )
+                    .then(
+                        Command::builder()
+                            .privileged()
+                            .program("ln")
+                            .args(&[
+                                "-sf",
+                                "/etc/systemd/system/scx.service",
+                                "/etc/systemd/system/sysinit.target.wants/scx.service",
+                            ])
+                            .description("Linking to sysinit...")
                             .build(),
                     )
                     .build(),
@@ -235,6 +255,14 @@ fn setup_persistence(builder: &Builder, window: &ApplicationWindow) {
             task_runner::run(
                 w.upcast_ref(),
                 CommandSequence::new()
+                    .then(
+                        Command::builder()
+                            .privileged()
+                            .program("systemctl")
+                            .args(&["stop", "scx.service"])
+                            .description("Stopping service...")
+                            .build(),
+                    )
                     .then(
                         Command::builder()
                             .privileged()
