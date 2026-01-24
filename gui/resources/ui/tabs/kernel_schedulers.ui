@@ -72,11 +72,9 @@
                 <property name="margin-top">8</property>
                 <property name="margin-bottom">0</property>
                 <child>
-                    <object class="GtkStackSwitcher">
+                    <object class="AdwViewSwitcher">
                         <property name="stack">content_stack</property>
-                        <style>
-                            <class name="linked"/>
-                        </style>
+                        <property name="policy">wide</property>
                     </object>
                 </child>
             </object>
@@ -95,6 +93,7 @@
                     <object class="GtkStackPage">
                         <property name="name">kernel_manager</property>
                         <property name="title">Kernel Manager</property>
+                        <property name="icon-name">box-symbolic</property>
                         <property name="child">
                             <object class="GtkScrolledWindow">
                                 <property name="vexpand">true</property>
@@ -246,6 +245,7 @@
                     <object class="GtkStackPage">
                         <property name="name">scx_scheduler</property>
                         <property name="title">SCX Scheduler</property>
+                        <property name="icon-name">gauge-symbolic</property>
                         <property name="child">
                             <object class="GtkScrolledWindow">
                                 <property name="vexpand">true</property>
