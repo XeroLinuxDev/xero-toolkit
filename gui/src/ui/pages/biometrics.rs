@@ -37,6 +37,15 @@ fn setup_fingerprint(page_builder: &Builder, window: &ApplicationWindow) {
     let is_installed = core::is_package_installed("xfprintd-gui");
     update_button_state(&btn_fingerprint_setup, is_installed);
 
+    // Update on window focus (e.g. after installation completes)
+    let btn_clone = btn_fingerprint_setup.clone();
+    window.connect_is_active_notify(move |window| {
+        if window.is_active() {
+            let is_installed = core::is_package_installed("xfprintd-gui");
+            update_button_state(&btn_clone, is_installed);
+        }
+    });
+
     let window = window.clone();
     btn_fingerprint_setup.connect_clicked(move |_| {
         info!("Biometrics: Fingerprint setup button clicked");
@@ -78,6 +87,15 @@ fn setup_howdy(page_builder: &Builder, window: &ApplicationWindow) {
     // Initial check
     let is_installed = core::is_package_installed("xero-howdy-qt");
     update_button_state(&btn_howdy_setup, is_installed);
+
+    // Update on window focus (e.g. after installation completes)
+    let btn_clone = btn_howdy_setup.clone();
+    window.connect_is_active_notify(move |window| {
+        if window.is_active() {
+            let is_installed = core::is_package_installed("xero-howdy-qt");
+            update_button_state(&btn_clone, is_installed);
+        }
+    });
 
     let window = window.clone();
     btn_howdy_setup.connect_clicked(move |_| {
