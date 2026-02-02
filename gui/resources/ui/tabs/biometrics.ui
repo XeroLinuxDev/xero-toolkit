@@ -13,7 +13,8 @@
     <property name="vexpand">true</property>
     <property name="halign">fill</property>
     <property name="valign">fill</property>
-    <!-- Top Section: Compact Header -->
+
+    <!-- Header Section -->
     <child>
       <object class="GtkBox">
         <property name="orientation">horizontal</property>
@@ -46,7 +47,7 @@
             </child>
             <child>
               <object class="GtkLabel">
-                <property name="label">Configure fingerprint and facial recognition authentication</property>
+                <property name="label">Configure fingerprint and facial recognition</property>
                 <property name="css-classes">dim-label</property>
                 <property name="halign">start</property>
                 <property name="xalign">0</property>
@@ -57,7 +58,8 @@
         </child>
       </object>
     </child>
-    <!-- Main Content Section -->
+
+    <!-- Main Content -->
     <child>
       <object class="GtkScrolledWindow">
         <property name="vexpand">true</property>
@@ -65,7 +67,7 @@
         <child>
           <object class="AdwClamp">
             <property name="maximum-size">900</property>
-            <property name="tightening-threshold">700</property>
+            <property name="tightening-threshold">600</property>
             <property name="margin-start">12</property>
             <property name="margin-end">12</property>
             <property name="margin-bottom">48</property>
@@ -75,133 +77,115 @@
                 <property name="orientation">horizontal</property>
                 <property name="spacing">24</property>
                 <property name="halign">center</property>
+                <property name="valign">start</property>
                 <property name="homogeneous">true</property>
+
                 <!-- Fingerprint Card -->
                 <child>
                   <object class="GtkBox">
                     <property name="orientation">vertical</property>
-                    <property name="spacing">0</property>
-                    <property name="hexpand">true</property>
+                    <property name="css-classes">card</property>
+                    <property name="overflow">hidden</property>
                     <child>
-                      <object class="AdwPreferencesGroup">
+                      <object class="GtkPicture">
+                        <property name="file">resource:///xyz/xerolinux/xero-toolkit/icons/scalable/apps/xfprintd-gui.png</property>
+                        <property name="content-fit">cover</property>
+                        <property name="height-request">200</property>
+                        <property name="can-shrink">true</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">12</property>
+                        <property name="margin-top">24</property>
+                        <property name="margin-bottom">24</property>
+                        <property name="margin-start">24</property>
+                        <property name="margin-end">24</property>
                         <child>
-                          <object class="AdwActionRow">
-                            <property name="title">Fingerprint Reader</property>
-                            <property name="subtitle">Setup fingerprint authentication with xfprintd-gui</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="icon-name">xfprintd-gui</property>
-                                <property name="pixel-size">48</property>
-                                <property name="valign">center</property>
-                              </object>
-                            </child>
+                          <object class="GtkLabel">
+                            <property name="label">Fingerprint Reader</property>
+                            <property name="css-classes">title-3</property>
+                            <property name="halign">center</property>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkBox">
-                            <property name="orientation">vertical</property>
-                            <property name="spacing">16</property>
-                            <property name="margin-top">8</property>
-                            <property name="margin-bottom">16</property>
-                            <property name="margin-start">16</property>
-                            <property name="margin-end">16</property>
-                            <child>
-                              <object class="GtkAspectFrame">
-                                <property name="ratio">1.6</property>
-                                <property name="obey-child">false</property>
-                                <child>
-                                  <object class="AdwBin">
-                                    <property name="css-classes">card</property>
-                                    <child>
-                                      <object class="GtkPicture">
-                                        <property name="file">resource:///xyz/xerolinux/xero-toolkit/icons/scalable/apps/xfprintd-gui.png</property>
-                                        <property name="can-shrink">true</property>
-                                        <property name="content-fit">cover</property>
-                                        <property name="halign">fill</property>
-                                        <property name="valign">fill</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="btn_fingerprint_setup">
-                                <property name="label">Setup / Enable</property>
-                                <property name="halign">center</property>
-                                <property name="width-request">160</property>
-                                <property name="css-classes">suggested-action pill</property>
-                              </object>
-                            </child>
+                          <object class="GtkLabel">
+                            <property name="label">Install and configure fingerprint authentication using xfprintd-gui</property>
+                            <property name="css-classes">dim-label</property>
+                            <property name="halign">center</property>
+                            <property name="justify">center</property>
+                            <property name="wrap">true</property>
+                            <property name="lines">2</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_fingerprint_setup">
+                            <property name="label">Setup / Enable</property>
+                            <property name="halign">center</property>
+                            <property name="margin-top">12</property>
+                            <property name="width-request">140</property>
+                            <property name="css-classes">suggested-action pill</property>
                           </object>
                         </child>
                       </object>
                     </child>
                   </object>
                 </child>
+
                 <!-- Howdy Card -->
                 <child>
                   <object class="GtkBox">
                     <property name="orientation">vertical</property>
-                    <property name="spacing">0</property>
-                    <property name="hexpand">true</property>
+                    <property name="css-classes">card</property>
+                    <property name="overflow">hidden</property>
                     <child>
-                      <object class="AdwPreferencesGroup">
+                      <object class="GtkPicture">
+                        <property name="file">resource:///xyz/xerolinux/xero-toolkit/icons/scalable/apps/xero-howdy-qt.png</property>
+                        <property name="content-fit">cover</property>
+                        <property name="height-request">200</property>
+                        <property name="can-shrink">true</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">12</property>
+                        <property name="margin-top">24</property>
+                        <property name="margin-bottom">24</property>
+                        <property name="margin-start">24</property>
+                        <property name="margin-end">24</property>
                         <child>
-                          <object class="AdwActionRow">
-                            <property name="title">Howdy Face Unlock</property>
-                            <property name="subtitle">Setup facial recognition with IR camera support</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="icon-name">camera-web-symbolic</property>
-                                <property name="pixel-size">48</property>
-                                <property name="valign">center</property>
-                              </object>
-                            </child>
+                          <object class="GtkLabel">
+                            <property name="label">Howdy Face Unlock</property>
+                            <property name="css-classes">title-3</property>
+                            <property name="halign">center</property>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkBox">
-                            <property name="orientation">vertical</property>
-                            <property name="spacing">16</property>
-                            <property name="margin-top">8</property>
-                            <property name="margin-bottom">16</property>
-                            <property name="margin-start">16</property>
-                            <property name="margin-end">16</property>
-                            <child>
-                              <object class="GtkAspectFrame">
-                                <property name="ratio">1.6</property>
-                                <property name="obey-child">false</property>
-                                <child>
-                                  <object class="AdwBin">
-                                    <property name="css-classes">card</property>
-                                    <child>
-                                      <object class="GtkPicture">
-                                        <property name="file">resource:///xyz/xerolinux/xero-toolkit/icons/scalable/apps/xero-howdy-qt.png</property>
-                                        <property name="can-shrink">true</property>
-                                        <property name="content-fit">cover</property>
-                                        <property name="halign">fill</property>
-                                        <property name="valign">fill</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="btn_howdy_setup">
-                                <property name="label">Setup / Enable</property>
-                                <property name="halign">center</property>
-                                <property name="width-request">160</property>
-                                <property name="css-classes">suggested-action pill</property>
-                              </object>
-                            </child>
+                          <object class="GtkLabel">
+                            <property name="label">Setup Windows Hello™ style facial recognition with IR camera support</property>
+                            <property name="css-classes">dim-label</property>
+                            <property name="halign">center</property>
+                            <property name="justify">center</property>
+                            <property name="wrap">true</property>
+                            <property name="lines">2</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_howdy_setup">
+                            <property name="label">Setup / Enable</property>
+                            <property name="halign">center</property>
+                            <property name="margin-top">12</property>
+                            <property name="width-request">140</property>
+                            <property name="css-classes">suggested-action pill</property>
                           </object>
                         </child>
                       </object>
                     </child>
                   </object>
                 </child>
+
               </object>
             </child>
           </object>
