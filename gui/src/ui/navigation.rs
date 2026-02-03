@@ -82,18 +82,18 @@ pub const PAGES: &[PageConfig] = &[
         setup_handler: Some(pages::kernel_schedulers::setup_handlers),
     },
     PageConfig {
-        id: "servicing_system_tweaks",
-        title: "Servicing/System tweaks",
-        icon: "toolbox-symbolic",
-        ui_resource: crate::config::resources::tabs::SERVICING_SYSTEM_TWEAKS,
-        setup_handler: Some(pages::servicing::setup_handlers),
-    },
-    PageConfig {
         id: "biometrics",
         title: "Biometrics",
         icon: "fingerprint-symbolic",
         ui_resource: crate::config::resources::tabs::BIOMETRICS,
         setup_handler: Some(pages::biometrics::setup_handlers),
+    },
+    PageConfig {
+        id: "servicing_system_tweaks",
+        title: "Servicing/System tweaks",
+        icon: "toolbox-symbolic",
+        ui_resource: crate::config::resources::tabs::SERVICING_SYSTEM_TWEAKS,
+        setup_handler: Some(pages::servicing::setup_handlers),
     },
 ];
 
