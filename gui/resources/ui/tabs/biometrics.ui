@@ -3,40 +3,6 @@
   <requires lib="gtk" version="4.0"/>
   <requires lib="libadwaita" version="1.0"/>
 
-  <!-- Size Groups for Perfect Vertical Alignment -->
-  <!-- 1. Ensure image containers are the same height -->
-  <object class="GtkSizeGroup">
-    <property name="mode">vertical</property>
-    <widgets>
-      <widget name="frame_fingerprint"/>
-      <widget name="frame_howdy"/>
-    </widgets>
-  </object>
-  <!-- 2. Ensure titles are the same height -->
-  <object class="GtkSizeGroup">
-    <property name="mode">vertical</property>
-    <widgets>
-      <widget name="lbl_fingerprint_title"/>
-      <widget name="lbl_howdy_title"/>
-    </widgets>
-  </object>
-  <!-- 3. Ensure descriptions are the same height (handles wrapping differences) -->
-  <object class="GtkSizeGroup">
-    <property name="mode">vertical</property>
-    <widgets>
-      <widget name="lbl_fingerprint_desc"/>
-      <widget name="lbl_howdy_desc"/>
-    </widgets>
-  </object>
-  <!-- 4. Ensure buttons are the same size -->
-  <object class="GtkSizeGroup">
-    <property name="mode">both</property>
-    <widgets>
-      <widget name="btn_fingerprint_setup"/>
-      <widget name="btn_howdy_setup"/>
-    </widgets>
-  </object>
-
   <object class="GtkBox" id="page_biometrics">
     <property name="orientation">vertical</property>
     <property name="spacing">0</property>
