@@ -20,14 +20,17 @@ const AUR_HELPERS: [&str; 2] = ["paru", "yay"];
 /// Searches for AUR helpers in priority order (paru, then yay).
 /// Returns the first found helper or None if none are available.
 pub fn detect() -> Option<&'static str> {
-    AUR_HELPERS.iter().find(|&&helper| {
-        if is_executable_in_path(helper) {
-            debug!("Found AUR helper: {}", helper);
-            true
-        } else {
-            false
-        }
-    }).copied()
+    AUR_HELPERS
+        .iter()
+        .find(|&&helper| {
+            if is_executable_in_path(helper) {
+                debug!("Found AUR helper: {}", helper);
+                true
+            } else {
+                false
+            }
+        })
+        .copied()
         .or_else(|| {
             debug!("No AUR helper found");
             None

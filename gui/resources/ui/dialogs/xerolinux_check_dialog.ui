@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk" version="4.0" />
-  <requires lib="adw" version="1.0" />
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="adw" version="1.0"/>
   <object class="AdwWindow" id="xerolinux_error_window">
     <property name="title">Xero Toolkit - Limited Support</property>
     <property name="icon-name">xero-toolkit</property>
@@ -33,9 +33,7 @@
                 <property name="halign">center</property>
                 <child>
                   <object class="GtkImage" id="warning_icon">
-                    <property
-                                            name="icon-name"
-                                        >triangle-exclamation-symbolic</property>
+                    <property name="icon-name">triangle-exclamation-symbolic</property>
                     <property name="pixel-size">48</property>
                   </object>
                 </child>
@@ -51,9 +49,7 @@
             <!-- Main message -->
             <child>
               <object class="GtkLabel" id="main_message">
-                <property
-                                    name="label"
-                                >This application is designed for XeroLinux. Some features may not work correctly on other distributions.</property>
+                <property name="label">This application is designed for XeroLinux. Some features may not work correctly on other distributions.</property>
                 <property name="halign">center</property>
                 <property name="margin-top">10</property>
                 <property name="wrap">true</property>
@@ -70,9 +66,7 @@
             <!-- Link -->
             <child>
               <object class="GtkLabel" id="link_label">
-                <property
-                                    name="label"
-                                >For more info visit &lt;a href="https://xerolinux.xyz/"&gt;https://xerolinux.xyz/&lt;/a&gt;</property>
+                <property name="label">For more info visit &lt;a href="https://xerolinux.xyz/"&gt;https://xerolinux.xyz/&lt;/a&gt;</property>
                 <property name="use-markup">true</property>
                 <property name="halign">center</property>
                 <property name="margin-top">10</property>

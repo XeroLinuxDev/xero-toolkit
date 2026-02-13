@@ -18,35 +18,53 @@ pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &
     setup_howdy(page_builder, window);
 }
 
-/// Helper to update button appearance based on installation status
-fn update_button_state(button: &gtk4::Button, is_installed: bool) {
+/// Helper to update button appearance based on installation status and control uninstall button visibility
+fn update_button_state(
+    install_button: &gtk4::Button,
+    uninstall_button: &gtk4::Button,
+    is_installed: bool,
+) {
     if is_installed {
-        button.set_label("Launch App");
-        button.add_css_class("suggested-action");
+        install_button.set_label("Launch App");
+        install_button.add_css_class("suggested-action");
+        // Show uninstall when installed; UI defines icon/styling
+        uninstall_button.set_visible(true);
+        uninstall_button.set_sensitive(true);
     } else {
-        button.set_label("Install");
-        button.remove_css_class("suggested-action");
+        install_button.set_label("Install");
+        install_button.remove_css_class("suggested-action");
+        // Hide uninstall when not installed
+        uninstall_button.set_visible(false);
+        uninstall_button.set_sensitive(false);
     }
 }
 
 fn setup_fingerprint(page_builder: &Builder, window: &ApplicationWindow) {
+    // Both buttons are expected to be defined in the UI; we will simply toggle visibility.
     let btn_fingerprint_setup =
         extract_widget::<gtk4::Button>(page_builder, "btn_fingerprint_setup");
+    let btn_fingerprint_uninstall =
+        extract_widget::<gtk4::Button>(page_builder, "btn_fingerprint_uninstall");
 
     // Initial check
     let is_installed = core::is_package_installed("xfprintd-gui");
-    update_button_state(&btn_fingerprint_setup, is_installed);
+    update_button_state(
+        &btn_fingerprint_setup,
+        &btn_fingerprint_uninstall,
+        is_installed,
+    );
 
     // Update on window focus (e.g. after installation completes)
     let btn_clone = btn_fingerprint_setup.clone();
+    let uninstall_clone = btn_fingerprint_uninstall.clone();
     window.connect_is_active_notify(move |window| {
         if window.is_active() {
             let is_installed = core::is_package_installed("xfprintd-gui");
-            update_button_state(&btn_clone, is_installed);
+            update_button_state(&btn_clone, &uninstall_clone, is_installed);
         }
     });
 
-    let window = window.clone();
+    let window_clone = window.clone();
     btn_fingerprint_setup.connect_clicked(move |_| {
         info!("Biometrics: Fingerprint setup button clicked");
 
@@ -73,11 +91,34 @@ fn setup_fingerprint(page_builder: &Builder, window: &ApplicationWindow) {
                 .build();
 
             task_runner::run(
-                window.upcast_ref(),
+                window_clone.upcast_ref(),
                 commands,
                 "Install Fingerprint GUI Tool",
             );
         }
+    });
+
+    // Uninstall action (button is defined in UI; visibility is toggled by update_button_state)
+    let window_uninstall = window.clone();
+    btn_fingerprint_uninstall.connect_clicked(move |_| {
+        info!("Biometrics: Fingerprint uninstall clicked");
+
+        // Build a removal command sequence via the AUR helper (same pattern as installs)
+        let commands = CommandSequence::new()
+            .then(
+                Command::builder()
+                    .aur()
+                    .args(&["-R", "--noconfirm", "xfprintd-gui"])
+                    .description("Removing Fingerprint GUI Tool...")
+                    .build(),
+            )
+            .build();
+
+        task_runner::run(
+            window_uninstall.upcast_ref(),
+            commands,
+            "Remove Fingerprint GUI Tool",
+        );
     });
 }
 

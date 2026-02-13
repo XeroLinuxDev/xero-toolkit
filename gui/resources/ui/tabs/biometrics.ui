@@ -132,12 +132,31 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton" id="btn_fingerprint_setup">
-                            <property name="label">Setup / Enable</property>
+                          <object class="GtkBox">
+                            <property name="orientation">horizontal</property>
+                            <property name="spacing">8</property>
                             <property name="halign">center</property>
                             <property name="valign">end</property>
-                            <property name="width-request">140</property>
-                            <property name="css-classes">suggested-action pill</property>
+                            <child>
+                              <object class="GtkButton" id="btn_fingerprint_setup">
+                                <property name="label">Setup / Enable</property>
+                                <property name="halign">center</property>
+                                <property name="valign">end</property>
+                                <property name="width-request">140</property>
+                                <property name="css-classes">suggested-action pill</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="btn_fingerprint_uninstall">
+                                <property name="icon-name">trash-symbolic</property>
+                                <property name="visible">false</property>
+                                <property name="halign">center</property>
+                                <property name="valign">end</property>
+                                <property name="width-request">40</property>
+                                <property name="css-classes">pill destructive-action flat</property>
+                                <property name="tooltip-text">Uninstall Fingerprint Tool</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
@@ -197,12 +216,31 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton" id="btn_howdy_setup">
-                            <property name="label">Coming Soon</property>
+                          <object class="GtkBox">
+                            <property name="orientation">horizontal</property>
+                            <property name="spacing">8</property>
                             <property name="halign">center</property>
                             <property name="valign">end</property>
-                            <property name="width-request">140</property>
-                            <property name="css-classes">suggested-action pill</property>
+                            <child>
+                              <object class="GtkButton" id="btn_howdy_setup">
+                                <property name="label">Coming Soon</property>
+                                <property name="halign">center</property>
+                                <property name="valign">end</property>
+                                <property name="width-request">140</property>
+                                <property name="css-classes">suggested-action pill</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="btn_howdy_uninstall">
+                                <property name="icon-name">trash-symbolic</property>
+                                <property name="visible">false</property>
+                                <property name="halign">center</property>
+                                <property name="valign">end</property>
+                                <property name="width-request">40</property>
+                                <property name="css-classes">pill destructive-action flat</property>
+                                <property name="tooltip-text">Uninstall Howdy Tool</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
