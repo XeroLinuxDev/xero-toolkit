@@ -4,7 +4,7 @@
 //! - System update
 //! - Package manager GUI installation
 //! - Download Arch ISO
-//! - External links (Discord, YouTube, Website, Donate)
+//! - External links (YouTube, Website, Donate)
 //! - Nix package manager installation
 //! - OBS-Studio AiO installation
 
@@ -469,12 +469,6 @@ fn setup_install_nix(builder: &Builder, window: &ApplicationWindow) {
 
 /// Setup external link buttons.
 fn setup_external_links(builder: &Builder) {
-    let btn_discord = extract_widget::<Button>(builder, "link_discord");
-    btn_discord.connect_clicked(|_| {
-        info!("Discord link clicked");
-        let _ = core::package::open_url(config::links::DISCORD);
-    });
-
     let btn_youtube = extract_widget::<Button>(builder, "link_youtube");
     btn_youtube.connect_clicked(|_| {
         info!("YouTube link clicked");
