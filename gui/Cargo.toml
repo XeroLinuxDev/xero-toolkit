@@ -27,4 +27,3 @@ toml = "1.0"
 glib-build-tools = "0.21"
 oxipng = {version = "10", default-features = false, features = ["parallel", "zopfli", "system-libdeflate"] }
 walkdir = "2"
-svgtidy = "0.1"

@@ -22,7 +22,8 @@ optdepends=(
 makedepends=(
     'rust'
     'cargo'
-    'pkgconf')
+    'pkgconf'
+    'svgo')
 provides=('xero-toolkit')
 conflicts=('xero-toolkit')
 replaces=('xlapit-cli')

@@ -2,7 +2,7 @@
 //!
 //! Handles resource optimization (PNG/SVG) and GLib resource compilation.
 
-use std::{fs, path::Path};
+use std::{fs, path::Path, process::Command};
 
 use oxipng::{InFile, Options, OutFile};
 use walkdir::WalkDir;
@@ -132,11 +132,26 @@ fn optimize_png(path: &Path) -> Option<(usize, usize)> {
 fn optimize_svg(path: &Path) -> Option<(usize, usize)> {
     let original = fs::read_to_string(path).ok()?;
     let original_size = original.len();
+    if !run_svgo(path) {
+        return None;
+    }
 
-    let optimized = svgtidy::optimize(&original);
-    let optimized_size = optimized.len();
-
-    fs::write(path, &optimized).ok()?;
+    let optimized_size = fs::metadata(path).ok()?.len() as usize;
+    if optimized_size >= original_size {
+        fs::write(path, original).ok()?;
+        return None;
+    }
 
     Some((original_size, optimized_size))
+}
+
+fn run_svgo(path: &Path) -> bool {
+    Command::new("svgo")
+        .arg("--multipass")
+        .arg(path)
+        .arg("-o")
+        .arg(path)
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false)
 }
