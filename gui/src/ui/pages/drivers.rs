@@ -143,6 +143,7 @@ fn setup_cooler_control(builder: &Builder, window: &ApplicationWindow) {
                         "-S",
                         "--noconfirm",
                         "--needed",
+                        "coolercontrol",
                         "coolercontrold",
                         "liquidctl",
                     ])
