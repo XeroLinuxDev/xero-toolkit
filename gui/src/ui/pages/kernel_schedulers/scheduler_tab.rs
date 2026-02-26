@@ -26,6 +26,7 @@ struct State {
 }
 
 pub fn setup_handlers(builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    crate::ui::dialogs::button_info::attach_to_builder(builder, window.upcast_ref());
     let state = Rc::new(RefCell::new(State::default()));
 
     init_kernel_support(builder, &state);

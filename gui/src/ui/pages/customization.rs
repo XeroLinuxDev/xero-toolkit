@@ -17,6 +17,7 @@ use log::info;
 
 /// Set up all button handlers for the customization page.
 pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    crate::ui::dialogs::button_info::attach_to_builder(page_builder, window.upcast_ref());
     setup_zsh_aio(page_builder, window);
     setup_save_desktop(page_builder, window);
     setup_grub_theme(page_builder, window);

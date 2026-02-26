@@ -14,6 +14,7 @@ use std::process::{Command as StdCommand, Stdio};
 
 /// Set up all button handlers for the biometrics page
 pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    crate::ui::dialogs::button_info::attach_to_builder(page_builder, window.upcast_ref());
     setup_fingerprint(page_builder, window);
     setup_howdy(page_builder, window);
 }

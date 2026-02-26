@@ -1,0 +1,56 @@
+[[button]]
+id = "btn_clr_pacman"
+title = "Clear Pacman Cache"
+summary = "Launches interactive cache cleanup command."
+details = ["Good for reclaiming disk space from old packages."]
+caution = "Keep at least one previous version if rollback is needed."
+
+[[button]]
+id = "btn_unlock_pacman"
+title = "Unlock Pacman DB"
+summary = "Removes stale pacman lock state."
+details = ["Useful after interrupted package operations."]
+caution = "Only use if no package manager is currently running."
+
+[[button]]
+id = "btn_pacman_db_fix"
+title = "Pacman DB Fix"
+summary = "Runs repair workflow for package database issues."
+details = ["Useful after key/db corruption symptoms."]
+
+[[button]]
+id = "btn_fix_gpgme"
+title = "Fix GPGME Database"
+summary = "Runs interactive fix for GPGME/key database issues."
+details = ["Can resolve signature verification failures."]
+
+[[button]]
+id = "btn_fix_arch_keyring"
+title = "Fix Arch Keyring"
+summary = "Repairs/upgrades Arch keyring packages."
+details = ["Useful when signature trust is outdated or broken."]
+
+[[button]]
+id = "btn_plasma_x11"
+title = "Plasma X11 Session"
+summary = "Installs or enables Plasma X11 session components."
+details = ["Useful fallback for Wayland-specific issues."]
+
+[[button]]
+id = "btn_update_mirrorlist"
+title = "Update Mirrorlist"
+summary = "Refreshes pacman mirrors through selection dialog."
+details = ["Can improve download speed and mirror reliability."]
+
+[[button]]
+id = "btn_parallel_downloads"
+title = "Parallel Downloads"
+summary = "Adjusts pacman parallel download setting."
+details = ["Higher values can speed package sync/install."]
+caution = "Excessive values may overload slower mirrors."
+
+[[button]]
+id = "btn_waydroid_guide"
+title = "Waydroid Guide"
+summary = "Opens external setup guide for Waydroid."
+details = ["No direct install action is executed by this button."]

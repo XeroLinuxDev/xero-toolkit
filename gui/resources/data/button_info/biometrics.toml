@@ -1,0 +1,26 @@
+[[button]]
+id = "btn_fingerprint_setup"
+title = "Fingerprint Setup"
+summary = "Installs or launches the fingerprint GUI tool."
+details = [
+  "If already installed, it launches the app directly.",
+  "Otherwise it installs the package first.",
+]
+
+[[button]]
+id = "btn_fingerprint_uninstall"
+title = "Fingerprint Uninstall"
+summary = "Removes fingerprint GUI package."
+details = ["Shown only when package is currently installed."]
+
+[[button]]
+id = "btn_howdy_setup"
+title = "Howdy Setup"
+summary = "Reserved for facial recognition setup flow."
+details = ["Currently disabled in this build."]
+
+[[button]]
+id = "btn_howdy_uninstall"
+title = "Howdy Uninstall"
+summary = "Reserved for future Howdy removal flow."
+details = ["May be hidden/unused depending on current UI state."]

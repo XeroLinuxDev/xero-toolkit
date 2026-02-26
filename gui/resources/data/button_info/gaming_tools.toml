@@ -1,0 +1,61 @@
+[[button]]
+id = "btn_steam_aio"
+title = "Steam AiO"
+summary = "Installs Steam plus common gaming dependencies."
+details = [
+  "Includes 32-bit libraries and compatibility packages.",
+  "Runs as one large package batch.",
+]
+caution = "This can take significant time and download bandwidth."
+
+[[button]]
+id = "btn_lutris"
+title = "Lutris"
+summary = "Installs Lutris and related Vulkan layers."
+details = [
+  "Uses Flatpak install flow.",
+  "Targets game launcher/library management.",
+]
+
+[[button]]
+id = "btn_heroic"
+title = "Heroic Games Launcher"
+summary = "Installs Heroic with helper layers for gaming."
+details = [
+  "Uses Flatpak source.",
+  "Suitable for Epic/GOG management workflows.",
+]
+
+[[button]]
+id = "btn_bottles"
+title = "Bottles"
+summary = "Installs Bottles for Wine prefix management."
+details = [
+  "Useful for Windows app/game compatibility setups.",
+  "Installs via Flatpak.",
+]
+
+[[button]]
+id = "btn_lact_oc"
+title = "LACT GPU Tools"
+summary = "Installs LACT and enables lactd service."
+details = [
+  "Provides GPU tuning and monitoring utilities.",
+  "Service starts immediately after setup.",
+]
+caution = "Aggressive GPU tuning can cause instability."
+
+[[button]]
+id = "btn_controller"
+title = "Controller Tools"
+summary = "Installs controller drivers and management tools."
+details = [
+  "Includes packages for Xbox and DualSense ecosystems.",
+  "Useful for broad gamepad compatibility.",
+]
+
+[[button]]
+id = "btn_falcond"
+title = "Falcond"
+summary = "Installs Falcond utility for gaming workflows."
+details = ["Runs package installation in task runner."]

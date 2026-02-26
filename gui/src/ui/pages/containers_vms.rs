@@ -20,6 +20,7 @@ use log::info;
 
 /// Set up all button handlers for the containers/VMs page.
 pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    crate::ui::dialogs::button_info::attach_to_builder(page_builder, window.upcast_ref());
     setup_docker(page_builder, window);
     setup_podman(page_builder, window);
     setup_vbox(page_builder, window);

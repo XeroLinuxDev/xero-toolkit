@@ -1,0 +1,40 @@
+[[button]]
+id = "btn_zsh_aio"
+title = "ZSH AiO"
+summary = "Installs and configures ZSH enhancement stack."
+details = [
+  "Targets shell setup and convenience plugins.",
+  "May modify shell config files.",
+]
+
+[[button]]
+id = "btn_grub_theme"
+title = "GRUB Theme"
+summary = "Installs or applies a themed GRUB appearance."
+details = ["Updates bootloader visual assets."]
+caution = "Incorrect GRUB edits can impact boot menu behavior."
+
+[[button]]
+id = "btn_plymouth_manager"
+title = "Plymouth Manager"
+summary = "Installs/configures Plymouth boot splash tooling."
+details = ["Used for boot splash theme management."]
+
+[[button]]
+id = "btn_layan_patch"
+title = "Layan Patch"
+summary = "Applies Layan-related customization patch."
+details = ["Targets desktop visual/theme adjustments."]
+
+[[button]]
+id = "btn_save_desktop"
+title = "Save Desktop"
+summary = "Backs up desktop customization state."
+details = ["Useful before trying risky appearance changes."]
+
+[[button]]
+id = "btn_config_reset"
+title = "Reset Config"
+summary = "Resets selected desktop/toolkit configuration."
+details = ["Restores defaults for affected components."]
+caution = "This can remove personalized tweaks."

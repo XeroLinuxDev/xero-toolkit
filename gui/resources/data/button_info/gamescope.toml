@@ -1,0 +1,5 @@
+[[button]]
+id = "btn_copy_command"
+title = "Copy Gamescope Command"
+summary = "Copies the generated gamescope command to clipboard."
+details = ["Use this to paste into launch options or shell scripts."]

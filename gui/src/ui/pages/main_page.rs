@@ -24,6 +24,7 @@ use log::info;
 
 /// Set up all button handlers for the main page.
 pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    crate::ui::dialogs::button_info::attach_to_builder(page_builder, window.upcast_ref());
     setup_update_system(page_builder, window);
     setup_pkg_manager(page_builder, window);
     setup_download_arch_iso(page_builder, window);

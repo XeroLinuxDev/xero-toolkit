@@ -1,0 +1,45 @@
+[[button]]
+id = "btn_docker"
+title = "Docker Setup"
+summary = "Installs Docker and enables daemon/service access."
+details = [
+  "Creates docker group if missing.",
+  "Adds your user to docker group.",
+]
+caution = "Relog is typically needed for new group permissions."
+
+[[button]]
+id = "btn_podman"
+title = "Podman Setup"
+summary = "Installs Podman stack with optional Desktop UI."
+details = [
+  "Enables podman socket service.",
+  "Desktop GUI can be installed via Flatpak.",
+]
+
+[[button]]
+id = "btn_vbox"
+title = "VirtualBox"
+summary = "Installs VirtualBox meta package."
+details = ["Provides desktop VM virtualization tooling."]
+
+[[button]]
+id = "btn_kvm"
+title = "KVM / QEMU"
+summary = "Installs KVM/QEMU virtualization stack and helpers."
+details = [
+  "Can adjust networking/service dependencies.",
+  "Targets libvirt/qemu based VM setups.",
+]
+
+[[button]]
+id = "btn_distrobox"
+title = "DistroBox"
+summary = "Installs DistroBox and BoxBuddy frontend."
+details = ["Combines CLI tooling with optional GUI management."]
+
+[[button]]
+id = "btn_ipa_sideloader"
+title = "iPA Sideloader"
+summary = "Installs sideloading toolchain for iOS packages."
+details = ["Designed for testing/utility sideload workflows."]

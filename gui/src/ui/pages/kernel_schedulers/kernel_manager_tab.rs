@@ -16,6 +16,7 @@ use std::process::{Command as StdCommand, Stdio};
 
 /// Set up all button handlers for the kernel manager page.
 pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    crate::ui::dialogs::button_info::attach_to_builder(page_builder, window.upcast_ref());
     setup_kernel_lists(page_builder, window);
     setup_refresh_button(page_builder, window);
 }

@@ -24,6 +24,7 @@ use log::info;
 
 /// Set up all button handlers for the servicing/system tweaks page
 pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    crate::ui::dialogs::button_info::attach_to_builder(page_builder, window.upcast_ref());
     setup_clr_pacman(page_builder, window);
     setup_unlock_pacman(page_builder, window);
     setup_plasma_x11(page_builder, window);

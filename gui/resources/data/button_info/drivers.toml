@@ -1,0 +1,77 @@
+[[button]]
+id = "btn_nvidia_legacy"
+title = "NVIDIA Legacy Drivers"
+summary = "Installs legacy 580xx NVIDIA stack for older GPUs."
+details = [
+  "Applies bootloader/initramfs scripts after package install.",
+  "Designed for older NVIDIA generations only.",
+]
+caution = "Using this on unsupported GPUs may break graphics boot."
+
+[[button]]
+id = "btn_tailscale"
+title = "Tailscale VPN"
+summary = "Installs Tailscale and related setup tooling."
+details = [
+  "Runs installation through a remote script workflow.",
+  "After install, you still need to authenticate your node.",
+]
+caution = "Always verify your VPN login and exit-node settings."
+
+[[button]]
+id = "btn_cuda"
+title = "NVIDIA CUDA"
+summary = "Installs CUDA toolkit variants for development."
+details = [
+  "Presents version selection before install.",
+  "Useful for ML workloads and GPU compute stacks.",
+]
+caution = "CUDA version must match your driver and framework requirements."
+
+[[button]]
+id = "btn_rocm"
+title = "AMD ROCm"
+summary = "Installs ROCm compute stack for compatible AMD GPUs."
+details = [
+  "Targets compute and AI workflows.",
+  "Can pull a large dependency graph.",
+]
+caution = "Verify hardware compatibility before installing."
+
+[[button]]
+id = "btn_openrazer"
+title = "OpenRazer Drivers"
+summary = "Installs Razer device drivers and optional frontend apps."
+details = [
+  "Adds your user to plugdev for device access.",
+  "Frontend selection is optional.",
+]
+caution = "Relog may be required after group membership changes."
+
+[[button]]
+id = "btn_asus_rog"
+title = "ASUS ROG Tools"
+summary = "Installs asusctl stack and enables related services."
+details = [
+  "Includes control center and GPU switching tools.",
+  "Services are enabled immediately after installation.",
+]
+
+[[button]]
+id = "btn_cooler_control"
+title = "Cooler Control"
+summary = "Installs coolercontrol and enables its daemon."
+details = [
+  "Useful for fan/pump curves and thermal profiles.",
+  "Also installs liquidctl integration.",
+]
+caution = "Incorrect fan curves may increase temperatures."
+
+[[button]]
+id = "btn_zenergy"
+title = "Zenergy Driver"
+summary = "Installs zenergy DKMS package for supported hardware."
+details = [
+  "Builds kernel modules on install.",
+  "DKMS modules rebuild on kernel updates.",
+]

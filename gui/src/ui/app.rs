@@ -39,11 +39,10 @@ pub fn setup_application_ui(app: &Application) {
     let builder = Builder::from_resource(config::resources::MAIN_UI);
     let window = create_main_window(app, &builder);
 
-    window.present();
-
     info!("Initializing environment variables");
     if let Err(e) = config::env::init() {
         error!("Failed to initialize environment variables: {}", e);
+        window.present();
         crate::ui::dialogs::error::show_error(
             &window,
             &format!(
@@ -53,6 +52,21 @@ pub fn setup_application_ui(app: &Application) {
         );
         return;
     }
+
+    let tabs_container = extract_widget(&builder, "tabs_container");
+
+    let stack = navigation::create_stack_and_tabs(&tabs_container, &builder);
+
+    let ctx = setup_ui_components(&builder, stack, &window, config.clone());
+
+    info!("Setting initial view to first page");
+    if let Some(first_page) = navigation::PAGES.first() {
+        ctx.navigate_to_page(first_page.id);
+    }
+
+    crate::ui::seasonal::apply_seasonal_effects(&window);
+
+    window.present();
 
     let distribution_name = core::get_distribution_name()
         .unwrap_or_else(|| "Unknown".to_string())
@@ -76,33 +90,43 @@ pub fn setup_application_ui(app: &Application) {
         }
     }
 
-    let tabs_container = extract_widget(&builder, "tabs_container");
+    start_dependency_checks_async(window.clone());
+}
 
-    let stack = navigation::create_stack_and_tabs(&tabs_container, &builder);
+fn start_dependency_checks_async(window: ApplicationWindow) {
+    let (dependency_tx, dependency_rx) = async_channel::bounded(1);
 
-    let ctx = setup_ui_components(&builder, stack, &window, config.clone());
+    std::thread::spawn(move || {
+        info!("Running dependency checks on background thread");
+        let dependency_result = core::check_dependencies();
 
-    info!("Setting initial view to first page");
-    if let Some(first_page) = navigation::PAGES.first() {
-        ctx.navigate_to_page(first_page.id);
-    }
+        if let Err(e) = dependency_tx.send_blocking(dependency_result) {
+            error!("Failed to send dependency check result: {}", e);
+        }
+    });
 
-    crate::ui::seasonal::apply_seasonal_effects(&window);
+    glib::MainContext::default().spawn_local(async move {
+        let dependency_result = match dependency_rx.recv().await {
+            Ok(result) => result,
+            Err(e) => {
+                error!("Failed to receive dependency check result: {}", e);
+                return;
+            }
+        };
 
-    info!("Running dependency checks");
-    let dependency_result = core::check_dependencies();
-    if dependency_result.has_missing_dependencies() {
-        core::show_dependency_error_dialog(&window, &dependency_result);
-        return;
-    }
+        if dependency_result.has_missing_dependencies() {
+            core::show_dependency_error_dialog(&window, &dependency_result);
+            return;
+        }
 
-    if core::aur::init() {
-        info!("AUR helper initialized successfully");
-    } else {
-        warn!("No AUR helper detected");
-    }
+        if core::aur::init() {
+            info!("AUR helper initialized successfully");
+        } else {
+            warn!("No AUR helper detected");
+        }
 
-    info!("Xero Toolkit application startup complete");
+        info!("Xero Toolkit application startup complete");
+    });
 }
 
 fn setup_resources_and_theme() {
@@ -201,6 +225,7 @@ fn setup_about_button(builder: &Builder, window: &ApplicationWindow) {
     use crate::ui::dialogs::about;
 
     let button = extract_widget::<gtk4::Button>(builder, "about_button");
+    crate::ui::dialogs::button_info::attach_to_button(&button, window.upcast_ref(), "about_button");
     let window_clone = window.clone();
     button.connect_clicked(move |_| {
         info!("About button clicked");

@@ -1,0 +1,75 @@
+[[button]]
+id = "about_button"
+title = "About Xero Toolkit"
+summary = "Shows app version, credits, and project links."
+details = [
+  "Useful for checking your installed toolkit version.",
+  "Includes upstream project and creator context.",
+]
+
+[[button]]
+id = "btn_update_system"
+title = "System Update"
+summary = "Runs your system update workflow from terminal."
+details = [
+  "Uses the installed update command configured by your distro.",
+  "You may be prompted for elevated privileges.",
+]
+caution = "Review update output for package conflicts before rebooting."
+
+[[button]]
+id = "btn_install_nix"
+title = "Install Nix"
+summary = "Installs Nix package manager with selectable mode."
+details = [
+  "Opens a warning and a mode selection dialog.",
+  "Can modify shell/profile integration on your system.",
+]
+caution = "Nix adds files outside pacman and may change PATH behavior."
+
+[[button]]
+id = "btn_download_arch_iso"
+title = "Download Arch ISO"
+summary = "Downloads latest Arch ISO to a chosen location."
+details = [
+  "Lets you select save path before download starts.",
+  "Shows progress and supports pause/cancel.",
+]
+caution = "Large download size; ensure free disk space."
+
+[[button]]
+id = "btn_pkg_manager"
+title = "Package Manager GUIs"
+summary = "Install one or more GUI frontends for package management."
+details = [
+  "Shows multi-select options based on installed status.",
+  "Runs selected installs as task sequence.",
+]
+
+[[button]]
+id = "btn_obs_studio_aio"
+title = "OBS Studio AiO"
+summary = "Installs OBS plus optional plugin bundles."
+details = [
+  "OBS itself is always installed.",
+  "Optional bundles include capture, transitions, and tools.",
+]
+caution = "Some plugin sets pull many Flatpak runtimes."
+
+[[button]]
+id = "link_youtube"
+title = "YouTube Link"
+summary = "Opens the official XeroLinux YouTube channel."
+details = ["Uses your default browser."]
+
+[[button]]
+id = "link_website"
+title = "Website Link"
+summary = "Opens the XeroLinux project website."
+details = ["Useful for docs, announcements, and downloads."]
+
+[[button]]
+id = "link_donate"
+title = "Donate Link"
+summary = "Opens the project donation page."
+details = ["Uses your default browser."]

@@ -10,11 +10,8 @@ use log::info;
 use std::rc::Rc;
 
 /// Set up all handlers for the gamescope page.
-pub fn setup_handlers(
-    page_builder: &Builder,
-    _main_builder: &Builder,
-    _window: &ApplicationWindow,
-) {
+pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
+    crate::ui::dialogs::button_info::attach_to_builder(page_builder, window.upcast_ref());
     let widgets = Rc::new(extract_all_widgets(page_builder));
 
     connect_widget_signals(&widgets);

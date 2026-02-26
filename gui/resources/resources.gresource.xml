@@ -22,6 +22,16 @@
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/about_dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/warning_dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/scheduler_selection_dialog.ui</file>
+    <!-- Button info metadata -->
+    <file compressed="true">data/button_info/main_page.toml</file>
+    <file compressed="true">data/button_info/drivers.toml</file>
+    <file compressed="true">data/button_info/gaming_tools.toml</file>
+    <file compressed="true">data/button_info/containers_vms.toml</file>
+    <file compressed="true">data/button_info/customization.toml</file>
+    <file compressed="true">data/button_info/servicing.toml</file>
+    <file compressed="true">data/button_info/biometrics.toml</file>
+    <file compressed="true">data/button_info/gamescope.toml</file>
+    <file compressed="true">data/button_info/kernel_schedulers.toml</file>
     <!-- Stylesheet -->
     <file compressed="true">css/style.css</file>
     <!-- Icons -->

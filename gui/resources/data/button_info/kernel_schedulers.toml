@@ -1,0 +1,24 @@
+[[button]]
+id = "btn_refresh_kernels"
+title = "Refresh Kernel Lists"
+summary = "Rescans available and installed kernels."
+details = ["Temporarily disables controls while scanning pacman data."]
+
+[[button]]
+id = "btn_refresh_schedulers"
+title = "Refresh Scheduler State"
+summary = "Rescans sched-ext scheduler availability and status."
+details = ["Updates UI controls based on active scheduler state."]
+
+[[button]]
+id = "btn_switch_scheduler"
+title = "Switch Scheduler"
+summary = "Starts or switches to selected sched-ext scheduler."
+details = ["Uses selected mode from scheduler settings."]
+caution = "Choosing an unstable scheduler can affect responsiveness."
+
+[[button]]
+id = "btn_stop_scheduler"
+title = "Stop Scheduler"
+summary = "Stops active sched-ext scheduler and reverts fallback."
+details = ["Shows a confirmation dialog before execution."]
