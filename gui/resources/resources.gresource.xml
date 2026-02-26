@@ -20,6 +20,7 @@
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/download_setup_dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/terminal_dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/about_dialog.ui</file>
+    <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/button_info_dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/warning_dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/scheduler_selection_dialog.ui</file>
     <!-- Button info metadata -->

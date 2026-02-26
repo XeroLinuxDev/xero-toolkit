@@ -3,9 +3,9 @@
 //! Button info metadata is loaded from page-scoped TOML files embedded in
 //! GResources so content can be maintained outside Rust source.
 
-use adw::prelude::*;
-use adw::AlertDialog;
-use gtk4::{gio, Builder, Button, GestureClick, Window};
+use crate::ui::utils::extract_widget;
+use gtk4::prelude::*;
+use gtk4::{gio, Box as GtkBox, Builder, Button, GestureClick, Image, Label, Orientation, Window};
 use log::{error, warn};
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -86,27 +86,59 @@ pub fn show_button_info_dialog(parent: &Window, button_id: &str) {
         return;
     };
 
-    let mut body = info.summary.clone();
+    let builder = Builder::from_resource(crate::config::resources::dialogs::BUTTON_INFO);
+
+    let dialog: Window = extract_widget(&builder, "button_info_dialog");
+    dialog.set_transient_for(Some(parent));
+    dialog.set_title(Some(&info.title));
+
+    let title_label: Label = extract_widget(&builder, "info_title_label");
+    let summary_label: Label = extract_widget(&builder, "info_summary_label");
+    let details_header: GtkBox = extract_widget(&builder, "info_details_header_row");
+    let details_box: GtkBox = extract_widget(&builder, "info_details_box");
+    let caution_header: GtkBox = extract_widget(&builder, "info_caution_header_row");
+    let caution_card: GtkBox = extract_widget(&builder, "info_caution_card");
+    let caution_label: Label = extract_widget(&builder, "info_caution_label");
+    let close_button: Button = extract_widget(&builder, "info_close_button");
+
+    title_label.set_label(&info.title);
+    summary_label.set_label(&info.summary);
 
     if !info.details.is_empty() {
-        body.push_str("\n\nDetails:\n");
         for detail in &info.details {
-            body.push_str("- ");
-            body.push_str(detail);
-            body.push('\n');
+            add_detail_row(&details_box, detail);
         }
+    } else {
+        details_header.set_visible(false);
+        details_box.set_visible(false);
     }
 
     if let Some(caution) = &info.caution {
-        body.push_str("\nNote: ");
-        body.push_str(caution);
+        caution_label.set_label(caution);
+    } else {
+        caution_header.set_visible(false);
+        caution_card.set_visible(false);
     }
 
-    let dialog = AlertDialog::new(Some(&info.title), Some(body.trim_end()));
-    dialog.add_response("ok", "OK");
-    dialog.set_default_response(Some("ok"));
-    dialog.set_close_response("ok");
-    dialog.present(Some(parent));
+    let dialog_clone = dialog.clone();
+    close_button.connect_clicked(move |_| dialog_clone.close());
+
+    dialog.present();
+}
+
+fn add_detail_row(details_box: &GtkBox, detail: &str) {
+    let row = GtkBox::new(Orientation::Horizontal, 8);
+
+    let icon = Image::from_icon_name("circle-check-symbolic");
+    icon.set_pixel_size(14);
+    row.append(&icon);
+
+    let label = Label::new(Some(detail));
+    label.set_wrap(true);
+    label.set_xalign(0.0);
+    row.append(&label);
+
+    details_box.append(&row);
 }
 
 fn get_button_info(button_id: &str) -> Option<&'static ButtonInfo> {
