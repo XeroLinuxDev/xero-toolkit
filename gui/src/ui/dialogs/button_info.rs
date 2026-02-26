@@ -95,6 +95,7 @@ pub fn show_button_info_dialog(parent: &Window, button_id: &str) {
     let title_label: Label = extract_widget(&builder, "info_title_label");
     let summary_label: Label = extract_widget(&builder, "info_summary_label");
     let details_header: GtkBox = extract_widget(&builder, "info_details_header_row");
+    let details_frame: gtk4::Frame = extract_widget(&builder, "info_details_frame");
     let details_box: GtkBox = extract_widget(&builder, "info_details_box");
     let caution_header: GtkBox = extract_widget(&builder, "info_caution_header_row");
     let caution_card: GtkBox = extract_widget(&builder, "info_caution_card");
@@ -110,6 +111,7 @@ pub fn show_button_info_dialog(parent: &Window, button_id: &str) {
         }
     } else {
         details_header.set_visible(false);
+        details_frame.set_visible(false);
         details_box.set_visible(false);
     }
 
