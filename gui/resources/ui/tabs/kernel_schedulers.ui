@@ -386,6 +386,22 @@
                                 <property name="icon-name">asterisk-symbolic</property>
                               </object>
                             </child>
+                            <child>
+                              <object class="AdwActionRow">
+                                <property name="title">Scheduler Guide</property>
+                                <property name="subtitle">Profiles and use cases documentation</property>
+                                <property name="icon-name">info-circle-symbolic</property>
+                                <child>
+                                  <object class="GtkButton" id="btn_scheduler_guide">
+                                    <property name="label">Open Guide</property>
+                                    <property name="valign">center</property>
+                                    <style>
+                                      <class name="flat"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <!-- Action Buttons -->

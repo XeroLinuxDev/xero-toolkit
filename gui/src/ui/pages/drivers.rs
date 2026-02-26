@@ -136,32 +136,40 @@ fn setup_cooler_control(builder: &Builder, window: &ApplicationWindow) {
     button.connect_clicked(move |_| {
         info!("Cooler Control button clicked");
 
-        let commands = CommandSequence::new()
-            .then(
-                Command::builder()
-                    .aur()
-                    .args(&[
-                        "-S",
-                        "--noconfirm",
-                        "--needed",
-                        "coolercontrol",
-                        "coolercontrold",
-                        "liquidctl",
-                    ])
-                    .description("Installing Cooler Control daemon and liquidctl...")
-                    .build(),
-            )
-            .then(
-                Command::builder()
-                    .privileged()
-                    .program("systemctl")
-                    .args(&["enable", "--now", "coolercontrold.service"])
-                    .description("Enabling Cooler Control daemon service...")
-                    .build(),
-            )
-            .build();
+        let window_clone = window.clone();
+        show_warning_confirmation(
+            window.upcast_ref(),
+            "Fans Not Detected ?",
+            "Please run <tt>sudo sensors-detect</tt> then <tt>sudo pwmconfig</tt> follow prompts for each then restart the daemon with <tt>sudo systemctl restart coolercontrold</tt>. This should work. Still not working ? Join Cooler Control Discord (<a href=\"https://discord.gg/MbcgUFAfhV\">https://discord.gg/MbcgUFAfhV</a>)",
+            move || {
+                let commands = CommandSequence::new()
+                    .then(
+                        Command::builder()
+                            .aur()
+                            .args(&[
+                                "-S",
+                                "--noconfirm",
+                                "--needed",
+                                "coolercontrol",
+                                "coolercontrold",
+                                "liquidctl",
+                            ])
+                            .description("Installing Cooler Control daemon and liquidctl...")
+                            .build(),
+                    )
+                    .then(
+                        Command::builder()
+                            .privileged()
+                            .program("systemctl")
+                            .args(&["enable", "--now", "coolercontrold.service"])
+                            .description("Enabling Cooler Control daemon service...")
+                            .build(),
+                    )
+                    .build();
 
-        task_runner::run(window.upcast_ref(), commands, "Install Cooler Control");
+                task_runner::run(window_clone.upcast_ref(), commands, "Install Cooler Control");
+            },
+        );
     });
 }
 

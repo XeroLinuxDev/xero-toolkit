@@ -1,6 +1,7 @@
 //! Warning confirmation dialog for experimental features.
 
 use crate::ui::utils::extract_widget;
+use gtk4::glib;
 use gtk4::prelude::*;
 use gtk4::{Builder, Button, Label, Window};
 use log::info;
@@ -32,9 +33,16 @@ where
 
     // Set heading (remove emoji from heading since we have an icon now)
     heading_label.set_label(heading);
+    continue_button.set_label("Continue");
 
     // Set message with Pango markup
     warning_message.set_markup(message);
+    warning_message.connect_activate_link(|_, uri| {
+        if let Err(e) = crate::core::package::open_url(uri) {
+            log::error!("Failed to open URL {}: {}", uri, e);
+        }
+        glib::Propagation::Stop
+    });
 
     // Setup callbacks
     let dialog_clone = dialog.clone();
