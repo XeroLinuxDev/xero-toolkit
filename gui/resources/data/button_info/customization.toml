@@ -1,40 +1,56 @@
 [[button]]
 id = "btn_zsh_aio"
 title = "ZSH AiO"
-summary = "Installs and configures ZSH enhancement stack."
+summary = "Runs full ZSH environment setup, plugin install, and default-shell switch."
 details = [
-  "Targets shell setup and convenience plugins.",
-  "May modify shell config files.",
+  "Installs zsh tooling/fonts, installs Oh My Zsh, clones plugin repos, and downloads Xero .zshrc.",
+  "Backs up existing ~/.zshrc and runs chsh to set /bin/zsh for your user.",
 ]
+caution = "This modifies shell configuration files and your default login shell."
 
 [[button]]
 id = "btn_grub_theme"
 title = "GRUB Theme"
-summary = "Installs or applies a themed GRUB appearance."
-details = ["Updates bootloader visual assets."]
-caution = "Incorrect GRUB edits can impact boot menu behavior."
+summary = "Runs the remote Xero GRUB theme installer script in terminal."
+details = [
+  "Downloads xero-grubs.py into /tmp and launches it with python3.",
+  "Flow is interactive and executed through the terminal dialog.",
+]
+caution = "Bootloader theme operations can affect boot experience if interrupted or misconfigured."
 
 [[button]]
 id = "btn_plymouth_manager"
 title = "Plymouth Manager"
-summary = "Installs/configures Plymouth boot splash tooling."
-details = ["Used for boot splash theme management."]
+summary = "Launches the Xero Plymouth manager tool in terminal."
+details = [
+  "Executes /usr/local/bin/xpm inside terminal dialog.",
+  "Used for splash/theme management tasks.",
+]
 
 [[button]]
 id = "btn_layan_patch"
 title = "Layan Patch"
-summary = "Applies Layan-related customization patch."
-details = ["Targets desktop visual/theme adjustments."]
+summary = "Downloads and installs Layan KDE theme from upstream repository."
+details = [
+  "Clones vinceliuice/Layan-kde into your home directory.",
+  "Runs install.sh with privileges, then removes cloned files.",
+]
 
 [[button]]
 id = "btn_save_desktop"
 title = "Save Desktop"
-summary = "Backs up desktop customization state."
-details = ["Useful before trying risky appearance changes."]
+summary = "Installs the SaveDesktop Flatpak tool."
+details = [
+  "Installs io.github.vikdevelop.SaveDesktop from Flathub.",
+  "This button installs the app; backup actions happen inside that app.",
+]
 
 [[button]]
 id = "btn_config_reset"
 title = "Reset Config"
-summary = "Resets selected desktop/toolkit configuration."
-details = ["Restores defaults for affected components."]
-caution = "This can remove personalized tweaks."
+summary = "Backs up ~/.config, restores /etc/skel defaults, then reboots."
+details = [
+  "Shows warning confirmation before running destructive config reset steps.",
+  "Creates timestamped ~/.config backup before copying fresh defaults.",
+]
+caution = "This intentionally replaces your current home config and triggers immediate reboot."

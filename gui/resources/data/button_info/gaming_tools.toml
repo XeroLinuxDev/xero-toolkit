@@ -1,61 +1,65 @@
 [[button]]
 id = "btn_steam_aio"
 title = "Steam AiO"
-summary = "Installs Steam plus common gaming dependencies."
+summary = "Installs Steam plus a large dependency and compatibility package set."
 details = [
-  "Includes 32-bit libraries and compatibility packages.",
-  "Runs as one large package batch.",
+  "Installs Steam, gamescope, mangohud, wine/proton-related libs, and many 32-bit dependencies.",
+  "Runs as one large AUR-helper package operation in task runner.",
 ]
-caution = "This can take significant time and download bandwidth."
+caution = "This operation is heavy and may take significant download/install time."
 
 [[button]]
 id = "btn_lutris"
 title = "Lutris"
-summary = "Installs Lutris and related Vulkan layers."
+summary = "Installs Lutris Flatpak with gamescope and MangoHud Vulkan layers."
 details = [
-  "Uses Flatpak install flow.",
-  "Targets game launcher/library management.",
+  "Uses flatpak install for net.lutris.Lutris and related Vulkan layers.",
+  "No separate selection step is shown.",
 ]
 
 [[button]]
 id = "btn_heroic"
 title = "Heroic Games Launcher"
-summary = "Installs Heroic with helper layers for gaming."
+summary = "Installs Heroic Flatpak with gamescope and MangoHud Vulkan layers."
 details = [
-  "Uses Flatpak source.",
-  "Suitable for Epic/GOG management workflows.",
+  "Uses flatpak install for com.heroicgameslauncher.hgl and layer dependencies.",
+  "Runs as a single task-runner sequence.",
 ]
 
 [[button]]
 id = "btn_bottles"
 title = "Bottles"
-summary = "Installs Bottles for Wine prefix management."
+summary = "Installs Bottles Flatpak with gamescope and MangoHud Vulkan layers."
 details = [
-  "Useful for Windows app/game compatibility setups.",
-  "Installs via Flatpak.",
+  "Uses flatpak install for com.usebottles.bottles and layer dependencies.",
+  "Runs as a single task-runner sequence.",
 ]
 
 [[button]]
 id = "btn_lact_oc"
 title = "LACT GPU Tools"
-summary = "Installs LACT and enables lactd service."
+summary = "Installs LACT and enables the lactd background service."
 details = [
-  "Provides GPU tuning and monitoring utilities.",
-  "Service starts immediately after setup.",
+  "Installs lact package through AUR-helper flow.",
+  "Enables and starts lactd with systemctl.",
 ]
-caution = "Aggressive GPU tuning can cause instability."
+caution = "Aggressive GPU tuning can cause instability or crashes."
 
 [[button]]
 id = "btn_controller"
 title = "Controller Tools"
-summary = "Installs controller drivers and management tools."
+summary = "Installs controller utilities and driver packages in one batch."
 details = [
-  "Includes packages for Xbox and DualSense ecosystems.",
-  "Useful for broad gamepad compatibility.",
+  "Includes gamepad-tool-bin, sc-controller, xone-dkms-git, dualsensectl-git, and xone firmware.",
+  "Runs via the standard task-runner package workflow.",
 ]
 
 [[button]]
 id = "btn_falcond"
 title = "Falcond"
-summary = "Installs Falcond utility for gaming workflows."
-details = ["Runs package installation in task runner."]
+summary = "Installs Falcond packages, prepares permissions, and enables the service."
+details = [
+  "Installs falcond, falcond-gui, and falcond-profiles.",
+  "Creates/updates falcond group membership, sets profile directory permissions, and starts service.",
+]
+caution = "Group and permission changes may require relogin before full access is applied."

@@ -1,56 +1,83 @@
 [[button]]
 id = "btn_clr_pacman"
 title = "Clear Pacman Cache"
-summary = "Launches interactive cache cleanup command."
-details = ["Good for reclaiming disk space from old packages."]
-caution = "Keep at least one previous version if rollback is needed."
+summary = "Opens an interactive terminal to run pacman -Scc via pkexec."
+details = [
+  "Uses terminal dialog for manual cache cleanup confirmation.",
+  "Good for reclaiming disk space from cached packages.",
+]
+caution = "Removing all cache packages can reduce rollback flexibility."
 
 [[button]]
 id = "btn_unlock_pacman"
 title = "Unlock Pacman DB"
-summary = "Removes stale pacman lock state."
-details = ["Useful after interrupted package operations."]
-caution = "Only use if no package manager is currently running."
+summary = "Removes /var/lib/pacman/db.lck with root privileges."
+details = [
+  "Targets stale lock recovery after interrupted package operations.",
+  "Runs as a single privileged task-runner command.",
+]
+caution = "Only run when no package manager process is currently active."
 
 [[button]]
 id = "btn_pacman_db_fix"
 title = "Pacman DB Fix"
-summary = "Runs repair workflow for package database issues."
-details = ["Useful after key/db corruption symptoms."]
+summary = "Runs a sed-based repair pass over pacman local desc files."
+details = [
+  "Removes %INSTALLED_DB% blocks from local database entries.",
+  "Executed as a privileged shell command across /var/lib/pacman/local.",
+]
 
 [[button]]
 id = "btn_fix_gpgme"
 title = "Fix GPGME Database"
-summary = "Runs interactive fix for GPGME/key database issues."
-details = ["Can resolve signature verification failures."]
+summary = "Runs sync database cleanup and refresh in terminal."
+details = [
+  "Executes: rm -rf /var/lib/pacman/sync && pacman -Syy via pkexec.",
+  "Designed for package database/signature sync recovery scenarios.",
+]
 
 [[button]]
 id = "btn_fix_arch_keyring"
 title = "Fix Arch Keyring"
-summary = "Repairs/upgrades Arch keyring packages."
-details = ["Useful when signature trust is outdated or broken."]
+summary = "Rebuilds pacman keyring and reinstalls archlinux-keyring."
+details = [
+  "Removes existing /etc/pacman.d/gnupg, then runs pacman-key init/populate.",
+  "Adds keyserver config and reinstalls archlinux-keyring with forced sync.",
+]
+caution = "This rewrites keyring state and should not be interrupted mid-run."
 
 [[button]]
 id = "btn_plasma_x11"
 title = "Plasma X11 Session"
-summary = "Installs or enables Plasma X11 session components."
-details = ["Useful fallback for Wayland-specific issues."]
+summary = "Installs kwin-x11 and plasma-x11-session packages."
+details = [
+  "Provides KDE Plasma X11 session components.",
+  "Useful as fallback for Wayland-specific issues.",
+]
 
 [[button]]
 id = "btn_update_mirrorlist"
 title = "Update Mirrorlist"
-summary = "Refreshes pacman mirrors through selection dialog."
-details = ["Can improve download speed and mirror reliability."]
+summary = "Updates Arch mirrorlist and optionally Chaotic-AUR with rate-mirrors."
+details = [
+  "Installs rate-mirrors first if missing.",
+  "Selection dialog can include optional Chaotic-AUR mirrorlist update.",
+]
 
 [[button]]
 id = "btn_parallel_downloads"
 title = "Parallel Downloads"
-summary = "Adjusts pacman parallel download setting."
-details = ["Higher values can speed package sync/install."]
-caution = "Excessive values may overload slower mirrors."
+summary = "Launches pmpd tool in terminal via pkexec."
+details = [
+  "Used to adjust pacman parallel download configuration interactively.",
+  "Runs inside the toolkit terminal dialog.",
+]
 
 [[button]]
 id = "btn_waydroid_guide"
 title = "Waydroid Guide"
-summary = "Opens external setup guide for Waydroid."
-details = ["No direct install action is executed by this button."]
+summary = "Opens the XeroLinux Waydroid guide in your browser."
+details = [
+  "Uses xdg-open to launch the external guide URL.",
+  "No local package install is triggered by this button.",
+]

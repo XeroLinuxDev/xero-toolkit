@@ -1,77 +1,77 @@
 [[button]]
 id = "btn_nvidia_legacy"
 title = "NVIDIA Legacy Drivers"
-summary = "Installs legacy 580xx NVIDIA stack for older GPUs."
+summary = "Installs the NVIDIA 580xx legacy stack with post-install system changes."
 details = [
-  "Applies bootloader/initramfs scripts after package install.",
-  "Designed for older NVIDIA generations only.",
+  "Shows a warning dialog first, then installs 580xx DKMS/userspace packages.",
+  "Runs GRUB and mkinitcpio helper scripts, enables NVIDIA services, and rebuilds initramfs.",
 ]
-caution = "Using this on unsupported GPUs may break graphics boot."
+caution = "Intended only for legacy GTX 900/1000-era workflows; wrong hardware selection can break graphics boot."
 
 [[button]]
 id = "btn_tailscale"
 title = "Tailscale VPN"
-summary = "Installs Tailscale and related setup tooling."
+summary = "Runs the Xero fixes install script for Tailscale via privileged bash."
 details = [
-  "Runs installation through a remote script workflow.",
-  "After install, you still need to authenticate your node.",
+  "Downloads and executes the remote install script from xerolinux/xero-fixes.",
+  "Authentication and network policy setup still happen after installation.",
 ]
-caution = "Always verify your VPN login and exit-node settings."
+caution = "Review remote script behavior before running in security-sensitive environments."
 
 [[button]]
 id = "btn_cuda"
 title = "NVIDIA CUDA"
-summary = "Installs CUDA toolkit variants for development."
+summary = "Installs selected CUDA package (latest or CUDA 12.9)."
 details = [
-  "Presents version selection before install.",
-  "Useful for ML workloads and GPU compute stacks.",
+  "Uses a single-choice selection dialog before running install.",
+  "Installation is performed through the configured AUR helper command path.",
 ]
-caution = "CUDA version must match your driver and framework requirements."
+caution = "Choose a CUDA version compatible with your driver and workload stack."
 
 [[button]]
 id = "btn_rocm"
 title = "AMD ROCm"
-summary = "Installs ROCm compute stack for compatible AMD GPUs."
+summary = "Installs AMD ROCm HIP/OpenCL SDK packages."
 details = [
-  "Targets compute and AI workflows.",
-  "Can pull a large dependency graph.",
+  "Installs rocm-hip-sdk and rocm-opencl-sdk.",
+  "Runs as a task-runner package installation sequence.",
 ]
-caution = "Verify hardware compatibility before installing."
+caution = "Confirm your GPU/platform compatibility with ROCm before installing."
 
 [[button]]
 id = "btn_openrazer"
 title = "OpenRazer Drivers"
-summary = "Installs Razer device drivers and optional frontend apps."
+summary = "Installs OpenRazer drivers and optional GUI frontends."
 details = [
-  "Adds your user to plugdev for device access.",
-  "Frontend selection is optional.",
+  "Always installs openrazer-meta-git and adds your user to plugdev.",
+  "Optional Polychromatic and RazerGenie are selected in a multi-select dialog.",
 ]
-caution = "Relog may be required after group membership changes."
+caution = "Group membership changes usually require relogin to take effect."
 
 [[button]]
 id = "btn_asus_rog"
 title = "ASUS ROG Tools"
-summary = "Installs asusctl stack and enables related services."
+summary = "Installs ASUS ROG control packages and enables core services."
 details = [
-  "Includes control center and GPU switching tools.",
-  "Services are enabled immediately after installation.",
+  "Installs rog-control-center, asusctl, and supergfxctl.",
+  "Enables and starts asusd and supergfxd via systemctl.",
 ]
 
 [[button]]
 id = "btn_cooler_control"
 title = "Cooler Control"
-summary = "Installs coolercontrol and enables its daemon."
+summary = "Installs CoolerControl stack and enables coolercontrold service."
 details = [
-  "Useful for fan/pump curves and thermal profiles.",
-  "Also installs liquidctl integration.",
+  "Installs coolercontrol, coolercontrold, and liquidctl.",
+  "Enables and starts coolercontrold.service immediately.",
 ]
-caution = "Incorrect fan curves may increase temperatures."
+caution = "Incorrect fan or thermal settings can impact stability and temperatures."
 
 [[button]]
 id = "btn_zenergy"
 title = "Zenergy Driver"
-summary = "Installs zenergy DKMS package for supported hardware."
+summary = "Installs zenergy-dkms-git driver package."
 details = [
-  "Builds kernel modules on install.",
-  "DKMS modules rebuild on kernel updates.",
+  "Uses AUR helper installation flow.",
+  "As a DKMS package, modules are rebuilt for kernel changes.",
 ]

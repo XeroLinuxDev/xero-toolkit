@@ -1,5 +1,8 @@
 [[button]]
 id = "btn_copy_command"
 title = "Copy Gamescope Command"
-summary = "Copies the generated gamescope command to clipboard."
-details = ["Use this to paste into launch options or shell scripts."]
+summary = "Copies the currently generated gamescope command to clipboard."
+details = [
+  "Uses values from the live command output field.",
+  "Useful for Steam launch options, scripts, or terminal testing.",
+]

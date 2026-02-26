@@ -1,75 +1,75 @@
 [[button]]
 id = "about_button"
 title = "About Xero Toolkit"
-summary = "Shows app version, credits, and project links."
+summary = "Opens the About dialog for this application."
 details = [
-  "Useful for checking your installed toolkit version.",
-  "Includes upstream project and creator context.",
+  "Shows current toolkit version and project credits.",
+  "Includes clickable support links from inside the dialog.",
 ]
 
 [[button]]
 id = "btn_update_system"
 title = "System Update"
-summary = "Runs your system update workflow from terminal."
+summary = "Opens an interactive terminal running /usr/local/bin/upd."
 details = [
-  "Uses the installed update command configured by your distro.",
-  "You may be prompted for elevated privileges.",
+  "Runs the distro update flow inside the terminal dialog.",
+  "Requires normal package-management privileges when prompted.",
 ]
-caution = "Review update output for package conflicts before rebooting."
+caution = "Read terminal output before rebooting or retrying failed updates."
 
 [[button]]
 id = "btn_install_nix"
 title = "Install Nix"
-summary = "Installs Nix package manager with selectable mode."
+summary = "Shows a warning, then installs Nix in single-user or daemon mode."
 details = [
-  "Opens a warning and a mode selection dialog.",
-  "Can modify shell/profile integration on your system.",
+  "Installation mode is selected from a single-choice dialog.",
+  "Executes the official Nix install script in a terminal dialog.",
 ]
-caution = "Nix adds files outside pacman and may change PATH behavior."
+caution = "Nix is treated as experimental here and changes system/user package workflows."
 
 [[button]]
 id = "btn_download_arch_iso"
 title = "Download Arch ISO"
-summary = "Downloads latest Arch ISO to a chosen location."
+summary = "Opens the ISO download workflow dialog."
 details = [
-  "Lets you select save path before download starts.",
-  "Shows progress and supports pause/cancel.",
+  "Lets you choose location and manage download progress.",
+  "Uses the dedicated downloader UI (not a raw command task).",
 ]
-caution = "Large download size; ensure free disk space."
+caution = "ISO downloads are large and require significant disk space."
 
 [[button]]
 id = "btn_pkg_manager"
 title = "Package Manager GUIs"
-summary = "Install one or more GUI frontends for package management."
+summary = "Installs selected package manager frontends from repos and Flathub."
 details = [
-  "Shows multi-select options based on installed status.",
-  "Runs selected installs as task sequence.",
+  "Selection dialog includes Octopi, PacSeek, Bauh, Warehouse, Flatseal, and Bazaar.",
+  "Chosen options are installed as a queued task sequence.",
 ]
 
 [[button]]
 id = "btn_obs_studio_aio"
 title = "OBS Studio AiO"
-summary = "Installs OBS plus optional plugin bundles."
+summary = "Installs OBS Flatpak and optional plugin bundles."
 details = [
-  "OBS itself is always installed.",
-  "Optional bundles include capture, transitions, and tools.",
+  "OBS itself is always installed; plugin groups are optional.",
+  "Optional V4L2 setup also writes module and modprobe config files with root privileges.",
 ]
-caution = "Some plugin sets pull many Flatpak runtimes."
+caution = "Selecting many plugin bundles can pull large runtime and dependency sets."
 
 [[button]]
 id = "link_youtube"
 title = "YouTube Link"
 summary = "Opens the official XeroLinux YouTube channel."
-details = ["Uses your default browser."]
+details = ["Uses your configured default browser."]
 
 [[button]]
 id = "link_website"
 title = "Website Link"
-summary = "Opens the XeroLinux project website."
-details = ["Useful for docs, announcements, and downloads."]
+summary = "Opens the official XeroLinux website."
+details = ["Uses your configured default browser."]
 
 [[button]]
 id = "link_donate"
 title = "Donate Link"
-summary = "Opens the project donation page."
-details = ["Uses your default browser."]
+summary = "Opens the XeroLinux donation page."
+details = ["Uses your configured default browser."]

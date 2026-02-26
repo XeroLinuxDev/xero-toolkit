@@ -1,24 +1,36 @@
 [[button]]
 id = "btn_refresh_kernels"
 title = "Refresh Kernel Lists"
-summary = "Rescans available and installed kernels."
-details = ["Temporarily disables controls while scanning pacman data."]
+summary = "Rescans available and installed kernels in the background."
+details = [
+  "Runs pacman queries on a background thread and repopulates both lists.",
+  "Disables content and shows spinner state while refresh is in progress.",
+]
 
 [[button]]
 id = "btn_refresh_schedulers"
 title = "Refresh Scheduler State"
-summary = "Rescans sched-ext scheduler availability and status."
-details = ["Updates UI controls based on active scheduler state."]
+summary = "Rescans sched-ext availability and active scheduler status."
+details = [
+  "Queries scxctl list/get and updates scheduler status labels.",
+  "Temporarily disables scheduler controls while refresh is running.",
+]
 
 [[button]]
 id = "btn_switch_scheduler"
 title = "Switch Scheduler"
-summary = "Starts or switches to selected sched-ext scheduler."
-details = ["Uses selected mode from scheduler settings."]
-caution = "Choosing an unstable scheduler can affect responsiveness."
+summary = "Starts or switches sched-ext scheduler using selected mode."
+details = [
+  "Runs scxctl start/switch with selected scheduler and mode.",
+  "Behavior is start when inactive and switch when a scheduler is already active.",
+]
+caution = "Scheduler choice and mode can affect system responsiveness under load."
 
 [[button]]
 id = "btn_stop_scheduler"
 title = "Stop Scheduler"
-summary = "Stops active sched-ext scheduler and reverts fallback."
-details = ["Shows a confirmation dialog before execution."]
+summary = "Stops active sched-ext scheduler and returns to default scheduler."
+details = [
+  "Shows confirmation warning before executing stop.",
+  "Runs scxctl stop through task runner.",
+]

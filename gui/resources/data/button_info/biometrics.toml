@@ -1,26 +1,35 @@
 [[button]]
 id = "btn_fingerprint_setup"
 title = "Fingerprint Setup"
-summary = "Installs or launches the fingerprint GUI tool."
+summary = "Installs xfprintd-gui or launches it if already installed."
 details = [
-  "If already installed, it launches the app directly.",
-  "Otherwise it installs the package first.",
+  "Button label/state auto-switches between Install and Launch App.",
+  "Installation runs through task runner; launch runs xfprintd-gui directly.",
 ]
 
 [[button]]
 id = "btn_fingerprint_uninstall"
 title = "Fingerprint Uninstall"
-summary = "Removes fingerprint GUI package."
-details = ["Shown only when package is currently installed."]
+summary = "Removes xfprintd-gui package."
+details = [
+  "Visible only when xfprintd-gui is detected as installed.",
+  "Runs package removal through the task-runner/AUR-helper path.",
+]
 
 [[button]]
 id = "btn_howdy_setup"
 title = "Howdy Setup"
-summary = "Reserved for facial recognition setup flow."
-details = ["Currently disabled in this build."]
+summary = "Currently disabled in this build."
+details = [
+  "Facial-recognition setup flow is not active yet.",
+  "Button is present but explicitly set insensitive.",
+]
 
 [[button]]
 id = "btn_howdy_uninstall"
 title = "Howdy Uninstall"
-summary = "Reserved for future Howdy removal flow."
-details = ["May be hidden/unused depending on current UI state."]
+summary = "No active uninstall action is currently wired."
+details = [
+  "Future Howdy management flow is planned but not enabled here.",
+  "Behavior depends on future biometrics page implementation updates.",
+]

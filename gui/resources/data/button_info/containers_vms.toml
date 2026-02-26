@@ -1,45 +1,55 @@
 [[button]]
 id = "btn_docker"
 title = "Docker Setup"
-summary = "Installs Docker and enables daemon/service access."
+summary = "Installs Docker packages, enables service, and adds your user to docker group."
 details = [
-  "Creates docker group if missing.",
-  "Adds your user to docker group.",
+  "Installs docker, docker-compose, and docker-buildx.",
+  "Enables docker.service and ensures docker group exists before usermod.",
 ]
-caution = "Relog is typically needed for new group permissions."
+caution = "Relogin is typically needed for new docker group permissions."
 
 [[button]]
 id = "btn_podman"
 title = "Podman Setup"
-summary = "Installs Podman stack with optional Desktop UI."
+summary = "Installs Podman stack and optionally Podman Desktop Flatpak."
 details = [
-  "Enables podman socket service.",
-  "Desktop GUI can be installed via Flatpak.",
+  "Always installs podman and podman-docker, then enables podman.socket.",
+  "Optional Podman Desktop is selected via dialog and installed from Flathub.",
 ]
 
 [[button]]
 id = "btn_vbox"
 title = "VirtualBox"
-summary = "Installs VirtualBox meta package."
-details = ["Provides desktop VM virtualization tooling."]
+summary = "Installs virtualbox-meta package."
+details = [
+  "Uses AUR-helper package installation flow.",
+  "No additional service configuration is performed here.",
+]
 
 [[button]]
 id = "btn_kvm"
 title = "KVM / QEMU"
-summary = "Installs KVM/QEMU virtualization stack and helpers."
+summary = "Installs virtualization stack and applies nested-virtualization config."
 details = [
-  "Can adjust networking/service dependencies.",
-  "Targets libvirt/qemu based VM setups.",
+  "May remove conflicting iptables/gnu-netcat packages before install.",
+  "Installs virt-manager-meta + openbsd-netcat, writes kvm-intel nested config, restarts libvirtd.",
 ]
+caution = "This modifies networking/virtualization packages and writes to /etc/modprobe.d."
 
 [[button]]
 id = "btn_distrobox"
 title = "DistroBox"
-summary = "Installs DistroBox and BoxBuddy frontend."
-details = ["Combines CLI tooling with optional GUI management."]
+summary = "Installs DistroBox CLI and BoxBuddy GUI."
+details = [
+  "Installs distrobox package via AUR-helper flow.",
+  "Installs io.github.dvlv.boxbuddyrs from Flathub.",
+]
 
 [[button]]
 id = "btn_ipa_sideloader"
 title = "iPA Sideloader"
-summary = "Installs sideloading toolchain for iOS packages."
-details = ["Designed for testing/utility sideload workflows."]
+summary = "Installs Plume Impactor from Flathub."
+details = [
+  "Installs dev.khcrysalis.PlumeImpactor via flatpak.",
+  "No extra post-install configuration is applied by this button.",
+]
