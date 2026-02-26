@@ -5,7 +5,10 @@
 
 use crate::ui::utils::extract_widget;
 use gtk4::prelude::*;
-use gtk4::{gio, Box as GtkBox, Builder, Button, GestureClick, Image, Label, Orientation, Window};
+use gtk4::{
+    gio, Box as GtkBox, Builder, Button, EventSequenceState, GestureClick, Image, Label,
+    Orientation, Window,
+};
 use log::{error, warn};
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -74,7 +77,11 @@ pub fn attach_to_button(button: &Button, parent: &Window, button_id: &str) {
     let parent = parent.clone();
     let button_id = button_id.to_string();
     let click = GestureClick::builder().button(3).build();
-    click.connect_pressed(move |_, _, _, _| {
+    click.connect_pressed(|gesture, _, _, _| {
+        // Claim secondary-click sequences so the button does not keep a pressed highlight.
+        gesture.set_state(EventSequenceState::Claimed);
+    });
+    click.connect_released(move |_, _, _, _| {
         show_button_info_dialog(&parent, &button_id);
     });
     button.add_controller(click);
