@@ -6,6 +6,7 @@ use log::info;
 
 mod config;
 mod core;
+mod migrations;
 mod ui;
 
 fn main() {

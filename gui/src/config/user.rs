@@ -8,6 +8,7 @@ use std::path::PathBuf;
 pub struct Config {
     pub general: GeneralConfig,
     pub warnings: WarningsConfig,
+    pub migrations: MigrationsConfig,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -23,6 +24,27 @@ pub struct WarningsConfig {
     /// User dismissed the "limited support on non-XeroLinux" notice
     pub dismissed_generic_distro_notice: bool,
     // Add future "don't show again" flags here, not as loose keys
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[serde(default)]
+pub struct MigrationsConfig {
+    /// Applied migration IDs, similar to database migration history.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub applied: Vec<String>,
+}
+
+impl MigrationsConfig {
+    pub fn is_applied(&self, id: &str) -> bool {
+        self.applied.iter().any(|applied_id| applied_id == id)
+    }
+
+    pub fn mark_applied(&mut self, id: &str) {
+        if !self.is_applied(id) {
+            self.applied.push(id.to_string());
+            self.applied.sort();
+        }
+    }
 }
 
 pub fn config_path() -> PathBuf {

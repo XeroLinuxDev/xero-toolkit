@@ -3,6 +3,7 @@
 use crate::config;
 use crate::config::user::Config;
 use crate::core;
+use crate::migrations;
 use crate::ui::context::AppContext;
 use crate::ui::context::UiComponents;
 use crate::ui::navigation;
@@ -22,6 +23,9 @@ pub fn setup_application_ui(app: &Application) {
     setup_resources_and_theme();
 
     let config = Rc::new(RefCell::new(Config::load()));
+    if let Err(e) = migrations::run_startup_migrations(&mut config.borrow_mut()) {
+        warn!("Failed to apply startup migrations: {}", e);
+    }
     info!("User configuration loaded");
 
     // Persist configuration once on application shutdown to avoid IO during interaction.
