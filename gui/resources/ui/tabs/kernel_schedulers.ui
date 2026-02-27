@@ -285,12 +285,26 @@
                             <property name="margin-bottom">2</property>
                             <child>
                               <object class="GtkButton" id="btn_scheduler_guide">
-                                <property name="label">Guide</property>
-                                <property name="icon-name">info-circle-symbolic</property>
                                 <property name="tooltip-text">Open scheduler guide with profiles and use cases</property>
                                 <property name="valign">center</property>
                                 <property name="height-request">36</property>
                                 <property name="css-classes">suggested-action pill</property>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="orientation">horizontal</property>
+                                    <property name="spacing">6</property>
+                                    <child>
+                                      <object class="GtkImage">
+                                        <property name="icon-name">info-circle-symbolic</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="label">Guide</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                           </object>
