@@ -2,8 +2,8 @@
 
 pub mod autostart;
 
-use anyhow::{bail, Result};
 use crate::config::user::Config;
+use anyhow::{bail, Result};
 use log::info;
 
 pub struct Migration {
