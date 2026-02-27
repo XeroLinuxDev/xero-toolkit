@@ -279,6 +279,23 @@
                         </child>
                         <!-- System Status -->
                         <child>
+                          <object class="GtkBox">
+                            <property name="orientation">horizontal</property>
+                            <property name="halign">end</property>
+                            <property name="margin-bottom">2</property>
+                            <child>
+                              <object class="GtkButton" id="btn_scheduler_guide">
+                                <property name="label">Guide</property>
+                                <property name="icon-name">info-circle-symbolic</property>
+                                <property name="tooltip-text">Open scheduler guide with profiles and use cases</property>
+                                <property name="valign">center</property>
+                                <property name="height-request">36</property>
+                                <property name="css-classes">suggested-action pill</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
                           <object class="AdwPreferencesGroup">
                             <property name="title">System Status</property>
                             <child>
@@ -402,17 +419,6 @@
                                 <property name="height-request">44</property>
                                 <style>
                                   <class name="destructive-action"/>
-                                  <class name="pill"/>
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="btn_scheduler_guide">
-                                <property name="label">Guide</property>
-                                <property name="icon-name">info-circle-symbolic</property>
-                                <property name="tooltip-text">Open scheduler guide with profiles and use cases</property>
-                                <property name="height-request">44</property>
-                                <style>
                                   <class name="pill"/>
                                 </style>
                               </object>
