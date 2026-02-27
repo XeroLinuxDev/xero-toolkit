@@ -81,17 +81,27 @@
                           <class name="card"/>
                         </style>
                         <child>
-                          <object class="GtkImage" id="info_summary_icon">
-                            <property name="icon-name">circle-question-symbolic</property>
-                            <property name="pixel-size">20</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="info_summary_label">
-                            <property name="label">Summary</property>
-                            <property name="xalign">0</property>
-                            <property name="wrap">true</property>
-                            <property name="wrap-mode">word-char</property>
+                          <object class="GtkBox" id="info_summary_content">
+                            <property name="orientation">horizontal</property>
+                            <property name="spacing">10</property>
+                            <property name="margin-top">12</property>
+                            <property name="margin-bottom">12</property>
+                            <property name="margin-start">12</property>
+                            <property name="margin-end">12</property>
+                            <child>
+                              <object class="GtkImage" id="info_summary_icon">
+                                <property name="icon-name">circle-question-symbolic</property>
+                                <property name="pixel-size">20</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="info_summary_label">
+                                <property name="label">Summary</property>
+                                <property name="xalign">0</property>
+                                <property name="wrap">true</property>
+                                <property name="wrap-mode">word-char</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
@@ -170,16 +180,26 @@
                           <class name="card"/>
                         </style>
                         <child>
-                          <object class="GtkImage" id="info_caution_icon">
-                            <property name="icon-name">triangle-exclamation-symbolic</property>
-                            <property name="pixel-size">18</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="info_caution_label">
-                            <property name="label">Caution text</property>
-                            <property name="xalign">0</property>
-                            <property name="wrap">true</property>
+                          <object class="GtkBox" id="info_caution_content">
+                            <property name="orientation">horizontal</property>
+                            <property name="spacing">10</property>
+                            <property name="margin-top">12</property>
+                            <property name="margin-bottom">12</property>
+                            <property name="margin-start">12</property>
+                            <property name="margin-end">12</property>
+                            <child>
+                              <object class="GtkImage" id="info_caution_icon">
+                                <property name="icon-name">triangle-exclamation-symbolic</property>
+                                <property name="pixel-size">18</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="info_caution_label">
+                                <property name="label">Caution text</property>
+                                <property name="xalign">0</property>
+                                <property name="wrap">true</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
