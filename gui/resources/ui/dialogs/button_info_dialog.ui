@@ -12,7 +12,7 @@
       <object class="AdwToolbarView">
         <child type="top">
           <object class="AdwHeaderBar">
-            <property name="show-title">true</property>
+            <property name="show-title">false</property>
             <property name="show-end-title-buttons">true</property>
           </object>
         </child>
