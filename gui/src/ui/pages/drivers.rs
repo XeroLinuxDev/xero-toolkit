@@ -140,7 +140,13 @@ fn setup_cooler_control(builder: &Builder, window: &ApplicationWindow) {
         show_warning_confirmation(
             window.upcast_ref(),
             "Fans Not Detected ?",
-            "Please run <tt>sudo sensors-detect</tt> then <tt>sudo pwmconfig</tt> follow prompts for each then restart the daemon with <tt>sudo systemctl restart coolercontrold</tt>. This should work. Still not working ? Join Cooler Control Discord (<a href=\"https://discord.gg/MbcgUFAfhV\">https://discord.gg/MbcgUFAfhV</a>)",
+            "<b>If your fans are not detected, run these first:</b>\n\n\
+            1. <tt>sudo sensors-detect</tt>\n\
+            2. <tt>sudo pwmconfig</tt>\n\
+            3. <tt>sudo systemctl restart coolercontrold</tt>\n\n\
+            Follow each command prompt, then retry.\n\n\
+            Need help?\n\
+            <a href=\"https://discord.gg/MbcgUFAfhV\">CoolerControl Discord</a>",
             move || {
                 let commands = CommandSequence::new()
                     .then(
@@ -167,7 +173,11 @@ fn setup_cooler_control(builder: &Builder, window: &ApplicationWindow) {
                     )
                     .build();
 
-                task_runner::run(window_clone.upcast_ref(), commands, "Install Cooler Control");
+                task_runner::run(
+                    window_clone.upcast_ref(),
+                    commands,
+                    "Install Cooler Control",
+                );
             },
         );
     });
