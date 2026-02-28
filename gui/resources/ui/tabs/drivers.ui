@@ -160,11 +160,29 @@
             <property name="spacing">16</property>
             <property name="halign">center</property>
             <child>
-              <object class="GtkButton" id="btn_cooler_control">
-                <property name="label">Cooler Control</property>
-                <property name="width-request">200</property>
-                <property name="height-request">50</property>
-                <property name="css-classes">suggested-action pill</property>
+              <object class="GtkOverlay">
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <child>
+                  <object class="GtkButton" id="btn_cooler_control">
+                    <property name="label">Cooler Control</property>
+                    <property name="width-request">220</property>
+                    <property name="height-request">50</property>
+                    <property name="css-classes">suggested-action pill</property>
+                  </object>
+                </child>
+                <child type="overlay">
+                  <object class="GtkButton" id="btn_cooler_control_troubleshoot">
+                    <property name="icon-name">circle-question-symbolic</property>
+                    <property name="tooltip-text">CoolerControl troubleshooting</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="margin-end">8</property>
+                    <property name="width-request">34</property>
+                    <property name="height-request">34</property>
+                    <property name="css-classes">flat circular</property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>

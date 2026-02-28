@@ -5,8 +5,8 @@
   <object class="AdwWindow" id="button_info_dialog">
     <property name="title">Action Info</property>
     <property name="icon-name">xero-toolkit</property>
-    <property name="default-width">600</property>
-    <property name="default-height">500</property>
+    <property name="default-width">720</property>
+    <property name="default-height">620</property>
     <property name="modal">true</property>
     <property name="content">
       <object class="AdwToolbarView">

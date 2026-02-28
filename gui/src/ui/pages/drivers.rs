@@ -131,14 +131,50 @@ fn setup_openrazer(builder: &Builder, window: &ApplicationWindow) {
 
 fn setup_cooler_control(builder: &Builder, window: &ApplicationWindow) {
     let button = extract_widget::<Button>(builder, "btn_cooler_control");
-    let window = window.clone();
+    let troubleshoot_button = extract_widget::<Button>(builder, "btn_cooler_control_troubleshoot");
+    let window_install = window.clone();
+    let window_help = window.clone();
 
     button.connect_clicked(move |_| {
         info!("Cooler Control button clicked");
 
-        let window_clone = window.clone();
+        let commands = CommandSequence::new()
+            .then(
+                Command::builder()
+                    .aur()
+                    .args(&[
+                        "-S",
+                        "--noconfirm",
+                        "--needed",
+                        "coolercontrol",
+                        "coolercontrold",
+                        "liquidctl",
+                    ])
+                    .description("Installing Cooler Control daemon and liquidctl...")
+                    .build(),
+            )
+            .then(
+                Command::builder()
+                    .privileged()
+                    .program("systemctl")
+                    .args(&["enable", "--now", "coolercontrold.service"])
+                    .description("Enabling Cooler Control daemon service...")
+                    .build(),
+            )
+            .build();
+
+        task_runner::run(
+            window_install.upcast_ref(),
+            commands,
+            "Install Cooler Control",
+        );
+    });
+
+    troubleshoot_button.connect_clicked(move |_| {
+        info!("Cooler Control troubleshoot button clicked");
+
         show_warning_confirmation(
-            window.upcast_ref(),
+            window_help.upcast_ref(),
             "Fans Not Detected ?",
             "<b>If your fans are not detected, run these first:</b>\n\n\
             1. <tt>sudo sensors-detect</tt>\n\
@@ -147,38 +183,7 @@ fn setup_cooler_control(builder: &Builder, window: &ApplicationWindow) {
             Follow each command prompt, then retry.\n\n\
             Need help?\n\
             <a href=\"https://discord.gg/MbcgUFAfhV\">CoolerControl Discord</a>",
-            move || {
-                let commands = CommandSequence::new()
-                    .then(
-                        Command::builder()
-                            .aur()
-                            .args(&[
-                                "-S",
-                                "--noconfirm",
-                                "--needed",
-                                "coolercontrol",
-                                "coolercontrold",
-                                "liquidctl",
-                            ])
-                            .description("Installing Cooler Control daemon and liquidctl...")
-                            .build(),
-                    )
-                    .then(
-                        Command::builder()
-                            .privileged()
-                            .program("systemctl")
-                            .args(&["enable", "--now", "coolercontrold.service"])
-                            .description("Enabling Cooler Control daemon service...")
-                            .build(),
-                    )
-                    .build();
-
-                task_runner::run(
-                    window_clone.upcast_ref(),
-                    commands,
-                    "Install Cooler Control",
-                );
-            },
+            || {},
         );
     });
 }
