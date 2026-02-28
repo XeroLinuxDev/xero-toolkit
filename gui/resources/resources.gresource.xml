@@ -14,6 +14,7 @@
     <file preprocess="xml-stripblanks" compressed="true">ui/tabs/servicing_system_tweaks.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/selection_dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/xerolinux_check_dialog.ui</file>
+    <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/right_click_startup_notice_dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/dependency_error_dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/task_list_dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/dialogs/download_dialog.ui</file>

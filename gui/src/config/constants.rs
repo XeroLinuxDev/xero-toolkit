@@ -109,6 +109,8 @@ pub mod resources {
         pub const WARNING: &str = "/xyz/xerolinux/xero-toolkit/ui/dialogs/warning_dialog.ui";
         pub const XEROLINUX_CHECK: &str =
             "/xyz/xerolinux/xero-toolkit/ui/dialogs/xerolinux_check_dialog.ui";
+        pub const RIGHT_CLICK_STARTUP_NOTICE: &str =
+            "/xyz/xerolinux/xero-toolkit/ui/dialogs/right_click_startup_notice_dialog.ui";
     }
 
     pub mod tabs {

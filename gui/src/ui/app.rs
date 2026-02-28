@@ -72,6 +72,14 @@ pub fn setup_application_ui(app: &Application) {
 
     window.present();
 
+    if !config
+        .borrow()
+        .warnings
+        .dismissed_right_click_action_details_notice
+    {
+        core::system_check::show_right_click_action_details_notice(&window, config.clone());
+    }
+
     let distribution_name = core::get_distribution_name()
         .unwrap_or_else(|| "Unknown".to_string())
         .to_lowercase();

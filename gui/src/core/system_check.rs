@@ -245,6 +245,44 @@ pub fn show_generic_distro_notice(
     notice_window.present();
 }
 
+/// Show startup tip about right-click action details with "don't show again".
+pub fn show_right_click_action_details_notice(
+    main_window: &ApplicationWindow,
+    config: std::rc::Rc<std::cell::RefCell<crate::config::user::Config>>,
+) {
+    use std::rc::Rc;
+
+    info!("Showing right-click action details startup notice dialog");
+
+    let builder =
+        Builder::from_resource(crate::config::resources::dialogs::RIGHT_CLICK_STARTUP_NOTICE);
+
+    let notice_window: gtk4::Window = extract_widget(&builder, "right_click_notice_window");
+    let dismiss_checkbox: gtk4::CheckButton = extract_widget(&builder, "dismiss_checkbox");
+    let ok_button: Button = extract_widget(&builder, "ok_button");
+
+    notice_window.set_transient_for(Some(main_window));
+
+    let config_clone = Rc::clone(&config);
+    let dismiss_checkbox_clone = dismiss_checkbox.clone();
+    let notice_window_clone = notice_window.clone();
+    ok_button.connect_clicked(move |_| {
+        if dismiss_checkbox_clone.is_active() {
+            // Update in-memory flag only; persistence happens on app shutdown.
+            config_clone
+                .borrow_mut()
+                .warnings
+                .dismissed_right_click_action_details_notice = true;
+            info!(
+                "User dismissed right-click action details startup notice (in-memory); will be saved on shutdown"
+            );
+        }
+        notice_window_clone.close();
+    });
+
+    notice_window.present();
+}
+
 /// Show dependency error dialog and prevent app from continuing.
 pub fn show_dependency_error_dialog(
     main_window: &ApplicationWindow,
