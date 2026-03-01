@@ -23,8 +23,6 @@ pub struct GeneralConfig {
 pub struct WarningsConfig {
     /// User dismissed the "limited support on non-XeroLinux" notice
     pub dismissed_generic_distro_notice: bool,
-    /// User dismissed the startup hint about right-click action details
-    pub dismissed_right_click_action_details_notice: bool,
     // Add future "don't show again" flags here, not as loose keys
 }
 
