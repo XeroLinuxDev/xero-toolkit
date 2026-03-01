@@ -72,12 +72,3 @@ details = [
   "Used to adjust pacman parallel download configuration interactively.",
   "Runs inside the toolkit terminal dialog.",
 ]
-
-[[button]]
-id = "btn_waydroid_guide"
-title = "Waydroid Guide"
-summary = "Opens the XeroLinux Waydroid guide in your browser."
-details = [
-  "Uses xdg-open to launch the external guide URL.",
-  "No local package install is triggered by this button.",
-]

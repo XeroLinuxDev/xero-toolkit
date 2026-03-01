@@ -102,14 +102,6 @@
               </object>
             </child>
             <child>
-              <object class="GtkButton" id="btn_waydroid_guide">
-                <property name="label">WayDroid Guide</property>
-                <property name="width-request">200</property>
-                <property name="height-request">50</property>
-                <property name="css-classes">suggested-action pill</property>
-              </object>
-            </child>
-            <child>
               <object class="GtkButton" id="btn_fix_gpgme">
                 <property name="label">Fix GPGME Database</property>
                 <property name="width-request">200</property>

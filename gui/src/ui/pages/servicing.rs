@@ -5,7 +5,6 @@
 //! - Unlock Pacman database
 //! - Plasma X11 session installation
 //! - Pacman local database fix
-//! - WayDroid guide
 //! - Fix GPGME database
 //! - Fix Arch keyring
 //! - Update mirrorlist
@@ -29,7 +28,6 @@ pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &
     setup_unlock_pacman(page_builder, window);
     setup_plasma_x11(page_builder, window);
     setup_pacman_db_fix(page_builder, window);
-    setup_waydroid_guide(page_builder);
     setup_fix_gpgme(page_builder, window);
     setup_fix_arch_keyring(page_builder, window);
     setup_update_mirrorlist(page_builder, window);
@@ -108,16 +106,6 @@ fn setup_pacman_db_fix(page_builder: &Builder, window: &ApplicationWindow) {
             )
             .build();
         task_runner::run(window.upcast_ref(), commands, "Pacman DB Fix");
-    });
-}
-
-fn setup_waydroid_guide(page_builder: &Builder) {
-    let btn_waydroid_guide = extract_widget::<gtk4::Button>(page_builder, "btn_waydroid_guide");
-    btn_waydroid_guide.connect_clicked(move |_| {
-        info!("Servicing: WayDroid Guide button clicked - opening guide");
-        let _ = std::process::Command::new("xdg-open")
-            .arg("https://xerolinux.xyz/posts/waydroid-guide/")
-            .spawn();
     });
 }
 

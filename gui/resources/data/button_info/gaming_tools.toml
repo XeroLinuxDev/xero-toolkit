@@ -38,7 +38,7 @@ details = [
 [[button]]
 id = "btn_lact_oc"
 title = "LACT GPU Tools"
-summary = "Installs LACT and enables the lactd background service."
+summary = "Allows you to control your AMD, Nvidia or Intel GPU on a Linux system."
 details = [
   "Installs lact package through AUR-helper flow.",
   "Enables and starts lactd with systemctl.",
@@ -57,7 +57,7 @@ details = [
 [[button]]
 id = "btn_falcond"
 title = "Falcond"
-summary = "Installs Falcond packages, prepares permissions, and enables the service."
+summary = "A system daemon that auto-optimizes Linux gaming performance per game using Sched-ext."
 details = [
   "Installs falcond, falcond-gui, and falcond-profiles.",
   "Creates/updates falcond group membership, sets profile directory permissions, and starts service.",

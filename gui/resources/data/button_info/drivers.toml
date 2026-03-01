@@ -51,7 +51,7 @@ caution = "Group membership changes usually require relogin to take effect."
 [[button]]
 id = "btn_asus_rog"
 title = "ASUS ROG Tools"
-summary = "Installs ASUS ROG control packages and enables core services."
+summary = "Asus ROG laptop tools to control RGB and Hybrid GPUs."
 details = [
   "Installs rog-control-center, asusctl, and supergfxctl.",
   "Enables and starts asusd and supergfxd via systemctl.",
@@ -60,7 +60,7 @@ details = [
 [[button]]
 id = "btn_cooler_control"
 title = "Cooler Control"
-summary = "Installs CoolerControl stack and enables coolercontrold service."
+summary = "Powerful cooling/FAN control and monitoring for Linux."
 details = [
   "Installs coolercontrol, coolercontrold, and liquidctl.",
   "Enables and starts coolercontrold.service immediately.",
@@ -70,7 +70,7 @@ caution = "Incorrect fan or thermal settings can impact stability and temperatur
 [[button]]
 id = "btn_zenergy"
 title = "Zenergy Driver"
-summary = "Installs zenergy-dkms-git driver package."
+summary = "Energy driver that exposes the energy counters that are reported via Btop."
 details = [
   "Uses AUR helper installation flow.",
   "As a DKMS package, modules are rebuilt for kernel changes.",
