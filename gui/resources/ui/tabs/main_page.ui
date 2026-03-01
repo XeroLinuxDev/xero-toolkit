@@ -45,13 +45,37 @@
           </object>
         </child>
         <child>
-          <object class="GtkLabel">
-            <property name="label">Tip: Right-click any action button for more information.</property>
-            <property name="css-classes">dim-label</property>
-            <property name="halign">center</property>
+          <object class="AdwClamp">
+            <property name="maximum-size">720</property>
+            <property name="tightening-threshold">360</property>
             <property name="margin-top">4</property>
-            <property name="wrap">true</property>
-            <property name="justify">center</property>
+            <property name="hexpand">true</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">8</property>
+                <property name="halign">fill</property>
+                <property name="hexpand">true</property>
+                <property name="css-classes">tip-banner</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon-name">info-circle-symbolic</property>
+                    <property name="pixel-size">14</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Tip: Right-click any action button for more information.</property>
+                    <property name="halign">center</property>
+                    <property name="hexpand">true</property>
+                    <property name="wrap">true</property>
+                    <property name="justify">center</property>
+                    <property name="css-classes">tip-banner-text</property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </child>
       </object>
