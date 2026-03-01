@@ -44,6 +44,16 @@
             <property name="justify">center</property>
           </object>
         </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="label">Tip: Right-click any action button for more information.</property>
+            <property name="css-classes">dim-label</property>
+            <property name="halign">center</property>
+            <property name="margin-top">4</property>
+            <property name="wrap">true</property>
+            <property name="justify">center</property>
+          </object>
+        </child>
       </object>
     </child>
     <!-- Action Buttons Section (centered in remaining space) -->
