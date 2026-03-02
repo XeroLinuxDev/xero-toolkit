@@ -16,7 +16,7 @@ use std::rc::Rc;
 
 const SCHED_EXT_PATH: &str = "/sys/kernel/sched_ext";
 const SCHEDULER_GUIDE_URL: &str =
-    "https://wiki.cachyos.org/configuration/sched-ext/#scheduler-guide-profiles-and-use-cases";
+    "https://wiki.xerolinux.xyz/distro/#the-schedulers";
 
 /// Shared state for the scheduler page
 #[derive(Default)]

@@ -300,7 +300,7 @@
                                     </child>
                                     <child>
                                       <object class="GtkLabel">
-                                        <property name="label">Guide</property>
+                                        <property name="label">Wiki</property>
                                       </object>
                                     </child>
                                   </object>
