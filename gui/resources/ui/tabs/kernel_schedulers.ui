@@ -277,32 +277,29 @@
                             </child>
                           </object>
                         </child>
-                        <!-- System Status -->
+                        <!-- Wiki Banner -->
                         <child>
-                          <object class="GtkBox">
-                            <property name="orientation">horizontal</property>
-                            <property name="halign">end</property>
+                          <object class="GtkButton" id="btn_scheduler_guide">
+                            <property name="tooltip-text">Open the XeroLinux Scheduler Wiki</property>
+                            <property name="halign">center</property>
+                            <property name="css-classes">tip-banner flat</property>
                             <property name="margin-bottom">2</property>
                             <child>
-                              <object class="GtkButton" id="btn_scheduler_guide">
-                                <property name="tooltip-text">Open scheduler guide with profiles and use cases</property>
-                                <property name="valign">center</property>
-                                <property name="height-request">36</property>
-                                <property name="css-classes">suggested-action pill</property>
+                              <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <property name="spacing">8</property>
                                 <child>
-                                  <object class="GtkBox">
-                                    <property name="orientation">horizontal</property>
-                                    <property name="spacing">6</property>
-                                    <child>
-                                      <object class="GtkImage">
-                                        <property name="icon-name">info-circle-symbolic</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel">
-                                        <property name="label">Wiki</property>
-                                      </object>
-                                    </child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">info-circle-symbolic</property>
+                                    <property name="pixel-size">14</property>
+                                    <property name="valign">center</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Click to open the SCX Scheduler Wiki.</property>
+                                    <property name="wrap">true</property>
+                                    <property name="css-classes">tip-banner-text</property>
                                   </object>
                                 </child>
                               </object>
