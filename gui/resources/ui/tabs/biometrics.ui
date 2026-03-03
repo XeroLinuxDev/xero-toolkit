@@ -80,24 +80,38 @@
                 <!-- Fingerprint Card -->
                 <child>
                   <object class="GtkBox">
-                    <property name="orientation">vertical</property>
+                    <property name="orientation">horizontal</property>
                     <property name="css-classes">card</property>
                     <property name="overflow">hidden</property>
-                    <property name="halign">center</property>
-                    <property name="width-request">440</property>
+                    <property name="hexpand">true</property>
+                    <!-- Left: App Image -->
                     <child>
                       <object class="GtkPicture" id="frame_fingerprint">
                         <property name="file">resource:///xyz/xerolinux/xero-toolkit/icons/scalable/apps/xfprintd-gui.png</property>
                         <property name="content-fit">contain</property>
                         <property name="can-shrink">true</property>
-                        <property name="width-request">300</property>
-                        <property name="height-request">280</property>
+                        <property name="width-request">200</property>
+                        <property name="height-request">200</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <property name="hexpand">false</property>
                         <property name="vexpand">false</property>
+                        <property name="margin-top">24</property>
+                        <property name="margin-bottom">24</property>
+                        <property name="margin-start">24</property>
+                        <property name="margin-end">16</property>
                       </object>
                     </child>
+                    <!-- Separator -->
+                    <child>
+                      <object class="GtkSeparator">
+                        <property name="orientation">vertical</property>
+                        <property name="valign">fill</property>
+                        <property name="margin-top">16</property>
+                        <property name="margin-bottom">16</property>
+                      </object>
+                    </child>
+                    <!-- Right: Info -->
                     <child>
                       <object class="GtkBox">
                         <property name="orientation">vertical</property>
@@ -106,49 +120,57 @@
                         <property name="margin-bottom">24</property>
                         <property name="margin-start">24</property>
                         <property name="margin-end">24</property>
-                        <child>
-                          <object class="GtkLabel" id="lbl_fingerprint_title">
-                            <property name="label">Fingerprint Reader</property>
-                            <property name="css-classes">title-3</property>
-                            <property name="halign">center</property>
-                            <property name="justify">center</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="lbl_fingerprint_desc">
-                            <property name="label">An in-house Fingerprint Reader configuration tool built on top of fprintd. Enroll, manage, and remove fingerprints on supported hardware, with seamless PAM integration for login and sudo authentication.</property>
-                            <property name="css-classes">dim-label</property>
-                            <property name="halign">center</property>
-                            <property name="justify">center</property>
-                            <property name="wrap">true</property>
-                          </object>
-                        </child>
+                        <property name="hexpand">true</property>
+                        <property name="vexpand">true</property>
+                        <!-- Top row: Title + Uninstall button -->
                         <child>
                           <object class="GtkBox">
                             <property name="orientation">horizontal</property>
-                            <property name="spacing">8</property>
-                            <property name="halign">center</property>
-                            <property name="valign">end</property>
+                            <property name="spacing">12</property>
+                            <property name="halign">fill</property>
+                            <property name="valign">start</property>
                             <child>
-                              <object class="GtkButton" id="btn_fingerprint_setup">
-                                <property name="label">Setup / Enable</property>
-                                <property name="halign">center</property>
-                                <property name="valign">end</property>
-                                <property name="width-request">140</property>
-                                <property name="css-classes">suggested-action pill</property>
+                              <object class="GtkLabel" id="lbl_fingerprint_title">
+                                <property name="label">Fingerprint Reader</property>
+                                <property name="css-classes">title-3</property>
+                                <property name="halign">start</property>
+                                <property name="hexpand">true</property>
+                                <property name="xalign">0</property>
                               </object>
                             </child>
                             <child>
                               <object class="GtkButton" id="btn_fingerprint_uninstall">
                                 <property name="icon-name">trash-symbolic</property>
                                 <property name="visible">false</property>
-                                <property name="halign">center</property>
-                                <property name="valign">end</property>
-                                <property name="width-request">40</property>
+                                <property name="halign">end</property>
+                                <property name="valign">center</property>
                                 <property name="css-classes">pill destructive-action flat</property>
                                 <property name="tooltip-text">Uninstall Fingerprint Tool</property>
                               </object>
                             </child>
+                          </object>
+                        </child>
+                        <!-- Description -->
+                        <child>
+                          <object class="GtkLabel" id="lbl_fingerprint_desc">
+                            <property name="label">An in-house Fingerprint Reader configuration tool built on top of fprintd. Enroll, manage, and remove fingerprints on supported hardware, with seamless PAM integration for login and sudo authentication.</property>
+                            <property name="css-classes">dim-label</property>
+                            <property name="halign">start</property>
+                            <property name="xalign">0</property>
+                            <property name="justify">left</property>
+                            <property name="wrap">true</property>
+                            <property name="vexpand">true</property>
+                            <property name="valign">start</property>
+                          </object>
+                        </child>
+                        <!-- Install / Launch button -->
+                        <child>
+                          <object class="GtkButton" id="btn_fingerprint_setup">
+                            <property name="label">Install</property>
+                            <property name="halign">start</property>
+                            <property name="valign">end</property>
+                            <property name="width-request">140</property>
+                            <property name="css-classes">pill</property>
                           </object>
                         </child>
                       </object>

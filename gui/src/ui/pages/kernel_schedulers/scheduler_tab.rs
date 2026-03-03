@@ -15,8 +15,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 const SCHED_EXT_PATH: &str = "/sys/kernel/sched_ext";
-const SCHEDULER_GUIDE_URL: &str =
-    "https://wiki.xerolinux.xyz/distro/#the-schedulers";
+const SCHEDULER_GUIDE_URL: &str = "https://wiki.xerolinux.xyz/distro/#the-schedulers";
 
 /// Shared state for the scheduler page
 #[derive(Default)]

@@ -120,4 +120,3 @@ fn setup_fingerprint(page_builder: &Builder, window: &ApplicationWindow) {
         );
     });
 }
-
