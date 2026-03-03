@@ -31,13 +31,13 @@ replaces=('xlapit-cli')
 options=('!emptydirs' '!lto')
 
 build() {
-  cd "${startdir}/.."
+  cd "${srcdir}/.."
 
   cargo build --release --locked
 }
 
 package() {
-  cd "${startdir}/.."
+  cd "${srcdir}/.."
 
   # Install binaries into /opt/xero-toolkit
   install -d "${pkgdir}/opt/xero-toolkit"
