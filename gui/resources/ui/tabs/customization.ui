@@ -54,7 +54,6 @@
         <property name="halign">center</property>
         <property name="valign">center</property>
         <property name="vexpand">true</property>
-        <property name="margin-top">32</property>
         <!-- Row 1: ZSH AiO, Save Desktop -->
         <child>
           <object class="GtkBox">

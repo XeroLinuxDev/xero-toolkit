@@ -54,7 +54,6 @@
         <property name="halign">center</property>
         <property name="valign">center</property>
         <property name="vexpand">true</property>
-        <property name="margin-top">32</property>
         <!-- Important Drivers Section -->
         <!-- Row 1 (Pyramid Top): Nvidia Legacy Drivers -->
         <child>
