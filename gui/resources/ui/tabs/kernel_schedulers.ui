@@ -282,7 +282,7 @@
                           <object class="GtkButton" id="btn_scheduler_guide">
                             <property name="tooltip-text">Open the XeroLinux Scheduler Wiki</property>
                             <property name="halign">center</property>
-                            <property name="css-classes">tip-banner flat</property>
+                            <property name="css-classes">tip-banner-purple pill</property>
                             <property name="margin-bottom">2</property>
                             <child>
                               <object class="GtkBox">
@@ -299,7 +299,6 @@
                                   <object class="GtkLabel">
                                     <property name="label">Click to open the SCX Scheduler Wiki.</property>
                                     <property name="wrap">true</property>
-                                    <property name="css-classes">tip-banner-text</property>
                                   </object>
                                 </child>
                               </object>

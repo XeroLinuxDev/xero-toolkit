@@ -46,7 +46,7 @@
             </child>
             <child>
               <object class="GtkLabel">
-                <property name="label">Configure fingerprint and facial recognition</property>
+                <property name="label">Configure fingerprint authentication</property>
                 <property name="css-classes">dim-label</property>
                 <property name="halign">start</property>
                 <property name="xalign">0</property>
@@ -73,11 +73,9 @@
             <property name="vexpand">true</property>
             <child>
               <object class="GtkBox">
-                <property name="orientation">horizontal</property>
-                <property name="spacing">24</property>
-                <property name="halign">center</property>
-                <property name="valign">fill</property>
-                <property name="homogeneous">true</property>
+                <property name="orientation">vertical</property>
+                <property name="halign">fill</property>
+                <property name="valign">start</property>
                 <property name="vexpand">true</property>
                 <!-- Fingerprint Card -->
                 <child>
@@ -85,19 +83,19 @@
                     <property name="orientation">vertical</property>
                     <property name="css-classes">card</property>
                     <property name="overflow">hidden</property>
-                    <property name="vexpand">true</property>
+                    <property name="halign">center</property>
+                    <property name="width-request">440</property>
                     <child>
-                      <object class="GtkAspectFrame" id="frame_fingerprint">
-                        <property name="ratio">1.0</property>
-                        <property name="obey-child">false</property>
-                        <property name="halign">fill</property>
-                        <child>
-                          <object class="GtkPicture">
-                            <property name="file">resource:///xyz/xerolinux/xero-toolkit/icons/scalable/apps/xfprintd-gui.png</property>
-                            <property name="content-fit">contain</property>
-                            <property name="can-shrink">true</property>
-                          </object>
-                        </child>
+                      <object class="GtkPicture" id="frame_fingerprint">
+                        <property name="file">resource:///xyz/xerolinux/xero-toolkit/icons/scalable/apps/xfprintd-gui.png</property>
+                        <property name="content-fit">contain</property>
+                        <property name="can-shrink">true</property>
+                        <property name="width-request">300</property>
+                        <property name="height-request">280</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="hexpand">false</property>
+                        <property name="vexpand">false</property>
                       </object>
                     </child>
                     <child>
@@ -108,7 +106,6 @@
                         <property name="margin-bottom">24</property>
                         <property name="margin-start">24</property>
                         <property name="margin-end">24</property>
-                        <property name="vexpand">true</property>
                         <child>
                           <object class="GtkLabel" id="lbl_fingerprint_title">
                             <property name="label">Fingerprint Reader</property>
@@ -119,16 +116,11 @@
                         </child>
                         <child>
                           <object class="GtkLabel" id="lbl_fingerprint_desc">
-                            <property name="label">Install and configure fingerprint authentication using xfprintd-gui</property>
+                            <property name="label">An in-house Fingerprint Reader configuration tool built on top of fprintd. Enroll, manage, and remove fingerprints on supported hardware, with seamless PAM integration for login and sudo authentication.</property>
                             <property name="css-classes">dim-label</property>
                             <property name="halign">center</property>
                             <property name="justify">center</property>
                             <property name="wrap">true</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="vexpand">true</property>
                           </object>
                         </child>
                         <child>
@@ -155,90 +147,6 @@
                                 <property name="width-request">40</property>
                                 <property name="css-classes">pill destructive-action flat</property>
                                 <property name="tooltip-text">Uninstall Fingerprint Tool</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <!-- Howdy Card -->
-                <child>
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
-                    <property name="css-classes">card</property>
-                    <property name="overflow">hidden</property>
-                    <property name="vexpand">true</property>
-                    <child>
-                      <object class="GtkAspectFrame" id="frame_howdy">
-                        <property name="ratio">1.0</property>
-                        <property name="obey-child">false</property>
-                        <property name="halign">fill</property>
-                        <child>
-                          <object class="GtkPicture">
-                            <property name="file">resource:///xyz/xerolinux/xero-toolkit/icons/scalable/apps/xero-howdy-qt.png</property>
-                            <property name="content-fit">contain</property>
-                            <property name="can-shrink">true</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <property name="spacing">12</property>
-                        <property name="margin-top">24</property>
-                        <property name="margin-bottom">24</property>
-                        <property name="margin-start">24</property>
-                        <property name="margin-end">24</property>
-                        <property name="vexpand">true</property>
-                        <child>
-                          <object class="GtkLabel" id="lbl_howdy_title">
-                            <property name="label">Howdy Face Unlock</property>
-                            <property name="css-classes">title-3</property>
-                            <property name="halign">center</property>
-                            <property name="justify">center</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="lbl_howdy_desc">
-                            <property name="label">Setup Windows Hello™ style facial recognition with IR camera support (Testers Needed)</property>
-                            <property name="css-classes">dim-label</property>
-                            <property name="halign">center</property>
-                            <property name="justify">center</property>
-                            <property name="wrap">true</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="vexpand">true</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="orientation">horizontal</property>
-                            <property name="spacing">8</property>
-                            <property name="halign">center</property>
-                            <property name="valign">end</property>
-                            <child>
-                              <object class="GtkButton" id="btn_howdy_setup">
-                                <property name="label">Coming Soon</property>
-                                <property name="halign">center</property>
-                                <property name="valign">end</property>
-                                <property name="width-request">140</property>
-                                <property name="css-classes">suggested-action pill</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="btn_howdy_uninstall">
-                                <property name="icon-name">trash-symbolic</property>
-                                <property name="visible">false</property>
-                                <property name="halign">center</property>
-                                <property name="valign">end</property>
-                                <property name="width-request">40</property>
-                                <property name="css-classes">pill destructive-action flat</property>
-                                <property name="tooltip-text">Uninstall Howdy Tool</property>
                               </object>
                             </child>
                           </object>

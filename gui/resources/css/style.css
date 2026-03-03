@@ -120,3 +120,16 @@
     color: @accent_bg_color;
     font-weight: 500;
 }
+
+.tip-banner-purple {
+    border-radius: 10px;
+    background: #7b5ea7;
+    padding: 7px 12px;
+    color: white;
+}
+
+.tip-banner-purple image,
+.tip-banner-purple label,
+.tip-banner-purple .tip-banner-text {
+    color: white;
+}
