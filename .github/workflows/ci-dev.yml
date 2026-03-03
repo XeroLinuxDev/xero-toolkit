@@ -17,22 +17,28 @@ jobs:
       image: archlinux:latest
 
     steps:
-      - name: Install system dependencies
+      - name: Bootstrap pacman
         run: |
           pacman -Syu --noconfirm
           pacman -S --noconfirm --needed base-devel git
-          # Parse depends + makedepends from PKGBUILD
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install dependencies from PKGBUILD
+        run: |
+          # Packages only available from custom repos / AUR — skip in CI
+          _skip="scx-tool"
           _deps=$(
             sed -n "/^\(depends\|makedepends\)=(/,/)/p" packaging/PKGBUILD \
-            | grep -oP "'\K[^']+" \
+            | grep -oP "'[a-zA-Z0-9][a-zA-Z0-9_.+-]*" \
+            | tr -d "'" \
             | sort -u \
+            | grep -vxF -e "${_skip}" \
             | tr '\n' ' '
           )
           echo "Installing: ${_deps}"
           pacman -S --noconfirm --needed ${_deps}
-
-      - name: Checkout
-        uses: actions/checkout@v6
 
       - name: Cache cargo registry & target
         uses: actions/cache@v5
