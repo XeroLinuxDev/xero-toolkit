@@ -6,7 +6,7 @@ pkgver=0.2.7
 pkgrel=2
 pkgdesc="GTK4 GUI to manage XeroLinux specific tools and settings"
 arch=('x86_64')
-url="https://github.com/synsejse/xero-toolkit"
+url="https://github.com/XeroLinux/xero-toolkit"
 license=('GPL-3.0-or-later')
 depends=(
     'gtk4'
