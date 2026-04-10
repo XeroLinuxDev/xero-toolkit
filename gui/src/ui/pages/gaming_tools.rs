@@ -94,8 +94,6 @@ fn setup_steam_aio(builder: &Builder, window: &ApplicationWindow) {
                         "lib32-libva",
                         "gtk3",
                         "lib32-gtk3",
-                        "gst-plugins-base-libs",
-                        "vulkan-icd-loader",
                         "dosbox",
                     ])
                     .description("Installing Steam and gaming dependencies...")
