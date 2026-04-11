@@ -19,9 +19,9 @@ anyhow = "1.0"
 dirs = "6"
 libc = "0.2"
 vte4 = "0.9"
-rand = "0.10.0"
+rand = "0.10.1"
 serde = { version = "1", features = ["derive"] }
-toml = "1.0"
+toml = "1.1"
 async-channel = "2"
 
 [build-dependencies]
