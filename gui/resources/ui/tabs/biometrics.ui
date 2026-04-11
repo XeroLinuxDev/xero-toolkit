@@ -37,7 +37,7 @@
         </child>
         <child>
           <object class="GtkLabel">
-            <property name="label">Configure fingerprint authentication</property>
+            <property name="label">Configure fingerprint and facial recognition authentication</property>
             <property name="css-classes">dim-label</property>
             <property name="halign">center</property>
             <property name="wrap">true</property>
@@ -154,6 +154,100 @@
                         <!-- Install / Launch button -->
                         <child>
                           <object class="GtkButton" id="btn_fingerprint_setup">
+                            <property name="label">Install</property>
+                            <property name="halign">start</property>
+                            <property name="valign">end</property>
+                            <property name="width-request">140</property>
+                            <property name="css-classes">pill</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <!-- Howdy Card -->
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <property name="css-classes">card</property>
+                    <property name="overflow">hidden</property>
+                    <property name="hexpand">true</property>
+                    <property name="margin-top">16</property>
+                    <child>
+                      <object class="GtkPicture" id="frame_howdy">
+                        <property name="file">resource:///xyz/xerolinux/xero-toolkit/icons/scalable/apps/xero-howdy-qt.png</property>
+                        <property name="content-fit">contain</property>
+                        <property name="can-shrink">true</property>
+                        <property name="width-request">260</property>
+                        <property name="height-request">240</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="hexpand">false</property>
+                        <property name="vexpand">false</property>
+                        <property name="margin-top">24</property>
+                        <property name="margin-bottom">24</property>
+                        <property name="margin-start">24</property>
+                        <property name="margin-end">16</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparator">
+                        <property name="orientation">vertical</property>
+                        <property name="valign">fill</property>
+                        <property name="margin-top">16</property>
+                        <property name="margin-bottom">16</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">12</property>
+                        <property name="margin-top">24</property>
+                        <property name="margin-bottom">24</property>
+                        <property name="margin-start">24</property>
+                        <property name="margin-end">24</property>
+                        <property name="hexpand">true</property>
+                        <property name="vexpand">true</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">horizontal</property>
+                            <property name="spacing">12</property>
+                            <property name="halign">fill</property>
+                            <property name="valign">start</property>
+                            <child>
+                              <object class="GtkLabel" id="lbl_howdy_title">
+                                <property name="label">Howdy Face Auth</property>
+                                <property name="css-classes">title-3</property>
+                                <property name="halign">start</property>
+                                <property name="hexpand">true</property>
+                                <property name="xalign">0</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="btn_howdy_uninstall">
+                                <property name="icon-name">trash-symbolic</property>
+                                <property name="visible">false</property>
+                                <property name="halign">end</property>
+                                <property name="valign">center</property>
+                                <property name="css-classes">pill destructive-action flat</property>
+                                <property name="tooltip-text">Uninstall Howdy Tool</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_howdy_desc">
+                            <property name="label">A Qt GUI for managing Howdy face authentication on supported cameras. Configure facial recognition for login, sudo, and other PAM-backed authentication flows from a desktop interface.</property>
+                            <property name="css-classes">dim-label</property>
+                            <property name="halign">fill</property>
+                            <property name="justify">fill</property>
+                            <property name="wrap">true</property>
+                            <property name="vexpand">true</property>
+                            <property name="valign">start</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_howdy_setup">
                             <property name="label">Install</property>
                             <property name="halign">start</property>
                             <property name="valign">end</property>

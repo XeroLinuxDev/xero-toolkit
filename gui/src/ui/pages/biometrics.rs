@@ -2,6 +2,7 @@
 //!
 //! Handles:
 //! - Fingerprint reader setup (xfprintd-gui)
+//! - Howdy facial recognition setup (xero-howdy-qt)
 
 use crate::core;
 use crate::ui::task_runner::{self, Command, CommandSequence};
@@ -15,6 +16,7 @@ use std::process::{Command as StdCommand, Stdio};
 pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
     crate::ui::dialogs::button_info::attach_to_builder(page_builder, window.upcast_ref());
     setup_fingerprint(page_builder, window);
+    setup_howdy(page_builder, window);
 }
 
 /// Helper to update button appearance based on installation status and control uninstall button visibility
@@ -117,6 +119,77 @@ fn setup_fingerprint(page_builder: &Builder, window: &ApplicationWindow) {
             window_uninstall.upcast_ref(),
             commands,
             "Remove Fingerprint GUI Tool",
+        );
+    });
+}
+
+fn setup_howdy(page_builder: &Builder, window: &ApplicationWindow) {
+    let btn_howdy_setup = extract_widget::<gtk4::Button>(page_builder, "btn_howdy_setup");
+    let btn_howdy_uninstall = extract_widget::<gtk4::Button>(page_builder, "btn_howdy_uninstall");
+
+    let is_installed = core::is_package_installed("xero-howdy-qt");
+    update_button_state(&btn_howdy_setup, &btn_howdy_uninstall, is_installed);
+
+    let btn_clone = btn_howdy_setup.clone();
+    let uninstall_clone = btn_howdy_uninstall.clone();
+    window.connect_is_active_notify(move |window| {
+        if window.is_active() {
+            let is_installed = core::is_package_installed("xero-howdy-qt");
+            update_button_state(&btn_clone, &uninstall_clone, is_installed);
+        }
+    });
+
+    let window_clone = window.clone();
+    btn_howdy_setup.connect_clicked(move |_| {
+        info!("Biometrics: Howdy setup button clicked");
+
+        if core::is_package_installed("xero-howdy-qt") {
+            info!("Launching xero-howdy-qt...");
+            if let Err(e) = StdCommand::new("xero-howdy-qt")
+                .stdin(Stdio::null())
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
+                .spawn()
+            {
+                error!("Failed to launch xero-howdy-qt: {}", e);
+            }
+        } else {
+            let commands = CommandSequence::new()
+                .then(
+                    Command::builder()
+                        .aur()
+                        .args(&["-S", "--noconfirm", "--needed", "xero-howdy-qt"])
+                        .description("Installing Howdy Face Authentication Tool...")
+                        .build(),
+                )
+                .build();
+
+            task_runner::run(
+                window_clone.upcast_ref(),
+                commands,
+                "Install Howdy Face Authentication Tool",
+            );
+        }
+    });
+
+    let window_uninstall = window.clone();
+    btn_howdy_uninstall.connect_clicked(move |_| {
+        info!("Biometrics: Howdy uninstall clicked");
+
+        let commands = CommandSequence::new()
+            .then(
+                Command::builder()
+                    .aur()
+                    .args(&["-R", "--noconfirm", "xero-howdy-qt"])
+                    .description("Removing Howdy Face Authentication Tool...")
+                    .build(),
+            )
+            .build();
+
+        task_runner::run(
+            window_uninstall.upcast_ref(),
+            commands,
+            "Remove Howdy Face Authentication Tool",
         );
     });
 }

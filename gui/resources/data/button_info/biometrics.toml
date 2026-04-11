@@ -15,3 +15,21 @@ details = [
   "Visible only when xfprintd-gui is detected as installed.",
   "Runs package removal through the task-runner/AUR-helper path.",
 ]
+
+[[button]]
+id = "btn_howdy_setup"
+title = "Howdy Setup"
+summary = "Installs xero-howdy-qt or launches it if already installed."
+details = [
+  "Button label/state auto-switches between Install and Launch App.",
+  "Installation runs through task runner; launch runs xero-howdy-qt directly.",
+]
+
+[[button]]
+id = "btn_howdy_uninstall"
+title = "Howdy Uninstall"
+summary = "Removes xero-howdy-qt package."
+details = [
+  "Visible only when xero-howdy-qt is detected as installed.",
+  "Runs package removal through the task-runner/AUR-helper path.",
+]
