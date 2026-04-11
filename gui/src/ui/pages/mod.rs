@@ -19,4 +19,5 @@ pub mod gamescope;
 pub mod gaming_tools;
 pub mod kernel_schedulers;
 pub mod main_page;
+pub mod misc_tools;
 pub mod servicing;

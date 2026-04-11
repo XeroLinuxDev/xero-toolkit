@@ -1,0 +1,28 @@
+[[button]]
+id = "btn_efiboot_manager"
+title = "EFIBoot Manager"
+summary = "Installs the EFIBoot Manager GUI from the XeroLinux repo."
+details = [
+  "Installs the repo package efibootmgrgui with pacman.",
+  "Tool manages UEFI boot entries from a desktop UI.",
+]
+caution = "Changing EFI boot entries can leave systems unbootable if you remove or reorder the wrong entry."
+
+[[button]]
+id = "btn_wallpaper_browser"
+title = "Wallpaper Browser GUI"
+summary = "Installs XeroLinux Wallpaper Browser from the XeroLinux repo."
+details = [
+  "Installs the repo package xero-wallpaper-browser with pacman.",
+  "App can browse, preview, and download wallpapers from multiple online sources.",
+]
+
+[[button]]
+id = "btn_php_server_gui"
+title = "PHP Server GUI"
+summary = "Installs the XeroLinux PHP development server GUI from the XeroLinux repo."
+details = [
+  "Installs the repo package phpgui with pacman.",
+  "Tool launches a local PHP built-in server from a desktop UI.",
+]
+caution = "This tool is intended for local development workflows and exposes a local server while it is running."

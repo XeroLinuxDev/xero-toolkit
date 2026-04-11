@@ -7,6 +7,7 @@
     <file preprocess="xml-stripblanks" compressed="true">ui/tabs/biometrics.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/tabs/drivers.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/tabs/customization.ui</file>
+    <file preprocess="xml-stripblanks" compressed="true">ui/tabs/misc_tools.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/tabs/gaming_tools.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/tabs/gamescope.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">ui/tabs/containers_vms.ui</file>
@@ -29,6 +30,7 @@
     <file compressed="true">data/button_info/gaming_tools.toml</file>
     <file compressed="true">data/button_info/containers_vms.toml</file>
     <file compressed="true">data/button_info/customization.toml</file>
+    <file compressed="true">data/button_info/misc_tools.toml</file>
     <file compressed="true">data/button_info/servicing.toml</file>
     <file compressed="true">data/button_info/biometrics.toml</file>
     <file compressed="true">data/button_info/gamescope.toml</file>

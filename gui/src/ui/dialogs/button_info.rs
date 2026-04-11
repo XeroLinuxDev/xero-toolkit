@@ -20,6 +20,7 @@ const BUTTON_INFO_RESOURCES: &[&str] = &[
     "/xyz/xerolinux/xero-toolkit/data/button_info/gaming_tools.toml",
     "/xyz/xerolinux/xero-toolkit/data/button_info/containers_vms.toml",
     "/xyz/xerolinux/xero-toolkit/data/button_info/customization.toml",
+    "/xyz/xerolinux/xero-toolkit/data/button_info/misc_tools.toml",
     "/xyz/xerolinux/xero-toolkit/data/button_info/servicing.toml",
     "/xyz/xerolinux/xero-toolkit/data/button_info/biometrics.toml",
     "/xyz/xerolinux/xero-toolkit/data/button_info/gamescope.toml",

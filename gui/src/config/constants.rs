@@ -121,6 +121,7 @@ pub mod resources {
         pub const KERNEL_SCHEDULERS: &str =
             "/xyz/xerolinux/xero-toolkit/ui/tabs/kernel_schedulers.ui";
         pub const MAIN_PAGE: &str = "/xyz/xerolinux/xero-toolkit/ui/tabs/main_page.ui";
+        pub const MISC_TOOLS: &str = "/xyz/xerolinux/xero-toolkit/ui/tabs/misc_tools.ui";
         pub const SERVICING_SYSTEM_TWEAKS: &str =
             "/xyz/xerolinux/xero-toolkit/ui/tabs/servicing_system_tweaks.ui";
     }

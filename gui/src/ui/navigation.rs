@@ -54,6 +54,13 @@ pub const PAGES: &[PageConfig] = &[
         setup_handler: Some(pages::customization::setup_handlers),
     },
     PageConfig {
+        id: "misc_tools",
+        title: "Misc Tools",
+        icon: "asterisk-symbolic",
+        ui_resource: crate::config::resources::tabs::MISC_TOOLS,
+        setup_handler: Some(pages::misc_tools::setup_handlers),
+    },
+    PageConfig {
         id: "gaming_tools",
         title: "Gaming Tools",
         icon: "gamepad-symbolic",
