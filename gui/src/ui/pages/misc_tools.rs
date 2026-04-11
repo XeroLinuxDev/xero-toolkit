@@ -12,11 +12,7 @@ use gtk4::{ApplicationWindow, Builder, Button};
 use log::info;
 
 /// Set up all button handlers for the misc tools page.
-pub fn setup_handlers(
-    page_builder: &Builder,
-    _main_builder: &Builder,
-    window: &ApplicationWindow,
-) {
+pub fn setup_handlers(page_builder: &Builder, _main_builder: &Builder, window: &ApplicationWindow) {
     crate::ui::dialogs::button_info::attach_to_builder(page_builder, window.upcast_ref());
     setup_efiboot_manager(page_builder, window);
     setup_wallpaper_browser(page_builder, window);
@@ -40,7 +36,11 @@ fn setup_efiboot_manager(builder: &Builder, window: &ApplicationWindow) {
             )
             .build();
 
-        task_runner::run(window.upcast_ref(), commands, "EFI Boot Manager Installation");
+        task_runner::run(
+            window.upcast_ref(),
+            commands,
+            "EFI Boot Manager Installation",
+        );
     });
 }
 
@@ -61,7 +61,11 @@ fn setup_wallpaper_browser(builder: &Builder, window: &ApplicationWindow) {
             )
             .build();
 
-        task_runner::run(window.upcast_ref(), commands, "Wallpaper Browser Installation");
+        task_runner::run(
+            window.upcast_ref(),
+            commands,
+            "Wallpaper Browser Installation",
+        );
     });
 }
 
