@@ -2,8 +2,8 @@
 # Maintainer: Steve C. <steve@techxero.com>
 
 pkgname=xero-toolkit
-pkgver=0.3.0
-pkgrel=2
+pkgver=0.3.1
+pkgrel=1
 pkgdesc="GTK4 GUI to manage XeroLinux specific tools and settings"
 arch=('x86_64')
 url="https://github.com/XeroLinux/xero-toolkit"
@@ -31,13 +31,13 @@ replaces=('xlapit-cli')
 options=('!emptydirs' '!lto')
 
 build() {
-  cd "${srcdir}/.."
+  cd "${startdir}/.."
 
   cargo build --release --locked
 }
 
 package() {
-  cd "${srcdir}/.."
+  cd "${startdir}/.."
 
   # Install binaries into /opt/xero-toolkit
   install -d "${pkgdir}/opt/xero-toolkit"
